@@ -1,0 +1,28 @@
+{
+  "name": "pocket",
+  "version": "0.0.0",
+  "description": "Umbrella package for most Pocket libraries",
+  "type": "module",
+  "source": "src/index.ts",
+  "exports": {
+    "require": "./dist/index.cjs",
+    "default": "./dist/index.js"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "unpkg": "./dist/index.umd.js",
+  "scripts": {
+    "build": "microbundle",
+    "dev": "microbundle watch"
+  },
+  "types": "dist/index.d.ts",
+  "keywords": [],
+  "author": "Enrique Ortiz <hi@enriqueortiz.dev>",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "7.32.0",
+    "microbundle": "^0.14.2",
+    "prettier": "^2.5.1",
+    "workspace-config": "*"
+  }
+}

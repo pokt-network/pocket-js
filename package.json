@@ -4,7 +4,16 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
+    "build:utils": "turbo run build --scope=*utils* --no-deps",
+    "build:provider": "turbo run build --scope=*provider* --no-deps",
+    "build:keybase": "turbo run build --scope=*keybase* --no-deps",
+    "build:pocket": "turbo run build --scope=@pokt-foundation/pocketjs --no-deps",
     "dev": "turbo run dev --parallel",
+    "dev:utils": "turbo run dev --scope=*utils* --no-cache --no-deps",
+    "dev:keybase": "turbo run dev --scope=*keybase* --no-cache --no-deps",
+    "dev:provider": "turbo run dev --scope=*provider* --no-cache --no-deps",
+    "dev:pocket": "turbo run dev --scope=@pokt-foundation/pocketjs --no-cache --no-deps",
+    "dev:all": "turbo run dev --parallel --no-cache",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },

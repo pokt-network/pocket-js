@@ -1,1 +1,1 @@
-# pocket-js-v2
+# PocketJS

@@ -1,5 +1,5 @@
 {
-  "name": "config",
+  "name": "workspace-config",
   "version": "0.0.0",
   "description": "Base config files for TS/ESLint and any other tooling",
   "private": "true",
@@ -9,7 +9,8 @@
   },
   "files": [
     "eslintconfig.base.json",
-    "tsconfig.base.json"
+    "tsconfig.base.json",
+    ".prettierrc.js"
   ],
   "author": "Enrique Ortiz <hi@enriqueortiz.dev>",
   "license": "MIT",

@@ -1,11 +1,7 @@
-type Provider = {
-  url: string
-}
+import { gm } from '@pokt-foundation/pocketjs-utils'
 
 export class Pocket {
-  private provider: Provider
-
   public static hi() {
-    console.log('gm')
+    gm()
   }
 }

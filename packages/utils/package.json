@@ -1,7 +1,7 @@
 {
-  "name": "utils",
+  "name": "@pokt-foundation/pocketjs-utils",
   "version": "1.0.0",
-  "description": "",
+  "description": "Utilities used across pocket-js",
   "type": "module",
   "source": "src/index.ts",
   "exports": {

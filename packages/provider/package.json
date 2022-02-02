@@ -1,5 +1,5 @@
 {
-  "name": "provider",
+  "name": "@pokt-foundation/pocketjs-provider",
   "version": "1.0.0",
   "description": "",
   "type": "module",

@@ -1,0 +1,8 @@
+{
+  "paths": {
+    "@pokt-foundation/pocketjs": ["packages/pocket"],
+    "@pokt-foundation/pocketjs-keybase": ["packages/keybase"],
+    "@pokt-foundation/pocketjs-provider": ["packages/provider"],
+    "@pokt-foundation/pocketjs-utils": ["packages/utils"]
+  }
+}

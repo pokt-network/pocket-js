@@ -1,13 +1,25 @@
 {
   "name": "config",
   "version": "0.0.0",
+  "description": "Base config files for TS/ESLint and any other tooling",
+  "private": "true",
   "main": "index.js",
-  "license": "MIT",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "files": [
-    "eslint-preset.js"
+    "eslintconfig.base.json",
+    "tsconfig.base.json"
   ],
-  "dependencies": {
-    "eslint-config-next": "^12.0.8",
-    "eslint-config-prettier": "^8.3.0"
+  "author": "Enrique Ortiz <hi@enriqueortiz.dev>",
+  "license": "MIT",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.10.2",
+    "@typescript-eslint/parser": "^5.10.2",
+    "eslint": "7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.3"
   }
 }

@@ -1,11 +1,11 @@
 type Provider = {
-  url: string;
-};
+  url: string
+}
 
 export class Pocket {
-  private provider: Provider;
+  private provider: Provider
 
   public static hi() {
-    console.log("gm");
+    console.log('gm')
   }
 }

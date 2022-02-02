@@ -12,5 +12,6 @@
     "prettier": "^2.5.1",
     "turbo": "latest",
     "typescript": "^4.5.5"
-  }
+  },
+  "packageManager": "pnpm@6.22.2"
 }

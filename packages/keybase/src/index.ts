@@ -1,4 +1,4 @@
-export class Provider {
+export class Keybase {
   public static gm() {
     console.log('gm')
   }

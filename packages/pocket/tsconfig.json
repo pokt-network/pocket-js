@@ -4,6 +4,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "allowJs": true,
     "composite": true
   },
   "references": [
@@ -11,5 +12,5 @@
     { "path": "../keybase" },
     { "path": "../provider" }
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist", "jest.config.js"]
 }

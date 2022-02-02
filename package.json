@@ -1,7 +1,6 @@
 {
-  "name": "turborepo-basic-pnpm",
+  "name": "@pokt-foundation/pocketjs-monorepo",
   "version": "0.0.0",
-  "private": true,
   "scripts": {
     "build": "turbo run build",
     "build:utils": "turbo run build --scope=*utils* --no-deps",

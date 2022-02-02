@@ -7,6 +7,7 @@
     "build:provider": "turbo run build --scope=*provider* --no-deps",
     "build:keybase": "turbo run build --scope=*keybase* --no-deps",
     "build:pocket": "turbo run build --scope=@pokt-foundation/pocketjs --no-deps",
+    "build:relayer": "turbo run build --scope=@pokt-foundation/relayer --no-deps",
     "dev": "turbo run dev --parallel",
     "dev:utils": "turbo run dev --scope=*utils* --no-cache --no-deps",
     "dev:keybase": "turbo run dev --scope=*keybase* --no-cache --no-deps",

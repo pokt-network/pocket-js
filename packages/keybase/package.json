@@ -1,6 +1,6 @@
 {
   "name": "@pokt-foundation/pocketjs-keybase",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Key manager for Pocket accounts",
   "type": "module",
   "source": "src/index.ts",

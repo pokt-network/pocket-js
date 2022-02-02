@@ -52,12 +52,16 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.10.2
       '@typescript-eslint/parser': ^5.10.2
       eslint: 7.32.0
+      microbundle: ^0.14.2
       prettier: ^2.5.1
+      typescript: ^4.5.5
     devDependencies:
-      '@typescript-eslint/eslint-plugin': 5.10.2_85f7b47e0c4bf194c28211564b5a87ab
-      '@typescript-eslint/parser': 5.10.2_eslint@7.32.0
+      '@typescript-eslint/eslint-plugin': 5.10.2_3e19df30e549eb9672c3b79dc40c1d5f
+      '@typescript-eslint/parser': 5.10.2_eslint@7.32.0+typescript@4.5.5
       eslint: 7.32.0
+      microbundle: 0.14.2
       prettier: 2.5.1
+      typescript: 4.5.5
 
   packages/utils:
     specifiers:

@@ -18,19 +18,30 @@ export interface GetNodesOptions {}
 export interface GetAppOptions {}
 
 export enum StakingStatus {
-    Unstaked = 0,
-    Unstaking = 1,
-    Staked = 2
+  Unstaked = 0,
+  Unstaking = 1,
+  Staked = 2,
 }
 
 export interface App {
   address: string
-  chains: string[],
-  jailed: boolean,
-  maxRelays: bigint,
-  publicKey: string,
-  stakedTokens: bigint,
+  chains: string[]
+  jailed: boolean
+  maxRelays: bigint
+  publicKey: string
+  stakedTokens: bigint
   status: StakingStatus
+}
+
+export interface Node {
+  address: string
+  chains: string[]
+  jailed: boolean
+  publicKey: string
+  serviceUrl: string
+  stakedTokens: bigint
+  status: StakingStatus
+  unstakingTime: string
 }
 
 export interface Account {
@@ -40,3 +51,5 @@ export interface Account {
 }
 
 export type AccountWithTransactions = Account
+
+export {}

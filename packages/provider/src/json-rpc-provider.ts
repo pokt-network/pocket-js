@@ -3,6 +3,7 @@ import {
   Account,
   AccountWithTransactions,
   App,
+  Node,
   Block,
   GetAppOptions,
   GetNodesOptions,
@@ -77,16 +78,60 @@ export class JsonRpcProvider implements AbstractProvider {
     throw new Error('Not implemented')
   }
 
-  getBlockNumber(): Promise<number> {
-    throw new Error('Not implemented')
+  async getBlockNumber(): Promise<number> {
+    const res = await this.perform({
+      route: V1RpcRoutes.QueryHeight,
+      body: {},
+    })
+
+    const { height } = await res.json()
+
+    if (!height) {
+      throw new Error('RPC Error')
+    }
+
+    return height
   }
 
   getNodes(getNodesOptions: GetNodesOptions): Promise<Node[]> {
     throw new Error('Not implemented')
   }
 
-  getNode(address: string | Promise<string>, GetNodeOptions): Promise<Node> {
-    throw new Error('Not implemented')
+  async getNode(
+    address: string | Promise<string>,
+    GetNodeOptions
+  ): Promise<Node> {
+    const res = await this.perform({
+      route: V1RpcRoutes.QueryNode,
+      body: { address: await address },
+    })
+    const node = await res.json()
+
+    if (!('chains' in node)) {
+      console.log(node)
+      throw new Error('RPC Error')
+    }
+
+    const {
+      chains,
+      jailed,
+      public_key,
+      service_url,
+      status,
+      tokens,
+      unstaking_time,
+    } = node
+
+    return {
+      address: await address,
+      chains,
+      publicKey: public_key,
+      jailed,
+      serviceUrl: service_url,
+      stakedTokens: BigInt(tokens),
+      status,
+      unstakingTime: unstaking_time,
+    }
   }
 
   getApps(getAppOption: GetAppOptions): Promise<App[]> {
@@ -112,7 +157,7 @@ export class JsonRpcProvider implements AbstractProvider {
       app
 
     return {
-      address,
+      address: await address,
       chains,
       publicKey: public_key,
       jailed,
@@ -136,7 +181,7 @@ export class JsonRpcProvider implements AbstractProvider {
     const { coins, public_key } = account
 
     return {
-      address,
+      address: await address,
       balance: BigInt(coins[0].amount),
       publicKey: public_key,
     }

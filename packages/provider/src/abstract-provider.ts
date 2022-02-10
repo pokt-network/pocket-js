@@ -5,6 +5,7 @@ import {
   Block,
   GetAppOptions,
   GetNodesOptions,
+  Node,
   TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
 

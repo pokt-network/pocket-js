@@ -6,7 +6,8 @@
     "baseUrl": ".",
     "allowJs": true,
     "composite": true,
-    "declaration": true
+    "declaration": true,
+    "declarationDir": "dist"
   },
   "references": [],
   "exclude": ["node_modules", "dist", "jest.config.js"]

@@ -18,7 +18,7 @@
   "types": "dist/index.d.ts",
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@pokt-foundation/pocketjs-types": "^0.0.0",
     "@types/jest": "^27.4.0",

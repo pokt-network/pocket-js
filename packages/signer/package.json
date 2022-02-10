@@ -1,7 +1,7 @@
 {
-  "name": "@pokt-foundation/pocketjs-keybase",
+  "name": "@pokt-foundation/pocketjs-signer",
   "version": "0.0.0",
-  "description": "Key manager for Pocket accounts",
+  "description": "Signer for Pocket accounts",
   "type": "module",
   "source": "src/index.ts",
   "exports": {

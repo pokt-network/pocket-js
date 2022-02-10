@@ -30,12 +30,12 @@ export abstract class AbstractProvider {
   abstract getNodes(getNodesOptions: GetNodesOptions): Promise<Node[]>
   abstract getNode(
     address: string | Promise<string>,
-    GetNodeOptions
+    options: GetNodesOptions
   ): Promise<Node>
   abstract getApps(getAppOption: GetAppOptions): Promise<App[]>
   abstract getApp(
     address: string | Promise<string>,
-    GetAppOptions
+    options: GetAppOptions
   ): Promise<App>
   abstract getAccount(address: string | Promise<string>): Promise<Account>
   abstract getAccountWithTransactions(

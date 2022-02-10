@@ -3,7 +3,10 @@
   "display": "Default",
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": "."
+    "baseUrl": ".",
+    "composite": true
   },
+  "references": [{ "path": "../provider" }, { "path": "../utils" }],
+  "include": ["src"],
   "exclude": ["node_modules"]
 }

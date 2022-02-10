@@ -1,3 +1,1 @@
-export function gm(): void {
-  console.log('gm')
-}
+export * from './addr-from-pubkey'

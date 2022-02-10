@@ -20,6 +20,7 @@ export abstract class AbstractProvider {
   ): Promise<'node' | 'app' | 'account'>
   // Txs
   abstract sendTransaction(
+    signerAddress: string | Promise<string>,
     signedTransaction: string | Promise<string>
   ): Promise<TransactionResponse>
   // Network

@@ -88,10 +88,22 @@ export class JsonRpcProvider implements AbstractProvider {
   }
 
   // Txs
-  sendTransaction(
+  async sendTransaction(
+    signerAddress: string | Promise<string>,
     signedTransaction: string | Promise<string>
   ): Promise<TransactionResponse> {
-    throw new Error('Not implemented')
+    const res = await this.perform({
+      route: V1RpcRoutes.ClientRawTx,
+      body: { address: await signerAddress, txHex: await signedTransaction },
+    })
+
+    const transactionResponse = await res.json()
+
+    if (!('hash' in transactionResponse)) {
+      throw new Error('RPC Error')
+    }
+
+    return transactionResponse
   }
 
   // Network

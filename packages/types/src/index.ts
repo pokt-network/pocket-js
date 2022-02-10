@@ -19,6 +19,10 @@ export interface GetAppOptions {}
 
 export interface App {}
 
-export interface Account {}
+export interface Account {
+  address: string
+  balance: bigint
+  publicKey: null | string
+}
 
 export type AccountWithTransactions = Account

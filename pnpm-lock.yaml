@@ -147,6 +147,28 @@ importers:
       prettier-eslint: 13.0.0
       ts-jest: 27.1.3_a7e53b5e5b59e71a0fd4d8cf128393d5
 
+  packages/types:
+    specifiers:
+      '@types/jest': ^27.4.0
+      '@typescript-eslint/eslint-plugin': ^5.10.2
+      '@typescript-eslint/parser': ^5.10.2
+      eslint: 7.32.0
+      jest: ^27.4.7
+      microbundle: ^0.14.2
+      prettier: ^2.5.1
+      prettier-eslint: ^13.0.0
+      ts-jest: ^27.1.3
+    devDependencies:
+      '@types/jest': 27.4.0
+      '@typescript-eslint/eslint-plugin': 5.10.2_3e19df30e549eb9672c3b79dc40c1d5f
+      '@typescript-eslint/parser': 5.10.2_eslint@7.32.0+typescript@4.5.5
+      eslint: 7.32.0
+      jest: 27.4.7
+      microbundle: 0.14.2
+      prettier: 2.5.1
+      prettier-eslint: 13.0.0
+      ts-jest: 27.1.3_a7e53b5e5b59e71a0fd4d8cf128393d5
+
   packages/utils:
     specifiers:
       '@types/jest': ^27.4.0

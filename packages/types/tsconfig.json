@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Default",
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "allowJs": true,
+    "composite": true
+  },
+  "references": [
+    { "path": "../utils" },
+    { "path": "../keybase" },
+    { "path": "../provider" }
+  ],
+  "exclude": ["node_modules", "dist", "jest.config.js"]
+}

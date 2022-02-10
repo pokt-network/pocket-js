@@ -8,6 +8,7 @@
     "build:provider": "turbo run build --scope=*provider* --no-deps",
     "build:relayer": "turbo run build --scope=@pokt-foundation/relayer --no-deps",
     "build:txs": "turbo run build --scope=*transaction* --no-deps",
+    "build:types": "turbo run build --scope=*types* --no-deps",
     "build:utils": "turbo run build --scope=*utils* --no-deps",
     "dev": "turbo run dev --parallel",
     "dev:all": "turbo run dev --parallel --no-cache",
@@ -15,6 +16,7 @@
     "dev:pocket": "turbo run dev --scope=@pokt-foundation/pocketjs --no-cache --no-deps",
     "dev:provider": "turbo run dev --scope=*provider* --no-cache --no-deps",
     "dev:txs": "turbo run dev --scope=*transaction* --no-deps",
+    "dev:types": "turbo run dev --scope=*types* --no-cache --no-deps",
     "dev:utils": "turbo run dev --scope=*utils* --no-cache --no-deps",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""

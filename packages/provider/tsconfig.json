@@ -3,7 +3,9 @@
   "display": "Default",
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "baseUrl": "."
+    "baseUrl": ".",
+    "composite": true
   },
+  "references": [{ "path": "../types" }],
   "exclude": ["node_modules"]
 }

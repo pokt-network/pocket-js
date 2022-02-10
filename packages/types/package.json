@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "PocketJS types",
   "type": "module",
-  "source": "src/index.ts",
+  "source": "src/index.d.ts",
   "exports": {
     "require": "./dist/index.cjs",
     "default": "./dist/index.js"
@@ -15,7 +15,7 @@
     "build": "microbundle",
     "dev": "microbundle watch"
   },
-  "types": "dist/index.d.ts",
+  "types": "dist/src/index.d.ts",
   "keywords": [],
   "author": "",
   "license": "ISC",

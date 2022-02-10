@@ -5,12 +5,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "allowJs": true,
-    "composite": true
+    "composite": true,
+    "declaration": true
   },
-  "references": [
-    { "path": "../utils" },
-    { "path": "../keybase" },
-    { "path": "../provider" }
-  ],
+  "references": [],
   "exclude": ["node_modules", "dist", "jest.config.js"]
 }

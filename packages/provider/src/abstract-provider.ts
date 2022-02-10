@@ -23,9 +23,7 @@ export abstract class AbstractProvider {
     signedTransaction: string | Promise<string>
   ): Promise<TransactionResponse>
   // Network
-  abstract getBlock(blockHash: string): Promise<Block>
   abstract getBlock(blockNumber: number): Promise<Block>
-  abstract getBlockWithTransactions(blockHash: string): Promise<Block>
   abstract getBlockWithTransactions(blockHeight: number): Promise<Block>
   abstract getTransaction(transactionHash: string): Promise<TransactionResponse>
   abstract getBlockNumber(): Promise<number>

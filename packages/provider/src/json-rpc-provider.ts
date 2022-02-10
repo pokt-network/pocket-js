@@ -19,10 +19,6 @@ export class JsonRpcProvider implements AbstractProvider {
     this.rpcUrl = rpcUrl
   }
 
-  getNetwork(): Promise<string> {
-    throw new Error('Not implemented')
-  }
-
   private perform({
     route,
     body,
@@ -48,14 +44,47 @@ export class JsonRpcProvider implements AbstractProvider {
     return balance as bigint
   }
 
-  getTransactionCount(address: string | Promise<string>): Promise<number> {
-    throw new Error('Not implemented')
+  async getTransactionCount(
+    address: string | Promise<string>
+  ): Promise<number> {
+    const txsRes = await this.perform({
+      route: V1RpcRoutes.QueryAccountTxs,
+      body: { address: await address },
+    })
+    const txs = await txsRes.json()
+
+    if (!('total_count' in txs)) {
+      throw new Error('RPC Error')
+    }
+
+    const { total_count } = txs
+
+    return total_count
   }
 
-  getType(
+  async getType(
     address: string | Promise<string>
   ): Promise<'node' | 'app' | 'account'> {
-    throw new Error('Not implemented')
+    const appRes = await this.perform({
+      route: V1RpcRoutes.QueryApp,
+      body: { address: await address },
+    })
+    const nodeRes = await this.perform({
+      route: V1RpcRoutes.QueryNode,
+      body: { address: await address },
+    })
+    const node = await nodeRes.json()
+    const app = await appRes.json()
+
+    if (!('service_url' in node) && 'max_relays' in app) {
+      return 'app'
+    }
+
+    if ('service_url' in node && !('max_relays' in app)) {
+      return 'node'
+    }
+
+    return 'account'
   }
 
   // Txs
@@ -66,16 +95,34 @@ export class JsonRpcProvider implements AbstractProvider {
   }
 
   // Network
-  getBlock(blockNumber: number): Promise<Block> {
-    throw new Error('Not implemented')
+  async getBlock(blockNumber: number): Promise<Block> {
+    const res = await this.perform({
+      route: V1RpcRoutes.QueryBlock,
+      body: { height: blockNumber },
+    })
+
+    const block = await res.json()
+
+    if (!('block' in block)) {
+      throw new Error('RPC Error')
+    }
+
+    return block
   }
 
-  getBlockWithTransactions(blockHeight: number): Promise<Block> {
-    throw new Error('Not implemented')
-  }
+  async getTransaction(transactionHash: string): Promise<TransactionResponse> {
+    const res = await this.perform({
+      route: V1RpcRoutes.QueryTX,
+      body: { hash: transactionHash },
+    })
 
-  getTransaction(transactionHash: string): Promise<TransactionResponse> {
-    throw new Error('Not implemented')
+    const tx = await res.json()
+
+    if (!('hash' in tx)) {
+      throw new Error('RPC Error')
+    }
+
+    return tx
   }
 
   async getBlockNumber(): Promise<number> {
@@ -161,8 +208,8 @@ export class JsonRpcProvider implements AbstractProvider {
       chains,
       publicKey: public_key,
       jailed,
-      maxRelays: BigInt(max_relays),
-      stakedTokens: BigInt(staked_tokens),
+      maxRelays: BigInt(max_relays ?? 0),
+      stakedTokens: BigInt(staked_tokens ?? 0),
       status,
     }
   }
@@ -182,14 +229,41 @@ export class JsonRpcProvider implements AbstractProvider {
 
     return {
       address: await address,
-      balance: BigInt(coins[0].amount),
+      balance: BigInt(coins[0]?.amount ?? 0),
       publicKey: public_key,
     }
   }
 
-  getAccountWithTransactions(
+  async getAccountWithTransactions(
     address: string | Promise<string>
   ): Promise<AccountWithTransactions> {
-    throw new Error('Not implemented')
+    const accountRes = await this.perform({
+      route: V1RpcRoutes.QueryAccount,
+      body: { address: await address },
+    })
+    const txsRes = await this.perform({
+      route: V1RpcRoutes.QueryAccountTxs,
+      body: { address: await address },
+    })
+    const account = await accountRes.json()
+    const txs = await txsRes.json()
+
+    if (!('address' in account)) {
+      throw new Error('RPC Error')
+    }
+    if (!('total_count' in txs)) {
+      throw new Error('RPC Error')
+    }
+
+    const { coins, public_key } = account
+    const { total_count, txs: transactions } = txs
+
+    return {
+      address: await address,
+      balance: BigInt(coins[0]?.amount ?? 0),
+      publicKey: public_key,
+      totalCount: total_count,
+      transactions: transactions,
+    }
   }
 }

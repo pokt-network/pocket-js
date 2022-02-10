@@ -11,7 +11,6 @@ import {
 
 export abstract class AbstractProvider {
   // Account
-  abstract getNetwork(): Promise<string> // mainnet or testnet
   abstract getBalance(address: string | Promise<string>): Promise<bigint>
   abstract getTransactionCount(
     address: string | Promise<string>
@@ -25,7 +24,6 @@ export abstract class AbstractProvider {
   ): Promise<TransactionResponse>
   // Network
   abstract getBlock(blockNumber: number): Promise<Block>
-  abstract getBlockWithTransactions(blockHeight: number): Promise<Block>
   abstract getTransaction(transactionHash: string): Promise<TransactionResponse>
   abstract getBlockNumber(): Promise<number>
   abstract getNodes(getNodesOptions: GetNodesOptions): Promise<Node[]>

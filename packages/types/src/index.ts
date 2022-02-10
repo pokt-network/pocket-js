@@ -50,6 +50,10 @@ export interface Account {
   publicKey: null | string
 }
 
-export type AccountWithTransactions = Account
+export type AccountWithTransactions = Account & {
+  totalCount: number
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  transactions: any[]
+}
 
 export {}

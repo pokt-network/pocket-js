@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "PocketJS types",
   "type": "module",
-  "source": "src/index.d.ts",
+  "source": "src/index.ts",
   "exports": {
     "require": "./dist/index.cjs",
     "default": "./dist/index.js"

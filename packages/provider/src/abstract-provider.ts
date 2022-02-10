@@ -5,12 +5,12 @@ import {
   Block,
   GetAppOptions,
   GetNodesOptions,
+  Node,
   TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
 
 export abstract class AbstractProvider {
   // Account
-  abstract getNetwork(): Promise<string> // mainnet or testnet
   abstract getBalance(address: string | Promise<string>): Promise<bigint>
   abstract getTransactionCount(
     address: string | Promise<string>
@@ -20,24 +20,22 @@ export abstract class AbstractProvider {
   ): Promise<'node' | 'app' | 'account'>
   // Txs
   abstract sendTransaction(
+    signerAddress: string | Promise<string>,
     signedTransaction: string | Promise<string>
   ): Promise<TransactionResponse>
   // Network
-  abstract getBlock(blockHash: string): Promise<Block>
   abstract getBlock(blockNumber: number): Promise<Block>
-  abstract getBlockWithTransactions(blockHash: string): Promise<Block>
-  abstract getBlockWithTransactions(blockHeight: number): Promise<Block>
   abstract getTransaction(transactionHash: string): Promise<TransactionResponse>
   abstract getBlockNumber(): Promise<number>
   abstract getNodes(getNodesOptions: GetNodesOptions): Promise<Node[]>
   abstract getNode(
     address: string | Promise<string>,
-    GetNodeOptions
+    options: GetNodesOptions
   ): Promise<Node>
   abstract getApps(getAppOption: GetAppOptions): Promise<App[]>
   abstract getApp(
     address: string | Promise<string>,
-    GetAppOptions
+    options: GetAppOptions
   ): Promise<App>
   abstract getAccount(address: string | Promise<string>): Promise<Account>
   abstract getAccountWithTransactions(

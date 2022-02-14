@@ -9,7 +9,7 @@
   },
   "references": [
     { "path": "../utils" },
-    { "path": "../keybase" },
+    { "path": "../signer" },
     { "path": "../provider" }
   ],
   "exclude": ["node_modules", "dist", "jest.config.js"]

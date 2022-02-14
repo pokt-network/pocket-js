@@ -62,6 +62,8 @@ export interface SessionHeader {
   readonly sessionBlockHeight: bigint
 }
 
+export type RelayHeaders = Record<string, string>
+
 export interface PocketAAT {
   readonly version: string
   readonly clientPublicKey: string
@@ -73,6 +75,47 @@ export interface Session {
   readonly sessionHeader: SessionHeader
   readonly sessionKey: string
   readonly sessionNodes: Node[]
+}
+
+export enum HTTPMethod {
+  POST = 'POST',
+  GET = 'GET',
+  DELETE = 'DELETE',
+  NA = '',
+}
+
+export interface RelayProof {
+  readonly entropy: BigInt
+  readonly sessionBlockHeight: BigInt
+  readonly servicerPubKey: string
+  readonly blockchain: string
+  readonly token: PocketAAT
+  readonly signature: string
+  readonly requestHash: string
+}
+
+export interface RelayPayload {
+  readonly data: string
+  readonly method: string
+  readonly path: string
+  readonly headers?: RelayHeaders | null
+}
+
+export interface RelayMeta {
+  readonly blockHeight: bigint
+}
+
+export interface RelayRequest {
+  readonly payload: RelayPayload
+  readonly meta: RelayMeta
+  readonly proof: RelayProof
+}
+
+export interface RelayResponse {
+  readonly signature: string
+  readonly payload: string
+  readonly proof: RelayProof
+  readonly relayRequest: RelayRequest
 }
 
 export {}

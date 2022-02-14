@@ -56,4 +56,23 @@ export type AccountWithTransactions = Account & {
   transactions: any[]
 }
 
+export interface SessionHeader {
+  readonly applicationPubKey: string
+  readonly chain: string
+  readonly sessionBlockHeight: bigint
+}
+
+export interface PocketAAT {
+  readonly version: string
+  readonly clientPublicKey: string
+  readonly applicationPublicKey: string
+  readonly applicationSignature: string
+}
+
+export interface Session {
+  readonly sessionHeader: SessionHeader
+  readonly sessionKey: string
+  readonly sessionNodes: Node[]
+}
+
 export {}

@@ -105,6 +105,7 @@ importers:
     dependencies:
       '@noble/ed25519': 1.5.3
       '@pokt-foundation/pocketjs-provider': link:../provider
+      '@pokt-foundation/pocketjs-types': link:../types
       '@pokt-foundation/pocketjs-utils': link:../utils
       libsodium-wrappers: 0.7.9
     devDependencies:

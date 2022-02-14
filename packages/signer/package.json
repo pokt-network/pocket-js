@@ -33,6 +33,7 @@
   "dependencies": {
     "@noble/ed25519": "^1.5.3",
     "@pokt-foundation/pocketjs-provider": "^0.0.0",
+    "@pokt-foundation/pocketjs-types": "^0.0.0",
     "@pokt-foundation/pocketjs-utils": "^0.0.0",
     "libsodium-wrappers": "^0.7.9"
   }

@@ -8,6 +8,9 @@ import {
   GetAppOptions,
   GetNodesOptions,
   TransactionResponse,
+  DispatchRequest,
+  DispatchResponse,
+  SessionHeader,
 } from '@pokt-foundation/pocketjs-types'
 import { AbstractProvider } from './abstract-provider'
 import { V1RpcRoutes } from './routes'
@@ -276,6 +279,59 @@ export class JsonRpcProvider implements AbstractProvider {
       publicKey: public_key,
       totalCount: total_count,
       transactions: transactions,
+    }
+  }
+
+  async dispatch(request: DispatchRequest): Promise<DispatchResponse> {
+    const dispatchRes = await this.perform({
+      route: V1RpcRoutes.ClientDispatch,
+      body: { session_header: request.sessionHeader },
+    })
+
+    const dispatch = await dispatchRes.json()
+
+    if (!('session' in dispatch)) {
+      throw new Error('RPC Error')
+    }
+
+    const { block_height: blockHeight, session } = dispatch
+
+    const { header, key, nodes } = session
+    const formattedNodes: Node[] = nodes.map((node) => {
+      const {
+        address,
+        chains,
+        jailed,
+        public_key,
+        service_url,
+        status,
+        tokens,
+        unstaking_time,
+      } = node
+
+      return {
+        address,
+        chains,
+        publicKey: public_key,
+        jailed,
+        serviceUrl: service_url,
+        stakedTokens: BigInt(tokens),
+        status,
+        unstakingTime: unstaking_time,
+      } as Node
+    })
+
+    const formattedHeader: SessionHeader = {
+      applicationPubKey: header.app_public_key,
+      chain: header.chain,
+      sessionBlockHeight: header.session_height,
+    }
+
+    return {
+      blockHeight,
+      header: formattedHeader,
+      nodes: formattedNodes,
+      key,
     }
   }
 }

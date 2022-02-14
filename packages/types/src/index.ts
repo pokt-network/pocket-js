@@ -84,6 +84,18 @@ export enum HTTPMethod {
   NA = '',
 }
 
+export interface DispatchRequest {
+  readonly sessionHeader: SessionHeader
+}
+
+export interface DispatchResponse {
+  readonly blockHeight: BigInt
+  readonly header: SessionHeader
+  readonly key: string
+  readonly nodes: Node[]
+
+}
+
 export interface RelayProof {
   readonly entropy: BigInt
   readonly sessionBlockHeight: BigInt

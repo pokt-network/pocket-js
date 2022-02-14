@@ -70,4 +70,8 @@ export class KeyManager {
       privateKey: this.privateKey,
     }
   }
+
+  isConnected(): boolean {
+    return Boolean(this.privateKey && this.publicKey && this.address)
+  }
 }

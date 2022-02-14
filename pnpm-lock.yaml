@@ -90,6 +90,7 @@ importers:
     specifiers:
       '@noble/ed25519': ^1.5.3
       '@pokt-foundation/pocketjs-provider': ^0.0.0
+      '@pokt-foundation/pocketjs-types': ^0.0.0
       '@pokt-foundation/pocketjs-utils': ^0.0.0
       '@types/jest': ^27.4.0
       '@typescript-eslint/eslint-plugin': ^5.10.2

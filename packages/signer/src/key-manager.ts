@@ -1,6 +1,15 @@
 import { utils } from '@noble/ed25519'
 import Sodium from 'libsodium-wrappers'
-import { getAddressFromPublicKey } from '@pokt-foundation/pocketjs-utils'
+import {
+  getAddressFromPublicKey,
+  publicKeyFromPrivate,
+} from '@pokt-foundation/pocketjs-utils'
+
+interface Account {
+  address: string
+  publicKey: string
+  privateKey: string
+}
 
 export class KeyManager {
   private address: string
@@ -28,8 +37,37 @@ export class KeyManager {
     const privateKey = utils.bytesToHex(keypair.privateKey)
     const publicKey = utils.bytesToHex(keypair.publicKey)
     const addr = await getAddressFromPublicKey(publicKey)
-    console.log(keypair, privateKey, publicKey, addr)
+    console.log('CREATE_RANDOM', privateKey, publicKey, addr)
 
     return new KeyManager({ privateKey, publicKey, address: addr })
+  }
+
+  static async fromPrivateKey(privateKey: string): Promise<KeyManager> {
+    await Sodium.ready
+    const publicKey = publicKeyFromPrivate(privateKey)
+    const addr = await getAddressFromPublicKey(publicKey)
+    console.log('FROM_PRIVATE_KEY', privateKey, publicKey, addr)
+
+    return new KeyManager({ privateKey, publicKey, address: addr })
+  }
+
+  getAddress(): string {
+    return this.address
+  }
+
+  getPublicKey(): string {
+    return this.publicKey
+  }
+
+  getPrivateKey(): string {
+    return this.privateKey
+  }
+
+  getAccount(): Account {
+    return {
+      address: this.address,
+      publicKey: this.publicKey,
+      privateKey: this.privateKey,
+    }
   }
 }

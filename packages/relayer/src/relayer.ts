@@ -1,4 +1,4 @@
-import { AbstractProvider } from '@pokt-foundation/pocketjs-provider'
+import { JsonRpcProvider } from '@pokt-foundation/pocketjs-provider'
 import { AbstractSigner, KeyManager } from '@pokt-foundation/pocketjs-signer'
 import {
   HTTPMethod,
@@ -13,7 +13,7 @@ import { AbstractRelayer } from './abstract-relayer'
 
 export class Relayer implements AbstractRelayer {
   readonly keyManager: KeyManager | AbstractSigner
-  readonly provider: AbstractProvider
+  readonly provider: JsonRpcProvider
   readonly dispatchers: string[]
 
   constructor({ keyManager, provider, dispatchers }) {
@@ -22,15 +22,21 @@ export class Relayer implements AbstractRelayer {
     this.dispatchers = dispatchers
   }
 
-  getNewSession({
-    pocketAAT,
+  async getNewSession({
     chain,
     options,
   }: {
-    pocketAAT: PocketAAT
     chain: string
     options?: { retryAttempts: number; rejectSelfSignedCertificates: boolean }
-  }): Session {}
+    }): Promise<Session> {
+      const dispatchResponse = await this.provider.dispatch({ sessionHeader: {
+        applicationPubKey: this.keyManager.getPublicKey(),
+        chain,
+        sessionBlockHeight: BigInt(0),
+      } })
+
+      return dispatchResponse.session as Session
+    }
 
   relay({
     data,

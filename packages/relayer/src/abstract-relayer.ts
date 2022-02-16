@@ -29,7 +29,7 @@ export abstract class AbstractRelayer {
     pocketAAT: PocketAAT
     chain: string
     options?: { retryAttempts: number; rejectSelfSignedCertificates: boolean }
-  }): Session
+  }): Promise<Session>
 
   abstract relay({
     data,

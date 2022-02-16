@@ -72,9 +72,9 @@ export interface PocketAAT {
 }
 
 export interface Session {
-  readonly sessionHeader: SessionHeader
-  readonly sessionKey: string
-  readonly sessionNodes: Node[]
+  readonly header: SessionHeader
+  readonly key: string
+  readonly nodes: Node[]
 }
 
 export enum HTTPMethod {
@@ -90,10 +90,7 @@ export interface DispatchRequest {
 
 export interface DispatchResponse {
   readonly blockHeight: BigInt
-  readonly header: SessionHeader
-  readonly key: string
-  readonly nodes: Node[]
-
+  readonly session: Session
 }
 
 export interface RelayProof {

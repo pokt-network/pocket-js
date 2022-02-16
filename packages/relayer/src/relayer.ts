@@ -32,7 +32,7 @@ export class Relayer implements AbstractRelayer {
       const dispatchResponse = await this.provider.dispatch({ sessionHeader: {
         applicationPubKey: this.keyManager.getPublicKey(),
         chain,
-        sessionBlockHeight: BigInt(0),
+        sessionBlockHeight: 0,
       } })
 
       return dispatchResponse.session as Session
@@ -56,5 +56,7 @@ export class Relayer implements AbstractRelayer {
     session: Session
     node: Node
     path: string
-  }): Promise<RelayResponse> {}
+    }) {
+      console.log('nyom relay')
+    }
 }

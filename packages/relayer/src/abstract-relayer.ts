@@ -49,5 +49,5 @@ export abstract class AbstractRelayer {
     session: Session
     node: Node
     path: string
-  }): Promise<RelayResponse>
+  }): void
 }

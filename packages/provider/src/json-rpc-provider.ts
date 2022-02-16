@@ -283,14 +283,20 @@ export class JsonRpcProvider implements AbstractProvider {
   }
 
   async dispatch(request: DispatchRequest): Promise<DispatchResponse> {
+    console.log(request.sessionHeader)
     const dispatchRes = await this.perform({
       route: V1RpcRoutes.ClientDispatch,
-      body: { session_header: request.sessionHeader },
+      body: {
+        app_public_key: request.sessionHeader.applicationPubKey,
+        chain: request.sessionHeader.chain,
+        session_height: request.sessionHeader.sessionBlockHeight,
+      },
     })
 
     const dispatch = await dispatchRes.json()
 
     if (!('session' in dispatch)) {
+      console.log(dispatch, 'error')
       throw new Error('RPC Error')
     }
 

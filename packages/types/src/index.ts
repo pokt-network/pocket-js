@@ -59,7 +59,7 @@ export type AccountWithTransactions = Account & {
 export interface SessionHeader {
   readonly applicationPubKey: string
   readonly chain: string
-  readonly sessionBlockHeight: bigint
+  readonly sessionBlockHeight: string | number
 }
 
 export type RelayHeaders = Record<string, string>

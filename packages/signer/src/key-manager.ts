@@ -1,5 +1,5 @@
-import { utils } from '@noble/ed25519'
 import Sodium from 'libsodium-wrappers'
+import { toUint8Array, fromUint8Array } from 'hex-lite'
 import {
   getAddressFromPublicKey,
   publicKeyFromPrivate,
@@ -31,13 +31,18 @@ export class KeyManager {
     this.address = address
   }
 
+  async sign(payload: string): Promise<string> {
+    await Sodium.ready
+    console.log(Sodium.to_hex, toUint8Array(this.getPrivateKey()))
+    return fromUint8Array(Sodium.crypto_sign_detached(toUint8Array(payload), toUint8Array(this.getPrivateKey())))
+  }
+
   static async createRandom(): Promise<KeyManager> {
     await Sodium.ready
     const keypair = Sodium.crypto_sign_keypair()
-    const privateKey = utils.bytesToHex(keypair.privateKey)
-    const publicKey = utils.bytesToHex(keypair.publicKey)
+    const privateKey = fromUint8Array(keypair.privateKey)
+    const publicKey = fromUint8Array(keypair.publicKey)
     const addr = await getAddressFromPublicKey(publicKey)
-    console.log('CREATE_RANDOM', privateKey, publicKey, addr)
 
     return new KeyManager({ privateKey, publicKey, address: addr })
   }
@@ -46,7 +51,6 @@ export class KeyManager {
     await Sodium.ready
     const publicKey = publicKeyFromPrivate(privateKey)
     const addr = await getAddressFromPublicKey(publicKey)
-    console.log('FROM_PRIVATE_KEY', privateKey, publicKey, addr)
 
     return new KeyManager({ privateKey, publicKey, address: addr })
   }

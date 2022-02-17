@@ -22,6 +22,6 @@ export abstract class AbstractSigner {
   abstract sendTransaction(
     signedTransaction: string | Promise<string>
   ): Promise<TransactionResponse>
-  abstract signMessage(message: string): Promise<string>
+  abstract sign(payload: string): Promise<string>
   abstract signTransaction(transaction: TransactionRequest): Promise<string>
 }

@@ -77,7 +77,6 @@ export class Wallet implements AbstractSigner {
 
   async sign(payload: string): Promise<string> {
     await Sodium.ready
-    console.log(Sodium.to_hex, toUint8Array(this.keyManager.getPrivateKey()))
     return fromUint8Array(
       Sodium.crypto_sign_detached(
         toUint8Array(payload),

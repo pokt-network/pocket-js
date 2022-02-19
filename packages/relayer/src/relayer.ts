@@ -172,7 +172,7 @@ export class Relayer implements AbstractRelayer {
     // Hash proofJSONStr
     const hash = sha3_256.create()
     hash.update(proofJSONStr)
-    return Buffer.from(hash.hex(), 'hex')
+    return hash.hex()
   }
 
   hashAAT(aat: PocketAAT): string {

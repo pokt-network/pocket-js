@@ -93,6 +93,11 @@ export interface DispatchResponse {
   readonly session: Session
 }
 
+export interface RequestHash {
+  readonly payload: RelayPayload
+  readonly meta: RelayMeta
+}
+
 export interface RelayProof {
   readonly entropy: BigInt
   readonly sessionBlockHeight: BigInt

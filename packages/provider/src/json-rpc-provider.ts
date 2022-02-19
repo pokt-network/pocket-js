@@ -17,6 +17,7 @@ import { V1RpcRoutes } from './routes'
 
 export class JsonRpcProvider implements AbstractProvider {
   private rpcUrl: string
+  private dispatchers: string[]
 
   constructor({ rpcUrl = '' }: { rpcUrl: string }) {
     this.rpcUrl = rpcUrl
@@ -29,7 +30,12 @@ export class JsonRpcProvider implements AbstractProvider {
     route: V1RpcRoutes
     body: any
   }): Promise<Response> {
-    return fetch(`${this.rpcUrl}${route}`, {
+    const rpcUrl =
+      route === V1RpcRoutes.ClientDispatch
+        ? this.dispatchers[(Math.random() * 100) % this.dispatchers.length]
+        : this.rpcUrl
+
+    return fetch(`${rpcUrl}${route}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -283,7 +289,10 @@ export class JsonRpcProvider implements AbstractProvider {
   }
 
   async dispatch(request: DispatchRequest): Promise<DispatchResponse> {
-    console.log(request.sessionHeader)
+    if (!this.dispatchers.length) {
+      throw new Error('You need to have dispatchers to perform a dispatch call')
+    }
+
     const dispatchRes = await this.perform({
       route: V1RpcRoutes.ClientDispatch,
       body: {
@@ -341,5 +350,16 @@ export class JsonRpcProvider implements AbstractProvider {
         key,
       },
     }
+  }
+
+  async relay(request): Promise<any> {
+    const relayAttempt = await this.perform({
+      route: V1RpcRoutes.ClientRelay,
+      body: request,
+    })
+
+    const relayResponse = await relayAttempt.json()
+
+    return relayResponse
   }
 }

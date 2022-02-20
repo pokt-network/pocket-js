@@ -19,23 +19,34 @@ export class JsonRpcProvider implements AbstractProvider {
   private rpcUrl: string
   private dispatchers: string[]
 
-  constructor({ rpcUrl = '' }: { rpcUrl: string }) {
+  constructor({
+    rpcUrl = '',
+    dispatchers = [],
+  }: {
+    rpcUrl: string
+    dispatchers: string[]
+  }) {
     this.rpcUrl = rpcUrl
+    this.dispatchers = dispatchers ?? []
   }
 
   private perform({
     route,
     body,
+    rpcUrl,
   }: {
     route: V1RpcRoutes
     body: any
+    rpcUrl?: string
   }): Promise<Response> {
-    const rpcUrl =
-      route === V1RpcRoutes.ClientDispatch
-        ? this.dispatchers[(Math.random() * 100) % this.dispatchers.length]
-        : this.rpcUrl
-
-    return fetch(`${rpcUrl}${route}`, {
+    const finalRpcUrl = rpcUrl
+      ? rpcUrl
+      : route === V1RpcRoutes.ClientDispatch
+      ? this.dispatchers[
+          Math.floor(Math.random() * 100) % this.dispatchers.length
+        ]
+      : this.rpcUrl
+    return fetch(`${finalRpcUrl}${route}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -293,6 +304,7 @@ export class JsonRpcProvider implements AbstractProvider {
       throw new Error('You need to have dispatchers to perform a dispatch call')
     }
 
+    console.log('dispatch body', request)
     const dispatchRes = await this.perform({
       route: V1RpcRoutes.ClientDispatch,
       body: {
@@ -303,6 +315,7 @@ export class JsonRpcProvider implements AbstractProvider {
     })
 
     const dispatch = await dispatchRes.json()
+    console.log('raw dispatch object', dispatch)
 
     if (!('session' in dispatch)) {
       console.log(dispatch, 'error')
@@ -352,10 +365,11 @@ export class JsonRpcProvider implements AbstractProvider {
     }
   }
 
-  async relay(request): Promise<any> {
+  async relay(request, rpcUrl: string): Promise<any> {
     const relayAttempt = await this.perform({
       route: V1RpcRoutes.ClientRelay,
       body: request,
+      rpcUrl
     })
 
     const relayResponse = await relayAttempt.json()

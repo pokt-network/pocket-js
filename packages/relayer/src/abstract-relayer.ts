@@ -5,9 +5,7 @@ import {
   Node,
   PocketAAT,
   RelayHeaders,
-  RelayResponse,
   Session,
-  SessionHeader,
 } from '@pokt-foundation/pocketjs-types'
 
 export abstract class AbstractRelayer {

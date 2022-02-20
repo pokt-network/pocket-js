@@ -46,6 +46,7 @@ export class JsonRpcProvider implements AbstractProvider {
           Math.floor(Math.random() * 100) % this.dispatchers.length
         ]
       : this.rpcUrl
+
     return fetch(`${finalRpcUrl}${route}`, {
       method: 'POST',
       headers: {
@@ -369,7 +370,7 @@ export class JsonRpcProvider implements AbstractProvider {
     const relayAttempt = await this.perform({
       route: V1RpcRoutes.ClientRelay,
       body: request,
-      rpcUrl
+      rpcUrl,
     })
 
     const relayResponse = await relayAttempt.json()

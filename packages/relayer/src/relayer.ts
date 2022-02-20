@@ -29,11 +29,19 @@ export class Relayer implements AbstractRelayer {
   async getNewSession({
     applicationPubKey,
     chain,
-    options,
+    options = {
+      retryAttempts: 3,
+      rejectSelfSignedCertificates: false,
+      timeout: 5000,
+    },
   }: {
     applicationPubKey?: string
     chain: string
-    options?: { retryAttempts: number; rejectSelfSignedCertificates: boolean }
+    options?: {
+      retryAttempts?: number
+      rejectSelfSignedCertificates?: boolean
+      timeout?: number
+    }
   }): Promise<Session> {
     const dispatchResponse = await this.provider.dispatch({
       sessionHeader: {
@@ -46,29 +54,34 @@ export class Relayer implements AbstractRelayer {
     return dispatchResponse.session as Session
   }
 
-  async relay({
-    data,
+  static async relay({
     blockchain,
-    pocketAAT,
+    data,
     headers = null,
+    keyManager,
     method = '',
-    session,
     node,
     path = '',
+    pocketAAT,
+    provider,
+    session,
   }: {
     data: string
     blockchain: string
     pocketAAT: PocketAAT
+    provider: JsonRpcProvider
+    keyManager: KeyManager | AbstractSigner
     headers?: RelayHeaders | null
     method: HTTPMethod | ''
     session: Session
     node: Node
     path: string
   }) {
-    if (!this.keyManager) {
+    if (!keyManager) {
       throw new Error('You need a signer to send a relay')
     }
-    const serviceNode = node ?? this.getRandomSessionNode(session)
+
+    const serviceNode = node ?? Relayer.getRandomSessionNode(session)
 
     if (!serviceNode) {
       throw new Error(`Couldn't find a service node.`)
@@ -85,7 +98,7 @@ export class Relayer implements AbstractRelayer {
       method,
       path,
       headers,
-    }
+    } as RelayPayload
 
     const relayMeta = {
       block_height: Number(session.header.sessionBlockHeight.toString()),
@@ -96,9 +109,7 @@ export class Relayer implements AbstractRelayer {
       meta: relayMeta,
     }
 
-    const entropy = Number(
-      BigInt(Math.floor(Math.random() * 99999999999999999))
-    )
+    const entropy = Number(BigInt(Math.floor(Math.random() * 99999999999999)))
 
     const proofBytes = this.generateProofBytes({
       entropy,
@@ -108,7 +119,7 @@ export class Relayer implements AbstractRelayer {
       pocketAAT,
       requestHash,
     })
-    const signedProofBytes = await this.keyManager.sign(proofBytes)
+    const signedProofBytes = await keyManager.sign(proofBytes)
 
     const relayProof = {
       entropy: Number(entropy.toString()),
@@ -133,25 +144,64 @@ export class Relayer implements AbstractRelayer {
       proof: relayProof,
     }
 
-    const relay = await this.provider.relay(relayRequest, serviceNode.serviceUrl.toString())
+    const relay = await provider.relay(
+      relayRequest,
+      serviceNode.serviceUrl.toString()
+    )
 
     return relay
   }
 
-  getRandomSessionNode(session: Session): Node {
+  async relay({
+    blockchain,
+    data,
+    headers = null,
+    method = '',
+    node,
+    path = '',
+    pocketAAT,
+    session,
+  }: {
+    data: string
+    blockchain: string
+    pocketAAT: PocketAAT
+    headers?: RelayHeaders | null
+    method: HTTPMethod | ''
+    session: Session
+    node: Node
+    path: string
+  }) {
+    if (!this.keyManager) {
+      throw new Error('You need a signer to send a relay')
+    }
+    const serviceNode = node ?? undefined
+
+    return Relayer.relay({
+      blockchain,
+      data,
+      headers,
+      method,
+      node: serviceNode,
+      path,
+      pocketAAT,
+      session,
+      keyManager: this.keyManager,
+      provider: this.provider,
+    })
+  }
+
+  static getRandomSessionNode(session: Session): Node {
     const nodesInSession = session.nodes.length
     const rng = Math.floor(Math.random() * 100) % nodesInSession
 
     return session.nodes[rng]
   }
 
-  isNodeInSession(session: Session, node: Node): boolean {
-    return Boolean(
-      session.nodes.find((n) => n.publicKey === node.publicKey)
-    )
+  static isNodeInSession(session: Session, node: Node): boolean {
+    return Boolean(session.nodes.find((n) => n.publicKey === node.publicKey))
   }
 
-  generateProofBytes({
+  static generateProofBytes({
     entropy,
     sessionBlockHeight,
     servicerPublicKey,
@@ -182,7 +232,7 @@ export class Relayer implements AbstractRelayer {
     return hash.hex()
   }
 
-  hashAAT(aat: PocketAAT): string {
+  static hashAAT(aat: PocketAAT): string {
     const token = {
       version: aat.version,
       app_pub_key: aat.applicationPublicKey,
@@ -194,7 +244,7 @@ export class Relayer implements AbstractRelayer {
     return hash.hex()
   }
 
-  hashRequest(requestHash): string {
+  static hashRequest(requestHash): string {
     const hash = sha3.sha3_256.create()
     hash.update(JSON.stringify(requestHash))
     return hash.hex()

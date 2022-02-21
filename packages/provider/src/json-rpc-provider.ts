@@ -24,7 +24,7 @@ export class JsonRpcProvider implements AbstractProvider {
     dispatchers = [],
   }: {
     rpcUrl: string
-    dispatchers: string[]
+    dispatchers?: string[]
   }) {
     this.rpcUrl = rpcUrl
     this.dispatchers = dispatchers ?? []

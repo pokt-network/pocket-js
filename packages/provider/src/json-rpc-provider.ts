@@ -8,31 +8,59 @@ import {
   GetAppOptions,
   GetNodesOptions,
   TransactionResponse,
+  DispatchRequest,
+  DispatchResponse,
+  SessionHeader,
 } from '@pokt-foundation/pocketjs-types'
 import { AbstractProvider } from './abstract-provider'
 import { V1RpcRoutes } from './routes'
 
 export class JsonRpcProvider implements AbstractProvider {
   private rpcUrl: string
+  private dispatchers: string[]
 
-  constructor({ rpcUrl = '' }: { rpcUrl: string }) {
+  constructor({
+    rpcUrl = '',
+    dispatchers = [],
+  }: {
+    rpcUrl: string
+    dispatchers?: string[]
+  }) {
     this.rpcUrl = rpcUrl
+    this.dispatchers = dispatchers ?? []
   }
 
   private perform({
     route,
     body,
+    rpcUrl,
   }: {
     route: V1RpcRoutes
     body: any
+    rpcUrl?: string
   }): Promise<Response> {
-    return fetch(`${this.rpcUrl}${route}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    })
+    const finalRpcUrl = rpcUrl
+      ? rpcUrl
+      : route === V1RpcRoutes.ClientDispatch
+      ? this.dispatchers[
+          Math.floor(Math.random() * 100) % this.dispatchers.length
+        ]
+      : this.rpcUrl
+
+    try {
+      const rpcResponse = fetch(`${finalRpcUrl}${route}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      })
+      return rpcResponse
+    } catch (err) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return err
+    }
   }
 
   async getBalance(address: string | Promise<string>): Promise<bigint> {
@@ -277,5 +305,83 @@ export class JsonRpcProvider implements AbstractProvider {
       totalCount: total_count,
       transactions: transactions,
     }
+  }
+
+  async dispatch(request: DispatchRequest): Promise<DispatchResponse> {
+    if (!this.dispatchers.length) {
+      throw new Error('You need to have dispatchers to perform a dispatch call')
+    }
+
+    console.log('dispatch body', request)
+    const dispatchRes = await this.perform({
+      route: V1RpcRoutes.ClientDispatch,
+      body: {
+        app_public_key: request.sessionHeader.applicationPubKey,
+        chain: request.sessionHeader.chain,
+        session_height: request.sessionHeader.sessionBlockHeight,
+      },
+    })
+
+    const dispatch = await dispatchRes.json()
+    console.log('raw dispatch object', dispatch)
+
+    if (!('session' in dispatch)) {
+      console.log(dispatch, 'error')
+      throw new Error('RPC Error')
+    }
+
+    const { block_height: blockHeight, session } = dispatch
+
+    const { header, key, nodes } = session
+    const formattedNodes: Node[] = nodes.map((node) => {
+      const {
+        address,
+        chains,
+        jailed,
+        public_key,
+        service_url,
+        status,
+        tokens,
+        unstaking_time,
+      } = node
+
+      return {
+        address,
+        chains,
+        publicKey: public_key,
+        jailed,
+        serviceUrl: service_url,
+        stakedTokens: BigInt(tokens),
+        status,
+        unstakingTime: unstaking_time,
+      } as Node
+    })
+
+    const formattedHeader: SessionHeader = {
+      applicationPubKey: header.app_public_key,
+      chain: header.chain,
+      sessionBlockHeight: header.session_height,
+    }
+
+    return {
+      blockHeight,
+      session: {
+        header: formattedHeader,
+        nodes: formattedNodes,
+        key,
+      },
+    }
+  }
+
+  async relay(request, rpcUrl: string): Promise<unknown> {
+    const relayAttempt = await this.perform({
+      route: V1RpcRoutes.ClientRelay,
+      body: request,
+      rpcUrl,
+    })
+
+    const relayResponse = await relayAttempt.json()
+
+    return relayResponse
   }
 }

@@ -56,4 +56,80 @@ export type AccountWithTransactions = Account & {
   transactions: any[]
 }
 
+export interface SessionHeader {
+  readonly applicationPubKey: string
+  readonly chain: string
+  readonly sessionBlockHeight: string | number
+}
+
+export type RelayHeaders = Record<string, string>
+
+export interface PocketAAT {
+  readonly version: string
+  readonly clientPublicKey: string
+  readonly applicationPublicKey: string
+  readonly applicationSignature: string
+}
+
+export interface Session {
+  readonly header: SessionHeader
+  readonly key: string
+  readonly nodes: Node[]
+}
+
+export enum HTTPMethod {
+  POST = 'POST',
+  GET = 'GET',
+  DELETE = 'DELETE',
+  NA = '',
+}
+
+export interface DispatchRequest {
+  readonly sessionHeader: SessionHeader
+}
+
+export interface DispatchResponse {
+  readonly blockHeight: BigInt
+  readonly session: Session
+}
+
+export interface RequestHash {
+  readonly payload: RelayPayload
+  readonly meta: RelayMeta
+}
+
+export interface RelayProof {
+  readonly entropy: BigInt
+  readonly sessionBlockHeight: BigInt
+  readonly servicerPubKey: string
+  readonly blockchain: string
+  readonly token: PocketAAT
+  readonly signature: string
+  readonly requestHash: string
+}
+
+export interface RelayPayload {
+  readonly data: string
+  readonly method: string
+  readonly path: string
+  readonly headers?: RelayHeaders | null
+}
+
+export interface RelayMeta {
+  readonly blockHeight: bigint
+}
+
+export interface RelayRequest {
+  readonly payload: RelayPayload
+  readonly meta: RelayMeta
+  readonly proof: RelayProof
+}
+
+export interface RelayResponse {
+  readonly signature: string
+  readonly payload: string
+  readonly proof: RelayProof
+  readonly relayRequest: RelayRequest
+}
+
 export {}

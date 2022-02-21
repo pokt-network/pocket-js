@@ -1,4 +1,5 @@
 import Sodium from 'libsodium-wrappers'
+import { toUint8Array, fromUint8Array } from 'hex-lite'
 import { AbstractProvider } from '@pokt-foundation/pocketjs-provider'
 import { TransactionResponse } from '@pokt-foundation/pocketjs-types'
 import { AbstractSigner, TransactionRequest } from './abstract-signer'
@@ -74,10 +75,14 @@ export class Wallet implements AbstractSigner {
     )
   }
 
-  async signMessage(message: string): Promise<string> {
+  async sign(payload: string): Promise<string> {
     await Sodium.ready
-
-    return Sodium.crypto_sign_detached(message, this.keyManager.getPrivateKey())
+    return fromUint8Array(
+      Sodium.crypto_sign_detached(
+        toUint8Array(payload),
+        toUint8Array(this.keyManager.getPrivateKey())
+      )
+    )
   }
 
   async signTransaction(transaction: TransactionRequest): Promise<string> {

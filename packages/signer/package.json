@@ -35,6 +35,7 @@
     "@pokt-foundation/pocketjs-provider": "^0.0.0",
     "@pokt-foundation/pocketjs-types": "^0.0.0",
     "@pokt-foundation/pocketjs-utils": "^0.0.0",
+    "hex-lite": "^1.5.0",
     "libsodium-wrappers": "^0.7.9"
   }
 }

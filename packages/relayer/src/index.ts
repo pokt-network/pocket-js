@@ -1,5 +1,2 @@
-export class Relayer {
-  public static gm() {
-    console.log('gm')
-  }
-}
+export * from './abstract-relayer'
+export * from './relayer'

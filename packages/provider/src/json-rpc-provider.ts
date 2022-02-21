@@ -30,7 +30,7 @@ export class JsonRpcProvider implements AbstractProvider {
     this.dispatchers = dispatchers ?? []
   }
 
-  private perform({
+  private async perform({
     route,
     body,
     rpcUrl,
@@ -48,13 +48,14 @@ export class JsonRpcProvider implements AbstractProvider {
       : this.rpcUrl
 
     try {
-      const rpcResponse = fetch(`${finalRpcUrl}${route}`, {
+      const rpcResponse = await fetch(`${finalRpcUrl}${route}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),
       })
+        console.log(rpcResponse)
       return rpcResponse
     } catch (err) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment

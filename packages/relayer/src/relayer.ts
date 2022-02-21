@@ -14,6 +14,7 @@ import {
   SessionHeader,
 } from '@pokt-foundation/pocketjs-types'
 import { AbstractRelayer } from './abstract-relayer'
+import { validateRelayResponse } from './errors'
 
 export class Relayer implements AbstractRelayer {
   readonly keyManager: KeyManager | AbstractSigner
@@ -29,6 +30,7 @@ export class Relayer implements AbstractRelayer {
   async getNewSession({
     applicationPubKey,
     chain,
+    sessionBlockHeight = 0,
     options = {
       retryAttempts: 3,
       rejectSelfSignedCertificates: false,
@@ -37,6 +39,7 @@ export class Relayer implements AbstractRelayer {
   }: {
     applicationPubKey?: string
     chain: string
+    sessionBlockHeight?: number
     options?: {
       retryAttempts?: number
       rejectSelfSignedCertificates?: boolean
@@ -47,7 +50,7 @@ export class Relayer implements AbstractRelayer {
       sessionHeader: {
         applicationPubKey: applicationPubKey ?? this.keyManager.getPublicKey(),
         chain,
-        sessionBlockHeight: 0,
+        sessionBlockHeight: sessionBlockHeight ?? 0,
       },
     })
 
@@ -149,7 +152,9 @@ export class Relayer implements AbstractRelayer {
       serviceNode.serviceUrl.toString()
     )
 
-    return relay
+    const relayResponse = validateRelayResponse(relay)
+
+    return relayResponse
   }
 
   async relay({

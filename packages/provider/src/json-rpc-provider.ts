@@ -47,13 +47,20 @@ export class JsonRpcProvider implements AbstractProvider {
         ]
       : this.rpcUrl
 
-    return fetch(`${finalRpcUrl}${route}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    })
+    try {
+      const rpcResponse = fetch(`${finalRpcUrl}${route}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+      })
+      return rpcResponse
+    } catch (err) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return err
+    }
   }
 
   async getBalance(address: string | Promise<string>): Promise<bigint> {
@@ -366,7 +373,7 @@ export class JsonRpcProvider implements AbstractProvider {
     }
   }
 
-  async relay(request, rpcUrl: string): Promise<any> {
+  async relay(request, rpcUrl: string): Promise<unknown> {
     const relayAttempt = await this.perform({
       route: V1RpcRoutes.ClientRelay,
       body: request,

@@ -6,12 +6,8 @@ import {
   Node,
   PocketAAT,
   RelayHeaders,
-  RelayMeta,
   RelayPayload,
-  RelayResponse,
-  RequestHash,
   Session,
-  SessionHeader,
 } from '@pokt-foundation/pocketjs-types'
 import { AbstractRelayer } from './abstract-relayer'
 import { validateRelayResponse } from './errors'
@@ -152,9 +148,26 @@ export class Relayer implements AbstractRelayer {
       serviceNode.serviceUrl.toString()
     )
 
-    const relayResponse = validateRelayResponse(relay)
+    const relayResponse = await validateRelayResponse(relay)
 
-    return relayResponse
+    return {
+      response: relayResponse,
+      relayProof: {
+        entropy: relayProof.entropy,
+        sessionBlockheight: relayProof.session_block_height,
+        servicerPubKey: servicerPubKey,
+        blockchain,
+        aat: {
+          version: pocketAAT.version,
+          appPubKey: pocketAAT.applicationPublicKey,
+          clientPubKey: pocketAAT.clientPublicKey,
+          signature: pocketAAT.applicationSignature,
+        },
+        signature: signedProofBytes,
+        requestHash: this.hashRequest(requestHash),
+      },
+      serviceNode,
+    }
   }
 
   async relay({

@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 export interface TransactionResponse {
-  code?: BigInt
+  code?: number
   codeSpace?: string
   data?: string
   hash: string
-  height: BigInt
+  height: number
   info?: string
   rawLog?: string
   timestamp?: string
@@ -27,9 +27,9 @@ export interface App {
   address: string
   chains: string[]
   jailed: boolean
-  maxRelays: bigint
+  maxRelays: string
   publicKey: string
-  stakedTokens: bigint
+  stakedTokens: string
   status: StakingStatus
 }
 
@@ -39,14 +39,14 @@ export interface Node {
   jailed: boolean
   publicKey: string
   serviceUrl: string
-  stakedTokens: bigint
+  stakedTokens: string
   status: StakingStatus
   unstakingTime: string
 }
 
 export interface Account {
   address: string
-  balance: bigint
+  balance: string
   publicKey: null | string
 }
 
@@ -89,7 +89,7 @@ export interface DispatchRequest {
 }
 
 export interface DispatchResponse {
-  readonly blockHeight: BigInt
+  readonly blockHeight: number
   readonly session: Session
 }
 
@@ -99,8 +99,8 @@ export interface RequestHash {
 }
 
 export interface RelayProof {
-  readonly entropy: BigInt
-  readonly sessionBlockHeight: BigInt
+  readonly entropy: string
+  readonly sessionBlockHeight: number
   readonly servicerPubKey: string
   readonly blockchain: string
   readonly token: PocketAAT
@@ -116,7 +116,7 @@ export interface RelayPayload {
 }
 
 export interface RelayMeta {
-  readonly blockHeight: bigint
+  readonly blockHeight: string
 }
 
 export interface RelayRequest {

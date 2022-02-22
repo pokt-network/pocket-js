@@ -3,16 +3,17 @@ import {
   Account,
   AccountWithTransactions,
   App,
-  Node,
   Block,
-  GetAppOptions,
-  GetNodesOptions,
-  TransactionResponse,
   DispatchRequest,
   DispatchResponse,
+  GetAppOptions,
+  GetNodesOptions,
+  Node,
   SessionHeader,
+  TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
 import { AbstractProvider } from './abstract-provider'
+import { DispatchersFailureError, RelayFailureError } from './errors'
 import { V1RpcRoutes } from './routes'
 
 export class JsonRpcProvider implements AbstractProvider {
@@ -55,11 +56,12 @@ export class JsonRpcProvider implements AbstractProvider {
         },
         body: JSON.stringify(body),
       })
+
       return rpcResponse
     } catch (err) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        return err
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      return err
     }
   }
 
@@ -214,7 +216,7 @@ export class JsonRpcProvider implements AbstractProvider {
       publicKey: public_key,
       jailed,
       serviceUrl: service_url,
-      stakedTokens: BigInt(tokens),
+      stakedTokens: tokens.toString(),
       status,
       unstakingTime: unstaking_time,
     }
@@ -246,8 +248,8 @@ export class JsonRpcProvider implements AbstractProvider {
       chains,
       publicKey: public_key,
       jailed,
-      maxRelays: BigInt(max_relays ?? 0),
-      stakedTokens: BigInt(staked_tokens ?? 0),
+      maxRelays: max_relays ?? 0,
+      stakedTokens: staked_tokens ?? 0,
       status,
     }
   }
@@ -267,7 +269,7 @@ export class JsonRpcProvider implements AbstractProvider {
 
     return {
       address: await address,
-      balance: BigInt(coins[0]?.amount ?? 0),
+      balance: coins[0]?.amount ?? 0,
       publicKey: public_key,
     }
   }
@@ -298,7 +300,7 @@ export class JsonRpcProvider implements AbstractProvider {
 
     return {
       address: await address,
-      balance: BigInt(coins[0]?.amount ?? 0),
+      balance: coins[0]?.amount ?? 0,
       publicKey: public_key,
       totalCount: total_count,
       transactions: transactions,
@@ -310,61 +312,65 @@ export class JsonRpcProvider implements AbstractProvider {
       throw new Error('You need to have dispatchers to perform a dispatch call')
     }
 
-    const dispatchRes = await this.perform({
-      route: V1RpcRoutes.ClientDispatch,
-      body: {
-        app_public_key: request.sessionHeader.applicationPubKey,
-        chain: request.sessionHeader.chain,
-        session_height: request.sessionHeader.sessionBlockHeight,
-      },
-    })
+    try {
+      const dispatchRes = await this.perform({
+        route: V1RpcRoutes.ClientDispatch,
+        body: {
+          app_public_key: request.sessionHeader.applicationPubKey,
+          chain: request.sessionHeader.chain,
+          session_height: request.sessionHeader.sessionBlockHeight,
+        },
+      })
 
-    const dispatch = await dispatchRes.json()
+      const dispatch = await dispatchRes.json()
 
-    if (!('session' in dispatch)) {
-      throw new Error('RPC Error')
-    }
+      if (!('session' in dispatch)) {
+        throw new Error('RPC Error')
+      }
 
-    const { block_height: blockHeight, session } = dispatch
+      const { block_height: blockHeight, session } = dispatch
 
-    const { header, key, nodes } = session
-    const formattedNodes: Node[] = nodes.map((node) => {
-      const {
-        address,
-        chains,
-        jailed,
-        public_key,
-        service_url,
-        status,
-        tokens,
-        unstaking_time,
-      } = node
+      const { header, key, nodes } = session
+      const formattedNodes: Node[] = nodes.map((node) => {
+        const {
+          address,
+          chains,
+          jailed,
+          public_key,
+          service_url,
+          status,
+          tokens,
+          unstaking_time,
+        } = node
+
+        return {
+          address,
+          chains,
+          publicKey: public_key,
+          jailed,
+          serviceUrl: service_url,
+          stakedTokens: tokens.toString(),
+          status,
+          unstakingTime: unstaking_time,
+        } as Node
+      })
+
+      const formattedHeader: SessionHeader = {
+        applicationPubKey: header.app_public_key,
+        chain: header.chain,
+        sessionBlockHeight: header.session_height,
+      }
 
       return {
-        address,
-        chains,
-        publicKey: public_key,
-        jailed,
-        serviceUrl: service_url,
-        stakedTokens: BigInt(tokens),
-        status,
-        unstakingTime: unstaking_time,
-      } as Node
-    })
-
-    const formattedHeader: SessionHeader = {
-      applicationPubKey: header.app_public_key,
-      chain: header.chain,
-      sessionBlockHeight: header.session_height,
-    }
-
-    return {
-      blockHeight,
-      session: {
-        header: formattedHeader,
-        nodes: formattedNodes,
-        key,
-      },
+        blockHeight,
+        session: {
+          header: formattedHeader,
+          nodes: formattedNodes,
+          key,
+        },
+      }
+    } catch (err) {
+      throw new DispatchersFailureError()
     }
   }
 
@@ -375,8 +381,13 @@ export class JsonRpcProvider implements AbstractProvider {
       rpcUrl,
     })
 
-    const relayResponse = await relayAttempt.json()
+    try {
+      const relayResponse = await relayAttempt.json()
 
-    return relayResponse
+      return relayResponse
+    } catch (err) {
+      console.log(err)
+      throw new RelayFailureError()
+    }
   }
 }

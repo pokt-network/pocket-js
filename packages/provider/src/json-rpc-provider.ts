@@ -55,12 +55,12 @@ export class JsonRpcProvider implements AbstractProvider {
         },
         body: JSON.stringify(body),
       })
-        console.log(rpcResponse)
+
       return rpcResponse
     } catch (err) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        return err
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      return err
     }
   }
 
@@ -196,7 +196,6 @@ export class JsonRpcProvider implements AbstractProvider {
     const node = await res.json()
 
     if (!('chains' in node)) {
-      console.log(node)
       throw new Error('RPC Error')
     }
 
@@ -237,7 +236,6 @@ export class JsonRpcProvider implements AbstractProvider {
     const app = await res.json()
 
     if (!('chains' in app)) {
-      console.log(app)
       throw new Error('RPC Error')
     }
 
@@ -313,64 +311,65 @@ export class JsonRpcProvider implements AbstractProvider {
       throw new Error('You need to have dispatchers to perform a dispatch call')
     }
 
-    console.log('dispatch body', request)
-    const dispatchRes = await this.perform({
-      route: V1RpcRoutes.ClientDispatch,
-      body: {
-        app_public_key: request.sessionHeader.applicationPubKey,
-        chain: request.sessionHeader.chain,
-        session_height: request.sessionHeader.sessionBlockHeight,
-      },
-    })
+    try {
+      const dispatchRes = await this.perform({
+        route: V1RpcRoutes.ClientDispatch,
+        body: {
+          app_public_key: request.sessionHeader.applicationPubKey,
+          chain: request.sessionHeader.chain,
+          session_height: request.sessionHeader.sessionBlockHeight,
+        },
+      })
 
-    const dispatch = await dispatchRes.json()
-    console.log('raw dispatch object', dispatch)
+      const dispatch = await dispatchRes.json()
 
-    if (!('session' in dispatch)) {
-      console.log(dispatch, 'error')
-      throw new Error('RPC Error')
-    }
+      if (!('session' in dispatch)) {
+        throw new Error('RPC Error')
+      }
 
-    const { block_height: blockHeight, session } = dispatch
+      const { block_height: blockHeight, session } = dispatch
 
-    const { header, key, nodes } = session
-    const formattedNodes: Node[] = nodes.map((node) => {
-      const {
-        address,
-        chains,
-        jailed,
-        public_key,
-        service_url,
-        status,
-        tokens,
-        unstaking_time,
-      } = node
+      const { header, key, nodes } = session
+      const formattedNodes: Node[] = nodes.map((node) => {
+        const {
+          address,
+          chains,
+          jailed,
+          public_key,
+          service_url,
+          status,
+          tokens,
+          unstaking_time,
+        } = node
+
+        return {
+          address,
+          chains,
+          publicKey: public_key,
+          jailed,
+          serviceUrl: service_url,
+          stakedTokens: BigInt(tokens),
+          status,
+          unstakingTime: unstaking_time,
+        } as Node
+      })
+
+      const formattedHeader: SessionHeader = {
+        applicationPubKey: header.app_public_key,
+        chain: header.chain,
+        sessionBlockHeight: header.session_height,
+      }
 
       return {
-        address,
-        chains,
-        publicKey: public_key,
-        jailed,
-        serviceUrl: service_url,
-        stakedTokens: BigInt(tokens),
-        status,
-        unstakingTime: unstaking_time,
-      } as Node
-    })
-
-    const formattedHeader: SessionHeader = {
-      applicationPubKey: header.app_public_key,
-      chain: header.chain,
-      sessionBlockHeight: header.session_height,
-    }
-
-    return {
-      blockHeight,
-      session: {
-        header: formattedHeader,
-        nodes: formattedNodes,
-        key,
-      },
+        blockHeight,
+        session: {
+          header: formattedHeader,
+          nodes: formattedNodes,
+          key,
+        },
+      }
+    } catch (err) {
+      throw new Error('Failed to obtain a session due to dispatchers failure.')
     }
   }
 
@@ -381,7 +380,8 @@ export class JsonRpcProvider implements AbstractProvider {
       rpcUrl,
     })
 
-    const relayResponse = await relayAttempt.json()
+    const relayResponse =
+      (await relayAttempt?.json()) ?? relayAttempt
 
     return relayResponse
   }

@@ -3,16 +3,17 @@ import {
   Account,
   AccountWithTransactions,
   App,
-  Node,
   Block,
-  GetAppOptions,
-  GetNodesOptions,
-  TransactionResponse,
   DispatchRequest,
   DispatchResponse,
+  GetAppOptions,
+  GetNodesOptions,
+  Node,
   SessionHeader,
+  TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
 import { AbstractProvider } from './abstract-provider'
+import { DispatchersFailureError } from './errors'
 import { V1RpcRoutes } from './routes'
 
 export class JsonRpcProvider implements AbstractProvider {
@@ -369,7 +370,7 @@ export class JsonRpcProvider implements AbstractProvider {
         },
       }
     } catch (err) {
-      throw new Error('Failed to obtain a session due to dispatchers failure.')
+      throw new DispatchersFailureError()
     }
   }
 

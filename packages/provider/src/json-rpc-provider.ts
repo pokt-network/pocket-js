@@ -55,7 +55,6 @@ export class JsonRpcProvider implements AbstractProvider {
         },
         body: JSON.stringify(body),
       })
-        console.log(rpcResponse)
       return rpcResponse
     } catch (err) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -196,7 +195,6 @@ export class JsonRpcProvider implements AbstractProvider {
     const node = await res.json()
 
     if (!('chains' in node)) {
-      console.log(node)
       throw new Error('RPC Error')
     }
 
@@ -237,7 +235,6 @@ export class JsonRpcProvider implements AbstractProvider {
     const app = await res.json()
 
     if (!('chains' in app)) {
-      console.log(app)
       throw new Error('RPC Error')
     }
 
@@ -313,7 +310,6 @@ export class JsonRpcProvider implements AbstractProvider {
       throw new Error('You need to have dispatchers to perform a dispatch call')
     }
 
-    console.log('dispatch body', request)
     const dispatchRes = await this.perform({
       route: V1RpcRoutes.ClientDispatch,
       body: {
@@ -324,10 +320,8 @@ export class JsonRpcProvider implements AbstractProvider {
     })
 
     const dispatch = await dispatchRes.json()
-    console.log('raw dispatch object', dispatch)
 
     if (!('session' in dispatch)) {
-      console.log(dispatch, 'error')
       throw new Error('RPC Error')
     }
 

@@ -7,6 +7,7 @@ export enum PocketCoreErrorCodes {
   OverServiceError = 71,
   RequestHashError = 74,
   UnsupportedBlockchainError = 76,
+  HTTPExecutionError = 28
 }
 
 export class PocketCoreError extends Error {
@@ -76,6 +77,13 @@ export class OverServiceError extends PocketCoreError {
   }
 }
 
+export class HTTPExecutionError extends PocketCoreError {
+  constructor(code: number, message: string, ...params: any[]) {
+    super(code, message, ...params)
+    this.name = 'HTTPExecutionError'
+  }
+}
+
 export function validateRelayResponse(relayResponse: any) {
   if ('response' in relayResponse && 'signature' in relayResponse) {
     return relayResponse.response
@@ -125,6 +133,11 @@ export function validateRelayResponse(relayResponse: any) {
     case PocketCoreErrorCodes.UnsupportedBlockchainError:
       throw new UnsupportedBlockchainError(
         PocketCoreErrorCodes.UnsupportedBlockchainError,
+        relayResponse.error.message
+      )
+    case PocketCoreErrorCodes.HTTPExecutionError:
+      throw new UnsupportedBlockchainError(
+        PocketCoreErrorCodes.HTTPExecutionError,
         relayResponse.error.message
       )
     default:

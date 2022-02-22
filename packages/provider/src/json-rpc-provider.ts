@@ -247,8 +247,8 @@ export class JsonRpcProvider implements AbstractProvider {
       chains,
       publicKey: public_key,
       jailed,
-      maxRelays: BigInt(max_relays ?? 0),
-      stakedTokens: BigInt(staked_tokens ?? 0),
+      maxRelays: max_relays ?? 0,
+      stakedTokens: staked_tokens ?? 0,
       status,
     }
   }
@@ -268,7 +268,7 @@ export class JsonRpcProvider implements AbstractProvider {
 
     return {
       address: await address,
-      balance: BigInt(coins[0]?.amount ?? 0),
+      balance: coins[0]?.amount ?? 0,
       publicKey: public_key,
     }
   }
@@ -299,7 +299,7 @@ export class JsonRpcProvider implements AbstractProvider {
 
     return {
       address: await address,
-      balance: BigInt(coins[0]?.amount ?? 0),
+      balance: coins[0]?.amount ?? 0,
       publicKey: public_key,
       totalCount: total_count,
       transactions: transactions,

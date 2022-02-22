@@ -148,19 +148,19 @@ export class Relayer implements AbstractRelayer {
       serviceNode.serviceUrl.toString()
     )
 
-    const relayResponse = validateRelayResponse(relay)
+    const relayResponse = await validateRelayResponse(relay)
 
     return {
       response: relayResponse,
       relayProof: {
         entropy: relayProof.entropy,
         sessionBlockheight: relayProof.session_block_height,
-        servicer_pub_key: servicerPubKey,
+        servicerPubKey: servicerPubKey,
         blockchain,
         aat: {
           version: pocketAAT.version,
-          app_pub_key: pocketAAT.applicationPublicKey,
-          client_pub_key: pocketAAT.clientPublicKey,
+          appPubKey: pocketAAT.applicationPublicKey,
+          clientPubKey: pocketAAT.clientPublicKey,
           signature: pocketAAT.applicationSignature,
         },
         signature: signedProofBytes,

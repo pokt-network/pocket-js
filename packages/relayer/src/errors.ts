@@ -136,7 +136,7 @@ export function validateRelayResponse(relayResponse: any) {
         relayResponse.error.message
       )
     case PocketCoreErrorCodes.HTTPExecutionError:
-      throw new UnsupportedBlockchainError(
+      throw new HTTPExecutionError(
         PocketCoreErrorCodes.HTTPExecutionError,
         relayResponse.error.message
       )

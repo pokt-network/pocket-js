@@ -13,7 +13,7 @@ import {
   TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
 import { AbstractProvider } from './abstract-provider'
-import { DispatchersFailureError } from './errors'
+import { DispatchersFailureError, RelayFailureError } from './errors'
 import { V1RpcRoutes } from './routes'
 
 export class JsonRpcProvider implements AbstractProvider {
@@ -381,8 +381,13 @@ export class JsonRpcProvider implements AbstractProvider {
       rpcUrl,
     })
 
-    const relayResponse = (await relayAttempt?.json()) ?? relayAttempt
+    try {
+      const relayResponse = await relayAttempt.json()
 
-    return relayResponse
+      return relayResponse
+    } catch (err) {
+      console.log(err)
+      throw new RelayFailureError()
+    }
   }
 }

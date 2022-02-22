@@ -215,7 +215,7 @@ export class JsonRpcProvider implements AbstractProvider {
       publicKey: public_key,
       jailed,
       serviceUrl: service_url,
-      stakedTokens: BigInt(tokens),
+      stakedTokens: tokens.toString(),
       status,
       unstakingTime: unstaking_time,
     }
@@ -348,7 +348,7 @@ export class JsonRpcProvider implements AbstractProvider {
           publicKey: public_key,
           jailed,
           serviceUrl: service_url,
-          stakedTokens: BigInt(tokens),
+          stakedTokens: tokens.toString(),
           status,
           unstakingTime: unstaking_time,
         } as Node
@@ -380,8 +380,7 @@ export class JsonRpcProvider implements AbstractProvider {
       rpcUrl,
     })
 
-    const relayResponse =
-      (await relayAttempt?.json()) ?? relayAttempt
+    const relayResponse = (await relayAttempt?.json()) ?? relayAttempt
 
     return relayResponse
   }

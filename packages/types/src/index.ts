@@ -39,7 +39,7 @@ export interface Node {
   jailed: boolean
   publicKey: string
   serviceUrl: string
-  stakedTokens: bigint
+  stakedTokens: string
   status: StakingStatus
   unstakingTime: string
 }

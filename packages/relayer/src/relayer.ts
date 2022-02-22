@@ -154,7 +154,24 @@ export class Relayer implements AbstractRelayer {
 
     const relayResponse = validateRelayResponse(relay)
 
-    return relayResponse
+    return {
+      response: relayResponse,
+      relayProof: {
+        entropy: relayProof.entropy,
+        sessionBlockheight: relayProof.session_block_height,
+        servicer_pub_key: servicerPubKey,
+        blockchain,
+        aat: {
+          version: pocketAAT.version,
+          app_pub_key: pocketAAT.applicationPublicKey,
+          client_pub_key: pocketAAT.clientPublicKey,
+          signature: pocketAAT.applicationSignature,
+        },
+        signature: signedProofBytes,
+        requestHash: this.hashRequest(requestHash),
+      },
+      serviceNode,
+    }
   }
 
   async relay({

@@ -6,12 +6,8 @@ import {
   Node,
   PocketAAT,
   RelayHeaders,
-  RelayMeta,
   RelayPayload,
-  RelayResponse,
-  RequestHash,
   Session,
-  SessionHeader,
 } from '@pokt-foundation/pocketjs-types'
 import { AbstractRelayer } from './abstract-relayer'
 import { validateRelayResponse } from './errors'

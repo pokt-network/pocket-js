@@ -12,6 +12,8 @@ import {
 import { AbstractRelayer } from './abstract-relayer'
 import { validateRelayResponse } from './errors'
 
+const DEFAULT_RELAYER_TIMEOUT = 5000
+
 export class Relayer implements AbstractRelayer {
   readonly keyManager: KeyManager | AbstractSigner
   readonly provider: JsonRpcProvider
@@ -42,13 +44,17 @@ export class Relayer implements AbstractRelayer {
       timeout?: number
     }
   }): Promise<Session> {
-    const dispatchResponse = await this.provider.dispatch({
-      sessionHeader: {
-        applicationPubKey: applicationPubKey ?? this.keyManager.getPublicKey(),
-        chain,
-        sessionBlockHeight: sessionBlockHeight ?? 0,
+    const dispatchResponse = await this.provider.dispatch(
+      {
+        sessionHeader: {
+          applicationPubKey:
+            applicationPubKey ?? this.keyManager.getPublicKey(),
+          chain,
+          sessionBlockHeight: sessionBlockHeight ?? 0,
+        },
       },
-    })
+      options
+    )
 
     return dispatchResponse.session as Session
   }
@@ -64,17 +70,19 @@ export class Relayer implements AbstractRelayer {
     pocketAAT,
     provider,
     session,
+    timeout = DEFAULT_RELAYER_TIMEOUT,
   }: {
-    data: string
     blockchain: string
-    pocketAAT: PocketAAT
-    provider: JsonRpcProvider
-    keyManager: KeyManager | AbstractSigner
+    data: string
     headers?: RelayHeaders | null
+    keyManager: KeyManager | AbstractSigner
     method: HTTPMethod | ''
-    session: Session
     node: Node
     path: string
+    pocketAAT: PocketAAT
+    provider: JsonRpcProvider
+    session: Session
+    timeout?: number
   }) {
     if (!keyManager) {
       throw new Error('You need a signer to send a relay')
@@ -145,7 +153,8 @@ export class Relayer implements AbstractRelayer {
 
     const relay = await provider.relay(
       relayRequest,
-      serviceNode.serviceUrl.toString()
+      serviceNode.serviceUrl.toString(),
+      { timeout }
     )
 
     const relayResponse = await validateRelayResponse(relay)
@@ -179,6 +188,7 @@ export class Relayer implements AbstractRelayer {
     path = '',
     pocketAAT,
     session,
+    timeout = DEFAULT_RELAYER_TIMEOUT,
   }: {
     data: string
     blockchain: string
@@ -188,6 +198,7 @@ export class Relayer implements AbstractRelayer {
     session: Session
     node: Node
     path: string
+    timeout?: number
   }) {
     if (!this.keyManager) {
       throw new Error('You need a signer to send a relay')

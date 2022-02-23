@@ -382,11 +382,16 @@ export class JsonRpcProvider implements AbstractProvider {
     }
   }
 
-  async relay(request, rpcUrl: string): Promise<unknown> {
+  async relay(
+    request,
+    rpcUrl: string,
+    { timeout }: { timeout?: number } = { timeout: DEFAULT_TIMEOUT }
+  ): Promise<unknown> {
     const relayAttempt = await this.perform({
       route: V1RpcRoutes.ClientRelay,
       body: request,
       rpcUrl,
+      timeout,
     })
 
     try {

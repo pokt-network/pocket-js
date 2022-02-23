@@ -13,3 +13,11 @@ export class RelayFailureError extends Error {
     this.message = 'Provider node returned a invalid non JSON response'
   }
 }
+
+export class TimeoutError extends Error {
+  constructor(...params: any[]) {
+    super(...params)
+    this.name = 'TimeoutError'
+    this.message = 'Provider timed out during request'
+  }
+}

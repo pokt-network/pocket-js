@@ -16,6 +16,8 @@ import { AbstractProvider } from './abstract-provider'
 import { DispatchersFailureError, RelayFailureError } from './errors'
 import { V1RpcRoutes } from './routes'
 
+const DEFAULT_TIMEOUT = 5000
+
 export class JsonRpcProvider implements AbstractProvider {
   private rpcUrl: string
   private dispatchers: string[]
@@ -35,11 +37,16 @@ export class JsonRpcProvider implements AbstractProvider {
     route,
     body,
     rpcUrl,
+    timeout = DEFAULT_TIMEOUT,
   }: {
     route: V1RpcRoutes
     body: any
     rpcUrl?: string
+    timeout?: number
   }): Promise<Response> {
+    const controller = new AbortController()
+    setTimeout(() => controller.abort(), timeout)
+
     const finalRpcUrl = rpcUrl
       ? rpcUrl
       : route === V1RpcRoutes.ClientDispatch
@@ -51,6 +58,7 @@ export class JsonRpcProvider implements AbstractProvider {
     try {
       const rpcResponse = await fetch(`${finalRpcUrl}${route}`, {
         method: 'POST',
+        signal: controller.signal,
         headers: {
           'Content-Type': 'application/json',
         },

@@ -13,7 +13,11 @@ import {
   TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
 import { AbstractProvider } from './abstract-provider'
-import { DispatchersFailureError, RelayFailureError } from './errors'
+import {
+  DispatchersFailureError,
+  RelayFailureError,
+  TimeoutError,
+} from './errors'
 import { V1RpcRoutes } from './routes'
 
 const DEFAULT_TIMEOUT = 5000
@@ -55,22 +59,16 @@ export class JsonRpcProvider implements AbstractProvider {
         ]
       : this.rpcUrl
 
-    try {
-      const rpcResponse = await fetch(`${finalRpcUrl}${route}`, {
-        method: 'POST',
-        signal: controller.signal,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-      })
+    const rpcResponse = await fetch(`${finalRpcUrl}${route}`, {
+      method: 'POST',
+      signal: controller.signal,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    })
 
-      return rpcResponse
-    } catch (err) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      return err
-    }
+    return rpcResponse
   }
 
   async getBalance(address: string | Promise<string>): Promise<bigint> {
@@ -315,7 +313,18 @@ export class JsonRpcProvider implements AbstractProvider {
     }
   }
 
-  async dispatch(request: DispatchRequest): Promise<DispatchResponse> {
+  async dispatch(
+    request: DispatchRequest,
+    options: {
+      retryAttempts?: number
+      rejectSelfSignedCertificates?: boolean
+      timeout?: number
+    } = {
+      retryAttempts: 3,
+      rejectSelfSignedCertificates: false,
+      timeout: 5000,
+    }
+  ): Promise<DispatchResponse> {
     if (!this.dispatchers.length) {
       throw new Error('You need to have dispatchers to perform a dispatch call')
     }
@@ -328,6 +337,7 @@ export class JsonRpcProvider implements AbstractProvider {
           chain: request.sessionHeader.chain,
           session_height: request.sessionHeader.sessionBlockHeight,
         },
+        timeout: options.timeout,
       })
 
       const dispatch = await dispatchRes.json()
@@ -377,7 +387,10 @@ export class JsonRpcProvider implements AbstractProvider {
           key,
         },
       }
-    } catch (err) {
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        throw new TimeoutError()
+      }
       throw new DispatchersFailureError()
     }
   }
@@ -387,19 +400,21 @@ export class JsonRpcProvider implements AbstractProvider {
     rpcUrl: string,
     { timeout }: { timeout?: number } = { timeout: DEFAULT_TIMEOUT }
   ): Promise<unknown> {
-    const relayAttempt = await this.perform({
-      route: V1RpcRoutes.ClientRelay,
-      body: request,
-      rpcUrl,
-      timeout,
-    })
-
     try {
+      const relayAttempt = await this.perform({
+        route: V1RpcRoutes.ClientRelay,
+        body: request,
+        rpcUrl,
+        timeout,
+      })
+
       const relayResponse = await relayAttempt.json()
 
       return relayResponse
-    } catch (err) {
-      console.log(err)
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        throw new TimeoutError()
+      }
       throw new RelayFailureError()
     }
   }

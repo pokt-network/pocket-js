@@ -44,13 +44,17 @@ export class Relayer implements AbstractRelayer {
       timeout?: number
     }
   }): Promise<Session> {
-    const dispatchResponse = await this.provider.dispatch({
-      sessionHeader: {
-        applicationPubKey: applicationPubKey ?? this.keyManager.getPublicKey(),
-        chain,
-        sessionBlockHeight: sessionBlockHeight ?? 0,
+    const dispatchResponse = await this.provider.dispatch(
+      {
+        sessionHeader: {
+          applicationPubKey:
+            applicationPubKey ?? this.keyManager.getPublicKey(),
+          chain,
+          sessionBlockHeight: sessionBlockHeight ?? 0,
+        },
       },
-    })
+      options
+    )
 
     return dispatchResponse.session as Session
   }
@@ -149,7 +153,8 @@ export class Relayer implements AbstractRelayer {
 
     const relay = await provider.relay(
       relayRequest,
-      serviceNode.serviceUrl.toString()
+      serviceNode.serviceUrl.toString(),
+      { timeout }
     )
 
     const relayResponse = await validateRelayResponse(relay)

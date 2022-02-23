@@ -66,7 +66,7 @@ export class Relayer implements AbstractRelayer {
     pocketAAT,
     provider,
     session,
-    timeout = DEFAULT_RELAYER_TIMEOUT
+    timeout = DEFAULT_RELAYER_TIMEOUT,
   }: {
     blockchain: string
     data: string

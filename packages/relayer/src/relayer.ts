@@ -10,7 +10,12 @@ import {
   Session,
 } from '@pokt-foundation/pocketjs-types'
 import { AbstractRelayer } from './abstract-relayer'
-import { validateRelayResponse } from './errors'
+import {
+  EmptyKeyManagerError,
+  NoServiceNodeError,
+  ServiceNodeNotInSessionError,
+  validateRelayResponse,
+} from './errors'
 
 const DEFAULT_RELAYER_TIMEOUT = 5000
 
@@ -85,17 +90,19 @@ export class Relayer implements AbstractRelayer {
     timeout?: number
   }) {
     if (!keyManager) {
-      throw new Error('You need a signer to send a relay')
+      throw new EmptyKeyManagerError('You need a signer to send a relay')
     }
 
     const serviceNode = node ?? Relayer.getRandomSessionNode(session)
 
     if (!serviceNode) {
-      throw new Error(`Couldn't find a service node.`)
+      throw new NoServiceNodeError(`Couldn't find a service node to use.`)
     }
 
     if (!this.isNodeInSession(session, serviceNode)) {
-      throw new Error(`Node is not in the current session`)
+      throw new ServiceNodeNotInSessionError(
+        `Provided node is not in the current session`
+      )
     }
 
     const servicerPubKey = serviceNode.publicKey

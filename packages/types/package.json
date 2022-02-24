@@ -1,6 +1,6 @@
 {
   "name": "@pokt-foundation/pocketjs-types",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "PocketJS types",
   "type": "module",
   "source": "src/index.ts",

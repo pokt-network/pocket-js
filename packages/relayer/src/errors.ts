@@ -1,13 +1,38 @@
+export class ServiceNodeNotInSessionError extends Error {
+  constructor(message: string, ...params: any[]) {
+    super(...params)
+    this.message = message
+    this.name = 'ServiceNodeNotInSessionError'
+  }
+}
+
+export class EmptyKeyManagerError extends Error {
+  constructor(message: string, ...params: any[]) {
+    super(...params)
+    this.message = message
+    this.name = 'EmptyKeyManagerError'
+  }
+}
+
+export class NoServiceNodeError extends Error {
+  constructor(message: string, ...params: any[]) {
+    super(...params)
+    this.message = message
+    this.name = 'NoServiceNodeError'
+  }
+}
+
 export enum PocketCoreErrorCodes {
   AppNotFoundError = 45,
   DuplicateProofError = 37,
   EmptyPayloadDataError = 25,
   EvidenceSealedError = 90,
+  HTTPExecutionError = 28,
   InvalidBlockHeightError = 60,
+  InvalidSessionError = 14,
   OverServiceError = 71,
   RequestHashError = 74,
   UnsupportedBlockchainError = 76,
-  HTTPExecutionError = 28
 }
 
 export class PocketCoreError extends Error {
@@ -46,6 +71,13 @@ export class InvalidBlockHeightError extends PocketCoreError {
   constructor(code: number, message: string, ...params: any[]) {
     super(code, message, ...params)
     this.name = 'InvalidBlockHeightError'
+  }
+}
+
+export class InvalidSessionError extends PocketCoreError {
+  constructor(code: number, message: string, ...params: any[]) {
+    super(code, message, ...params)
+    this.name = 'InvalidSessionError'
   }
 }
 
@@ -138,6 +170,11 @@ export function validateRelayResponse(relayResponse: any) {
     case PocketCoreErrorCodes.HTTPExecutionError:
       throw new HTTPExecutionError(
         PocketCoreErrorCodes.HTTPExecutionError,
+        relayResponse.error.message
+      )
+    case PocketCoreErrorCodes.InvalidSessionError:
+      throw new InvalidSessionError(
+        PocketCoreErrorCodes.InvalidSessionError,
         relayResponse.error.message
       )
     default:

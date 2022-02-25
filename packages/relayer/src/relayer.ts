@@ -223,6 +223,7 @@ export class Relayer implements AbstractRelayer {
       session,
       keyManager: this.keyManager,
       provider: this.provider,
+      timeout
     })
   }
 

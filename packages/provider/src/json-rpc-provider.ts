@@ -42,22 +42,36 @@ export class JsonRpcProvider implements AbstractProvider {
     body,
     rpcUrl,
     timeout = DEFAULT_TIMEOUT,
+    retryAttempts = 0,
+    retriesPerformed = 0
   }: {
     route: V1RpcRoutes
     body: any
     rpcUrl?: string
-    timeout?: number
+    timeout?: number,
+    retryAttempts?: number,
+    retriesPerformed?: number
   }): Promise<Response> {
+    const shouldRetryOnFailure = retriesPerformed < retryAttempts
+    const performRetry = () => this.perform({
+      route,
+      body,
+      rpcUrl,
+      timeout,
+      retryAttempts,
+      retriesPerformed: retriesPerformed + 1
+    })
+
     const controller = new AbortController()
     setTimeout(() => controller.abort(), timeout)
 
     const finalRpcUrl = rpcUrl
       ? rpcUrl
       : route === V1RpcRoutes.ClientDispatch
-      ? this.dispatchers[
-          Math.floor(Math.random() * 100) % this.dispatchers.length
+        ? this.dispatchers[
+        Math.floor(Math.random() * 100) % this.dispatchers.length
         ]
-      : this.rpcUrl
+        : this.rpcUrl
 
     const rpcResponse = await fetch(`${finalRpcUrl}${route}`, {
       method: 'POST',
@@ -66,9 +80,17 @@ export class JsonRpcProvider implements AbstractProvider {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
+    }).catch((error) => {
+      if (shouldRetryOnFailure) {
+        return performRetry()
+      } else {
+        throw error
+      }
     })
 
-    return rpcResponse
+    // Fetch can fail by either throwing due to a network error or responding with
+    // ok === false on 40x/50x so both situations be explicitly handled separately. 
+    return (!rpcResponse.ok && shouldRetryOnFailure) ? performRetry() : rpcResponse
   }
 
   async getBalance(address: string | Promise<string>): Promise<bigint> {
@@ -320,10 +342,10 @@ export class JsonRpcProvider implements AbstractProvider {
       rejectSelfSignedCertificates?: boolean
       timeout?: number
     } = {
-      retryAttempts: 3,
-      rejectSelfSignedCertificates: false,
-      timeout: 5000,
-    }
+        retryAttempts: 0,
+        rejectSelfSignedCertificates: false,
+        timeout: 5000,
+      }
   ): Promise<DispatchResponse> {
     if (!this.dispatchers.length) {
       throw new Error('You need to have dispatchers to perform a dispatch call')
@@ -338,6 +360,7 @@ export class JsonRpcProvider implements AbstractProvider {
           session_height: request.sessionHeader.sessionBlockHeight,
         },
         timeout: options.timeout,
+        retryAttempts: options.retryAttempts
       })
 
       const dispatch = await dispatchRes.json()

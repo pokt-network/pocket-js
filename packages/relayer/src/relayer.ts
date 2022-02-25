@@ -75,7 +75,11 @@ export class Relayer implements AbstractRelayer {
     pocketAAT,
     provider,
     session,
-    timeout = DEFAULT_RELAYER_TIMEOUT,
+    options = {
+      retryAttempts: 0,
+      rejectSelfSignedCertificates: false,
+      timeout: DEFAULT_RELAYER_TIMEOUT,
+    },
   }: {
     blockchain: string
     data: string
@@ -87,7 +91,11 @@ export class Relayer implements AbstractRelayer {
     pocketAAT: PocketAAT
     provider: JsonRpcProvider
     session: Session
-    timeout?: number
+    options?: {
+      retryAttempts?: number
+      rejectSelfSignedCertificates?: boolean
+      timeout?: number
+    }
   }) {
     if (!keyManager) {
       throw new EmptyKeyManagerError('You need a signer to send a relay')
@@ -161,7 +169,10 @@ export class Relayer implements AbstractRelayer {
     const relay = await provider.relay(
       relayRequest,
       serviceNode.serviceUrl.toString(),
-      { timeout }
+      {
+        timeout: options.timeout,
+        retryAttempts: options.retryAttempts,
+      }
     )
 
     const relayResponse = await validateRelayResponse(relay)
@@ -195,7 +206,11 @@ export class Relayer implements AbstractRelayer {
     path = '',
     pocketAAT,
     session,
-    timeout = DEFAULT_RELAYER_TIMEOUT,
+    options = {
+      retryAttempts: 0,
+      rejectSelfSignedCertificates: false,
+      timeout: DEFAULT_RELAYER_TIMEOUT,
+    },
   }: {
     data: string
     blockchain: string
@@ -205,7 +220,11 @@ export class Relayer implements AbstractRelayer {
     session: Session
     node: Node
     path: string
-    timeout?: number
+    options?: {
+      retryAttempts?: number
+      rejectSelfSignedCertificates?: boolean
+      timeout?: number
+    }
   }) {
     if (!this.keyManager) {
       throw new Error('You need a signer to send a relay')
@@ -223,7 +242,7 @@ export class Relayer implements AbstractRelayer {
       session,
       keyManager: this.keyManager,
       provider: this.provider,
-      timeout
+      options,
     })
   }
 

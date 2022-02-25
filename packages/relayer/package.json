@@ -31,7 +31,7 @@
     "ts-jest": "^27.1.3"
   },
   "dependencies": {
-    "@pokt-foundation/pocketjs-provider": "^0.0.2",
+    "@pokt-foundation/pocketjs-provider": "workspace:*",
     "@pokt-foundation/pocketjs-signer": "^0.0.0",
     "@pokt-foundation/pocketjs-types": "^0.0.0",
     "js-sha256": "^0.9.0",

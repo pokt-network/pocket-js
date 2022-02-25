@@ -43,23 +43,23 @@ export class JsonRpcProvider implements AbstractProvider {
     rpcUrl,
     timeout = DEFAULT_TIMEOUT,
     retryAttempts = 0,
-    attemptsPerformed = 1
+    retriesPerformed = 0
   }: {
     route: V1RpcRoutes
     body: any
     rpcUrl?: string
     timeout?: number,
     retryAttempts?: number,
-    attemptsPerformed?: number
+    retriesPerformed?: number
   }): Promise<Response> {
-    const shouldRetryOnFailure = attemptsPerformed < retryAttempts
+    const shouldRetryOnFailure = retriesPerformed < retryAttempts
     const performRetry = () => this.perform({
       route,
       body,
       rpcUrl,
       timeout,
       retryAttempts,
-      attemptsPerformed: attemptsPerformed + 1
+      retriesPerformed: retriesPerformed + 1
     })
 
     const controller = new AbortController()
@@ -88,6 +88,8 @@ export class JsonRpcProvider implements AbstractProvider {
       }
     })
 
+    // Fetch can fail by either throwing due to a network error or responding with
+    // ok === false on 40x/50x so both situations be explicitly handled separately. 
     return (!rpcResponse.ok && shouldRetryOnFailure) ? performRetry() : rpcResponse
   }
 

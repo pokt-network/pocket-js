@@ -20,7 +20,7 @@ import {
 const DEFAULT_RELAYER_TIMEOUT = 5000
 
 export class Relayer implements AbstractRelayer {
-  readonly keyManager: KeyManager | AbstractSigner
+  readonly keyManager: KeyManager
   readonly provider: JsonRpcProvider
   readonly dispatchers: string[]
 

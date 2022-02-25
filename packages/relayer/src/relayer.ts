@@ -169,7 +169,10 @@ export class Relayer implements AbstractRelayer {
     const relay = await provider.relay(
       relayRequest,
       serviceNode.serviceUrl.toString(),
-      { timeout: options.timeout, retryAttempts: options.retryAttempts }
+      {
+        timeout: options.timeout,
+        retryAttempts: options.retryAttempts,
+      }
     )
 
     const relayResponse = await validateRelayResponse(relay)

@@ -1,8 +1,9 @@
 {
   "name": "@pokt-foundation/pocketjs-monorepo",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "scripts": {
     "build": "turbo run build",
+    "build:all": "turbo run build --no-cache",
     "build:signer": "turbo run build --scope=*signer* --no-deps",
     "build:pocket": "turbo run build --scope=@pokt-foundation/pocketjs --no-deps",
     "build:provider": "turbo run build --scope=*provider* --no-deps",

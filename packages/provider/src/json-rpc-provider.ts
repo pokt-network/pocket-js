@@ -19,12 +19,14 @@ import {
   TimeoutError,
 } from './errors'
 import { V1RpcRoutes } from './routes'
+import debug from 'debug'
 
 const DEFAULT_TIMEOUT = 5000
 
 export class JsonRpcProvider implements AbstractProvider {
   private rpcUrl: string
   private dispatchers: string[]
+  private logger
 
   constructor({
     rpcUrl = '',
@@ -35,6 +37,7 @@ export class JsonRpcProvider implements AbstractProvider {
   }) {
     this.rpcUrl = rpcUrl
     this.dispatchers = dispatchers ?? []
+    this.logger = debug('JsonRpcProvider')
   }
 
   private async perform({
@@ -388,6 +391,7 @@ export class JsonRpcProvider implements AbstractProvider {
         },
       }
     } catch (err: any) {
+      this.logger(JSON.stringify(err, Object.getOwnPropertyNames(err)))
       if (err.name === 'AbortError') {
         throw new TimeoutError()
       }
@@ -409,9 +413,13 @@ export class JsonRpcProvider implements AbstractProvider {
       })
 
       const relayResponse = await relayAttempt.json()
+      this.logger(JSON.stringify(relayResponse))
 
       return relayResponse
     } catch (err: any) {
+      this.logger(
+        `ERROR: ${JSON.stringify(err, Object.getOwnPropertyNames(err))}`
+      )
       if (err.name === 'AbortError') {
         throw new TimeoutError()
       }

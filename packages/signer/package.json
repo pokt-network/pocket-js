@@ -15,7 +15,7 @@
     "build": "microbundle",
     "dev": "microbundle watch"
   },
-  "types": "dist/index.d.ts",
+  "types": "dist/src/index.d.ts",
   "keywords": [],
   "author": "",
   "license": "ISC",

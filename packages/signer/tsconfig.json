@@ -8,7 +8,11 @@
     "declaration": true,
     "declarationDir": "dist"
   },
-  "references": [{ "path": "../provider" }, { "path": "../utils" }],
+  "references": [
+    { "path": "../provider" },
+    { "path": "../utils" },
+    { "path": "../types" }
+  ],
   "include": ["src"],
   "exclude": ["node_modules"]
 }

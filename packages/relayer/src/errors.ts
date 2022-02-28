@@ -30,9 +30,9 @@ export enum PocketCoreErrorCodes {
   HTTPExecutionError = 28,
   InvalidBlockHeightError = 60,
   InvalidSessionError = 14,
+  OutOfSyncRequestError = 75,
   OverServiceError = 71,
   RequestHashError = 74,
-  OutOfSyncRequestError = 75,
   UnsupportedBlockchainError = 76,
 }
 
@@ -103,6 +103,13 @@ export class DuplicateProofError extends PocketCoreError {
   }
 }
 
+export class OutOfSyncRequestError extends PocketCoreError {
+  constructor(code: number, message: string, ...params: any[]) {
+    super(code, message, ...params)
+    this.name = 'OutOfSyncRequestError'
+  }
+}
+
 export class OverServiceError extends PocketCoreError {
   constructor(code: number, message: string, ...params: any[]) {
     super(code, message, ...params)
@@ -114,13 +121,6 @@ export class HTTPExecutionError extends PocketCoreError {
   constructor(code: number, message: string, ...params: any[]) {
     super(code, message, ...params)
     this.name = 'HTTPExecutionError'
-  }
-}
-
-export class OutOfSyncRequestError extends PocketCoreError {
-  constructor(code: number, message: string, ...params: any[]) {
-    super(code, message, ...params)
-    this.name = 'OutOfSyncRequestError'
   }
 }
 
@@ -160,6 +160,9 @@ export function validateRelayResponse(relayResponse: any) {
         PocketCoreErrorCodes.InvalidBlockHeightError,
         relayResponse.error.message
       )
+    case PocketCoreErrorCodes.OutOfSyncRequestError:
+      throw new OutOfSyncRequestError(PocketCoreErrorCodes.OutOfSyncRequestError,
+        relayResponse.error.message)
     case PocketCoreErrorCodes.OverServiceError:
       throw new OverServiceError(
         PocketCoreErrorCodes.OverServiceError,
@@ -185,9 +188,6 @@ export function validateRelayResponse(relayResponse: any) {
         PocketCoreErrorCodes.InvalidSessionError,
         relayResponse.error.message
       )
-    case PocketCoreErrorCodes.OutOfSyncRequestError:
-      throw new OutOfSyncRequestError(PocketCoreErrorCodes.OutOfSyncRequestError,
-        relayResponse.error.message)
     default:
       throw new PocketCoreError(
         relayResponse.error.code,

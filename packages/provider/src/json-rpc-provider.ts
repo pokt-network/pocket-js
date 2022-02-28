@@ -411,6 +411,7 @@ export class JsonRpcProvider implements AbstractProvider {
           header: formattedHeader,
           nodes: formattedNodes,
           key,
+          blockHeight,
         },
       }
     } catch (err: any) {

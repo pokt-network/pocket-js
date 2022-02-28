@@ -72,6 +72,7 @@ export interface PocketAAT {
 }
 
 export interface Session {
+  readonly blockHeight: number
   readonly header: SessionHeader
   readonly key: string
   readonly nodes: Node[]

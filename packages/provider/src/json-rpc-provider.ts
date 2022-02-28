@@ -408,9 +408,10 @@ export class JsonRpcProvider implements AbstractProvider {
       return {
         blockHeight,
         session: {
+          blockHeight,
           header: formattedHeader,
-          nodes: formattedNodes,
           key,
+          nodes: formattedNodes,
         },
       }
     } catch (err: any) {

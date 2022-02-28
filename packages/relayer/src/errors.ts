@@ -32,6 +32,7 @@ export enum PocketCoreErrorCodes {
   InvalidSessionError = 14,
   OverServiceError = 71,
   RequestHashError = 74,
+  OutOfSyncRequestError = 75,
   UnsupportedBlockchainError = 76,
 }
 
@@ -116,6 +117,13 @@ export class HTTPExecutionError extends PocketCoreError {
   }
 }
 
+export class OutOfSyncRequestError extends PocketCoreError {
+  constructor(code: number, message: string, ...params: any[]) {
+    super(code, message, ...params)
+    this.name = 'OutOfSyncRequestError'
+  }
+}
+
 export function validateRelayResponse(relayResponse: any) {
   if ('response' in relayResponse && 'signature' in relayResponse) {
     return relayResponse.response
@@ -177,6 +185,9 @@ export function validateRelayResponse(relayResponse: any) {
         PocketCoreErrorCodes.InvalidSessionError,
         relayResponse.error.message
       )
+    case PocketCoreErrorCodes.OutOfSyncRequestError:
+      throw new OutOfSyncRequestError(PocketCoreErrorCodes.OutOfSyncRequestError,
+        relayResponse.error.message)
     default:
       throw new PocketCoreError(
         relayResponse.error.code,

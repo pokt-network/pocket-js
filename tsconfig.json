@@ -20,7 +20,8 @@
       "@pokt-foundation/pocketjs-signer": ["packages/signer"],
       "@pokt-foundation/pocketjs-provider": ["packages/provider"],
       "@pokt-foundation/pocketjs-types": ["packages/types"],
-      "@pokt-foundation/pocketjs-utils": ["packages/utils"]
+      "@pokt-foundation/pocketjs-utils": ["packages/utils"],
+      "@pokt-foundation/pocketjs-abstract-provider": ["packages/abstract-provider"]
     }
   }
 }

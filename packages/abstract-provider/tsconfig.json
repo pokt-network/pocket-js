@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Default",
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "allowJs": true,
+    "composite": true,
+    "declaration": true,
+    "declarationDir": "dist"
+  },
+  "references": [{ "path": "../types" }],
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "jest.config.js"]
+}

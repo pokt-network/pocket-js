@@ -63,6 +63,7 @@ importers:
 
   packages/provider:
     specifiers:
+      '@pokt-foundation/pocketjs-abstract-provider': workspace:*
       '@pokt-foundation/pocketjs-types': workspace:*
       '@types/jest': ^27.4.0
       '@typescript-eslint/eslint-plugin': ^5.10.2
@@ -75,6 +76,7 @@ importers:
       ts-jest: ^27.1.3
       typescript: ^4.5.5
     dependencies:
+      '@pokt-foundation/pocketjs-abstract-provider': link:../abstract-provider
       isomorphic-unfetch: 3.1.0
     devDependencies:
       '@pokt-foundation/pocketjs-types': link:../types
@@ -2387,7 +2389,7 @@ packages:
     resolution: {integrity: sha512-oagLNqpfNv7CvmyMoexMDNyVDSiq1rya0AEUgcLlNHdHgNl6U/hi8xY370n5y+ZIFEXOx0J4B1qF2NDjMRxklA==}
     engines: {node: '>=6.0.0'}
     dependencies:
-      pvutils: 1.1.2
+      pvutils: 1.1.3
     dev: false
 
   /astral-regex/2.0.0:
@@ -5633,8 +5635,8 @@ packages:
       tslib: 2.3.1
     dev: false
 
-  /pvutils/1.1.2:
-    resolution: {integrity: sha512-wlo0BUInyP+ZgBJHV8PnJW8S2HubdQfMMip8B9yXr9aFlauJFuF1jZ/RWFmzGYitC7GxkxqXdwbY9/R97v+Cqg==}
+  /pvutils/1.1.3:
+    resolution: {integrity: sha512-pMpnA0qRdFp32b1sJl1wOJNxZLQ2cbQx+k6tjNtZ8CpvVhNqEPRgivZ2WOUev2YMajecdH7ctUPDvEe87nariQ==}
     engines: {node: '>=6.0.0'}
     dev: false
 

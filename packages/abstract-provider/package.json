@@ -1,5 +1,5 @@
 {
-  "name": "@pokt-foundation/abstract-provider",
+  "name": "@pokt-foundation/pocketjs-abstract-provider",
   "version": "0.0.1",
   "description": "Abstract provider for all other providers to inherit",
   "type": "module",

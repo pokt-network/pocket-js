@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "@pokt-foundation/pocketjs-abstract-provider": "workspace:*",
-    "isomorphic-unfetch": "^3.1.0"
+    "isomorphic-unfetch": "^3.1.0",
+    "undici": "^5.0.0"
   }
 }

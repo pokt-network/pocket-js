@@ -9,6 +9,7 @@
     "declarationDir": "dist"
   },
   "references": [
+    { "path": "../abstract-provider" },
     { "path": "../provider" },
     { "path": "../utils" },
     { "path": "../types" }

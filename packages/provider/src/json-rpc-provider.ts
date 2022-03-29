@@ -12,7 +12,7 @@ import {
   SessionHeader,
   TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
-import { AbstractProvider } from './abstract-provider'
+import { AbstractProvider } from '@pokt-foundation/pocketjs-abstract-provider'
 import {
   DispatchersFailureError,
   RelayFailureError,

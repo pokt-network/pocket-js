@@ -75,9 +75,11 @@ importers:
       prettier: ^2.5.1
       ts-jest: ^27.1.3
       typescript: ^4.5.5
+      undici: ^5.0.0
     dependencies:
       '@pokt-foundation/pocketjs-abstract-provider': link:../abstract-provider
       isomorphic-unfetch: 3.1.0
+      undici: 5.0.0
     devDependencies:
       '@pokt-foundation/pocketjs-types': link:../types
       '@types/jest': 27.4.0
@@ -6486,6 +6488,11 @@ packages:
       has-symbols: 1.0.2
       which-boxed-primitive: 1.0.2
     dev: true
+
+  /undici/5.0.0:
+    resolution: {integrity: sha512-VhUpiZ3No1DOPPQVQnsDZyfcbTTcHdcgWej1PdFnSvOeJmOVDgiOHkunJmBLfmjt4CqgPQddPVjSWW0dsTs5Yg==}
+    engines: {node: '>=12.18'}
+    dev: false
 
   /unfetch/4.2.0:
     resolution: {integrity: sha512-F9p7yYCn6cIW9El1zi0HI6vqpeIvBsr3dSuRO6Xuppb1u5rXpCPmMvLSyECLhybr9isec8Ohl0hPekMVrEinDA==}

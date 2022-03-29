@@ -92,7 +92,7 @@ importers:
 
   packages/relayer:
     specifiers:
-      '@pokt-foundation/pocketjs-abstract-provider': ^0.0.1
+      '@pokt-foundation/pocketjs-abstract-provider': workspace:*
       '@pokt-foundation/pocketjs-provider': workspace:*
       '@pokt-foundation/pocketjs-signer': workspace:*
       '@pokt-foundation/pocketjs-types': workspace:*
@@ -108,6 +108,7 @@ importers:
       prettier-eslint: ^13.0.0
       ts-jest: ^27.1.3
     dependencies:
+      '@pokt-foundation/pocketjs-abstract-provider': link:../abstract-provider
       '@pokt-foundation/pocketjs-provider': link:../provider
       '@pokt-foundation/pocketjs-signer': link:../signer
       js-sha256: 0.9.0

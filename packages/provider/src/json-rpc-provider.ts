@@ -20,7 +20,7 @@ import {
 } from './errors'
 import { V1RpcRoutes } from './routes'
 
-const DEFAULT_TIMEOUT = 5000
+const DEFAULT_TIMEOUT = 1000
 
 export class JsonRpcProvider implements AbstractProvider {
   private rpcUrl: string
@@ -347,7 +347,7 @@ export class JsonRpcProvider implements AbstractProvider {
     } = {
       retryAttempts: 0,
       rejectSelfSignedCertificates: false,
-      timeout: 5000,
+      timeout: DEFAULT_TIMEOUT,
     }
   ): Promise<DispatchResponse> {
     if (!this.dispatchers.length) {
@@ -432,7 +432,7 @@ export class JsonRpcProvider implements AbstractProvider {
     } = {
       retryAttempts: 0,
       rejectSelfSignedCertificates: false,
-      timeout: 5000,
+      timeout: DEFAULT_TIMEOUT,
     }
   ): Promise<unknown> {
     try {

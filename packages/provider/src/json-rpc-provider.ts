@@ -1,4 +1,5 @@
-import fetch from 'isomorphic-unfetch'
+import AbortController from 'abort-controller'
+import { fetch, Response } from 'undici'
 import {
   Account,
   AccountWithTransactions,
@@ -12,7 +13,7 @@ import {
   SessionHeader,
   TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
-import { AbstractProvider } from './abstract-provider'
+import { AbstractProvider } from '@pokt-foundation/pocketjs-abstract-provider'
 import {
   DispatchersFailureError,
   RelayFailureError,
@@ -21,7 +22,7 @@ import {
 import { V1RpcRoutes } from './routes'
 import debug from 'debug'
 
-const DEFAULT_TIMEOUT = 5000
+const DEFAULT_TIMEOUT = 1000
 
 export class JsonRpcProvider implements AbstractProvider {
   private rpcUrl: string
@@ -45,12 +46,27 @@ export class JsonRpcProvider implements AbstractProvider {
     body,
     rpcUrl,
     timeout = DEFAULT_TIMEOUT,
+    retryAttempts = 0,
+    retriesPerformed = 0,
   }: {
     route: V1RpcRoutes
     body: any
     rpcUrl?: string
     timeout?: number
+    retryAttempts?: number
+    retriesPerformed?: number
   }): Promise<Response> {
+    const shouldRetryOnFailure = retriesPerformed < retryAttempts
+    const performRetry = () =>
+      this.perform({
+        route,
+        body,
+        rpcUrl,
+        timeout,
+        retryAttempts,
+        retriesPerformed: retriesPerformed + 1,
+      })
+
     const controller = new AbortController()
     setTimeout(() => controller.abort(), timeout)
 
@@ -64,14 +80,24 @@ export class JsonRpcProvider implements AbstractProvider {
 
     const rpcResponse = await fetch(`${finalRpcUrl}${route}`, {
       method: 'POST',
-      signal: controller.signal,
+      signal: controller.signal as AbortSignal,
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
+    }).catch((error) => {
+      if (shouldRetryOnFailure) {
+        return performRetry()
+      } else {
+        throw error
+      }
     })
 
-    return rpcResponse
+    // Fetch can fail by either throwing due to a network error or responding with
+    // ok === false on 40x/50x so both situations be explicitly handled separately.
+    return !rpcResponse.ok && shouldRetryOnFailure
+      ? performRetry()
+      : rpcResponse
   }
 
   async getBalance(address: string | Promise<string>): Promise<bigint> {
@@ -79,7 +105,7 @@ export class JsonRpcProvider implements AbstractProvider {
       route: V1RpcRoutes.QueryBalance,
       body: { address: await address },
     })
-    const { balance } = await res.json()
+    const { balance } = (await res.json()) as { balance: bigint }
     return balance as bigint
   }
 
@@ -90,7 +116,7 @@ export class JsonRpcProvider implements AbstractProvider {
       route: V1RpcRoutes.QueryAccountTxs,
       body: { address: await address },
     })
-    const txs = await txsRes.json()
+    const txs = (await txsRes.json()) as any
 
     if (!('total_count' in txs)) {
       throw new Error('RPC Error')
@@ -112,8 +138,8 @@ export class JsonRpcProvider implements AbstractProvider {
       route: V1RpcRoutes.QueryNode,
       body: { address: await address },
     })
-    const node = await nodeRes.json()
-    const app = await appRes.json()
+    const node = (await nodeRes.json()) as any
+    const app = (await appRes.json()) as any
 
     if (!('service_url' in node) && 'max_relays' in app) {
       return 'app'
@@ -136,7 +162,7 @@ export class JsonRpcProvider implements AbstractProvider {
       body: { address: await signerAddress, txHex: await signedTransaction },
     })
 
-    const transactionResponse = await res.json()
+    const transactionResponse = (await res.json()) as TransactionResponse
 
     if (!('hash' in transactionResponse)) {
       throw new Error('RPC Error')
@@ -152,7 +178,7 @@ export class JsonRpcProvider implements AbstractProvider {
       body: { height: blockNumber },
     })
 
-    const block = await res.json()
+    const block = (await res.json()) as Block
 
     if (!('block' in block)) {
       throw new Error('RPC Error')
@@ -167,7 +193,7 @@ export class JsonRpcProvider implements AbstractProvider {
       body: { hash: transactionHash },
     })
 
-    const tx = await res.json()
+    const tx = (await res.json()) as TransactionResponse
 
     if (!('hash' in tx)) {
       throw new Error('RPC Error')
@@ -182,7 +208,7 @@ export class JsonRpcProvider implements AbstractProvider {
       body: {},
     })
 
-    const { height } = await res.json()
+    const { height } = (await res.json()) as { height: number }
 
     if (!height) {
       throw new Error('RPC Error')
@@ -203,7 +229,7 @@ export class JsonRpcProvider implements AbstractProvider {
       route: V1RpcRoutes.QueryNode,
       body: { address: await address },
     })
-    const node = await res.json()
+    const node = (await res.json()) as any
 
     if (!('chains' in node)) {
       throw new Error('RPC Error')
@@ -228,7 +254,7 @@ export class JsonRpcProvider implements AbstractProvider {
       stakedTokens: tokens.toString(),
       status,
       unstakingTime: unstaking_time,
-    }
+    } as Node
   }
 
   getApps(getAppOption: GetAppOptions): Promise<App[]> {
@@ -243,7 +269,7 @@ export class JsonRpcProvider implements AbstractProvider {
       route: V1RpcRoutes.QueryApp,
       body: { address: await address },
     })
-    const app = await res.json()
+    const app = (await res.json()) as any
 
     if (!('chains' in app)) {
       throw new Error('RPC Error')
@@ -260,7 +286,7 @@ export class JsonRpcProvider implements AbstractProvider {
       maxRelays: max_relays ?? 0,
       stakedTokens: staked_tokens ?? 0,
       status,
-    }
+    } as App
   }
 
   async getAccount(address: string | Promise<string>): Promise<Account> {
@@ -268,7 +294,7 @@ export class JsonRpcProvider implements AbstractProvider {
       route: V1RpcRoutes.QueryAccount,
       body: { address: await address },
     })
-    const account = await res.json()
+    const account = (await res.json()) as any
 
     if (!('address' in account)) {
       throw new Error('RPC Error')
@@ -294,8 +320,8 @@ export class JsonRpcProvider implements AbstractProvider {
       route: V1RpcRoutes.QueryAccountTxs,
       body: { address: await address },
     })
-    const account = await accountRes.json()
-    const txs = await txsRes.json()
+    const account = (await accountRes.json()) as any
+    const txs = (await txsRes.json()) as any
 
     if (!('address' in account)) {
       throw new Error('RPC Error')
@@ -323,9 +349,8 @@ export class JsonRpcProvider implements AbstractProvider {
       rejectSelfSignedCertificates?: boolean
       timeout?: number
     } = {
-      retryAttempts: 3,
+      retryAttempts: 0,
       rejectSelfSignedCertificates: false,
-      timeout: 5000,
     }
   ): Promise<DispatchResponse> {
     if (!this.dispatchers.length) {
@@ -340,10 +365,10 @@ export class JsonRpcProvider implements AbstractProvider {
           chain: request.sessionHeader.chain,
           session_height: request.sessionHeader.sessionBlockHeight,
         },
-        timeout: options.timeout,
+        ...options
       })
 
-      const dispatch = await dispatchRes.json()
+      const dispatch = (await dispatchRes.json()) as any
 
       if (!('session' in dispatch)) {
         throw new Error('RPC Error')
@@ -385,9 +410,10 @@ export class JsonRpcProvider implements AbstractProvider {
       return {
         blockHeight,
         session: {
+          blockHeight,
           header: formattedHeader,
-          nodes: formattedNodes,
           key,
+          nodes: formattedNodes,
         },
       }
     } catch (err: any) {
@@ -402,14 +428,21 @@ export class JsonRpcProvider implements AbstractProvider {
   async relay(
     request,
     rpcUrl: string,
-    { timeout }: { timeout?: number } = { timeout: DEFAULT_TIMEOUT }
+    options: {
+      retryAttempts?: number
+      rejectSelfSignedCertificates?: boolean
+      timeout?: number
+    } = {
+      retryAttempts: 0,
+      rejectSelfSignedCertificates: false,
+    }
   ): Promise<unknown> {
     try {
       const relayAttempt = await this.perform({
         route: V1RpcRoutes.ClientRelay,
         body: request,
         rpcUrl,
-        timeout,
+        ...options,
       })
 
       const relayResponse = await relayAttempt.json()

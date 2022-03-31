@@ -1,4 +1,4 @@
-import { AbstractProvider } from '@pokt-foundation/pocketjs-provider'
+import { AbstractProvider } from '@pokt-foundation/pocketjs-abstract-provider'
 import { TransactionResponse } from '@pokt-foundation/pocketjs-types'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

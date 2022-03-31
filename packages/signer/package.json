@@ -1,6 +1,6 @@
 {
   "name": "@pokt-foundation/pocketjs-signer",
-  "version": "0.0.2",
+  "version": "0.0.7",
   "description": "Signer for Pocket Network V0 accounts",
   "type": "module",
   "source": "src/index.ts",
@@ -15,11 +15,12 @@
     "build": "microbundle",
     "dev": "microbundle watch"
   },
-  "types": "dist/index.d.ts",
+  "types": "dist/src/index.d.ts",
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
+    "@pokt-foundation/pocketjs-types": "workspace:*",
     "@types/jest": "^27.4.0",
     "@typescript-eslint/eslint-plugin": "^5.10.2",
     "@typescript-eslint/parser": "^5.10.2",
@@ -32,9 +33,9 @@
   },
   "dependencies": {
     "@noble/ed25519": "^1.5.3",
-    "@pokt-foundation/pocketjs-provider": "^0.0.0",
-    "@pokt-foundation/pocketjs-types": "^0.0.0",
-    "@pokt-foundation/pocketjs-utils": "^0.0.0",
+    "@pokt-foundation/pocketjs-abstract-provider": "workspace:*",
+    "@pokt-foundation/pocketjs-provider": "workspace:*",
+    "@pokt-foundation/pocketjs-utils": "workspace:*",
     "hex-lite": "^1.5.0",
     "libsodium-wrappers": "^0.7.9"
   }

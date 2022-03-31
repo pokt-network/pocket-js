@@ -1,6 +1,6 @@
 import Sodium from 'libsodium-wrappers'
 import { toUint8Array, fromUint8Array } from 'hex-lite'
-import { AbstractProvider } from '@pokt-foundation/pocketjs-provider'
+import { AbstractProvider } from '@pokt-foundation/pocketjs-abstract-provider'
 import { TransactionResponse } from '@pokt-foundation/pocketjs-types'
 import { AbstractSigner, TransactionRequest } from './abstract-signer'
 import { KeyManager } from './key-manager'

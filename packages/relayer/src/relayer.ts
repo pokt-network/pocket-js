@@ -17,10 +17,8 @@ import {
   validateRelayResponse,
 } from './errors'
 
-const DEFAULT_RELAYER_TIMEOUT = 5000
-
 export class Relayer implements AbstractRelayer {
-  readonly keyManager: KeyManager | AbstractSigner
+  readonly keyManager: KeyManager
   readonly provider: JsonRpcProvider
   readonly dispatchers: string[]
 
@@ -37,7 +35,6 @@ export class Relayer implements AbstractRelayer {
     options = {
       retryAttempts: 3,
       rejectSelfSignedCertificates: false,
-      timeout: 5000,
     },
   }: {
     applicationPubKey?: string
@@ -75,7 +72,10 @@ export class Relayer implements AbstractRelayer {
     pocketAAT,
     provider,
     session,
-    timeout = DEFAULT_RELAYER_TIMEOUT,
+    options = {
+      retryAttempts: 0,
+      rejectSelfSignedCertificates: false,
+    },
   }: {
     blockchain: string
     data: string
@@ -87,7 +87,11 @@ export class Relayer implements AbstractRelayer {
     pocketAAT: PocketAAT
     provider: JsonRpcProvider
     session: Session
-    timeout?: number
+    options?: {
+      retryAttempts?: number
+      rejectSelfSignedCertificates?: boolean
+      timeout?: number
+    }
   }) {
     if (!keyManager) {
       throw new EmptyKeyManagerError('You need a signer to send a relay')
@@ -161,7 +165,7 @@ export class Relayer implements AbstractRelayer {
     const relay = await provider.relay(
       relayRequest,
       serviceNode.serviceUrl.toString(),
-      { timeout }
+      options
     )
 
     const relayResponse = await validateRelayResponse(relay)
@@ -195,6 +199,10 @@ export class Relayer implements AbstractRelayer {
     path = '',
     pocketAAT,
     session,
+    options = {
+      retryAttempts: 0,
+      rejectSelfSignedCertificates: false,
+    },
   }: {
     data: string
     blockchain: string
@@ -204,7 +212,11 @@ export class Relayer implements AbstractRelayer {
     session: Session
     node: Node
     path: string
-    timeout?: number
+    options?: {
+      retryAttempts?: number
+      rejectSelfSignedCertificates?: boolean
+      timeout?: number
+    }
   }) {
     if (!this.keyManager) {
       throw new Error('You need a signer to send a relay')
@@ -222,6 +234,7 @@ export class Relayer implements AbstractRelayer {
       session,
       keyManager: this.keyManager,
       provider: this.provider,
+      options,
     })
   }
 

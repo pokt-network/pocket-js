@@ -10,10 +10,11 @@
     "declarationDir": "dist"
   },
   "references": [
-    { "path": "../utils" },
-    { "path": "../signer" },
+    { "path": "../abstract-provider" },
     { "path": "../provider" },
-    { "path": "../types" }
+    { "path": "../signer" },
+    { "path": "../types" },
+    { "path": "../utils" }
   ],
   "include": ["src"],
   "exclude": ["node_modules", "dist", "jest.config.js"]

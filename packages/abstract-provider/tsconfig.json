@@ -4,16 +4,12 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "allowJs": true,
     "composite": true,
     "declaration": true,
     "declarationDir": "dist"
   },
-  "references": [
-    { "path": "../abstract-provider" },
-    { "path": "../provider" },
-    { "path": "../utils" },
-    { "path": "../types" }
-  ],
+  "references": [{ "path": "../types" }],
   "include": ["src"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist", "jest.config.js"]
 }

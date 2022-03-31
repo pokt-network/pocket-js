@@ -348,7 +348,6 @@ export class JsonRpcProvider implements AbstractProvider {
     } = {
       retryAttempts: 0,
       rejectSelfSignedCertificates: false,
-      timeout: DEFAULT_TIMEOUT,
     }
   ): Promise<DispatchResponse> {
     if (!this.dispatchers.length) {
@@ -363,8 +362,7 @@ export class JsonRpcProvider implements AbstractProvider {
           chain: request.sessionHeader.chain,
           session_height: request.sessionHeader.sessionBlockHeight,
         },
-        timeout: options.timeout,
-        retryAttempts: options.retryAttempts,
+        ...options
       })
 
       const dispatch = (await dispatchRes.json()) as any
@@ -433,7 +431,6 @@ export class JsonRpcProvider implements AbstractProvider {
     } = {
       retryAttempts: 0,
       rejectSelfSignedCertificates: false,
-      timeout: DEFAULT_TIMEOUT,
     }
   ): Promise<unknown> {
     try {
@@ -441,8 +438,7 @@ export class JsonRpcProvider implements AbstractProvider {
         route: V1RpcRoutes.ClientRelay,
         body: request,
         rpcUrl,
-        timeout: options.timeout,
-        retryAttempts: options.retryAttempts,
+        ...options,
       })
 
       const relayResponse = await relayAttempt.json()

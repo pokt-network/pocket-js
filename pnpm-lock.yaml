@@ -68,8 +68,8 @@ importers:
       '@types/jest': ^27.4.0
       '@typescript-eslint/eslint-plugin': ^5.10.2
       '@typescript-eslint/parser': ^5.10.2
-      debug: ^4.3.3
       abort-controller: ^3.0.0
+      debug: ^4.3.3
       eslint: 7.32.0
       isomorphic-unfetch: ^3.1.0
       jest: ^27.4.7
@@ -79,13 +79,13 @@ importers:
       typescript: ^4.5.5
       undici: ^5.0.0
     dependencies:
-      debug: 4.3.3
       '@pokt-foundation/pocketjs-abstract-provider': link:../abstract-provider
       abort-controller: 3.0.0
+      debug: 4.3.3
       isomorphic-unfetch: 3.1.0
       undici: 5.0.0
     devDependencies:
-      '@pokt-foundation/pocketjs-types': 0.0.0
+      '@pokt-foundation/pocketjs-types': link:../types
       '@types/jest': 27.4.0
       '@typescript-eslint/eslint-plugin': 5.10.2_3e19df30e549eb9672c3b79dc40c1d5f
       '@typescript-eslint/parser': 5.10.2_eslint@7.32.0+typescript@4.5.5

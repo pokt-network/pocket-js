@@ -1,3 +1,4 @@
+import debug from 'debug'
 import Sodium from 'libsodium-wrappers'
 import { toUint8Array, fromUint8Array } from 'hex-lite'
 import {
@@ -33,7 +34,12 @@ export class KeyManager {
 
   async sign(payload: string): Promise<string> {
     await Sodium.ready
-    return fromUint8Array(Sodium.crypto_sign_detached(toUint8Array(payload), toUint8Array(this.getPrivateKey())))
+    return fromUint8Array(
+      Sodium.crypto_sign_detached(
+        toUint8Array(payload),
+        toUint8Array(this.getPrivateKey())
+      )
+    )
   }
 
   static async createRandom(): Promise<KeyManager> {
@@ -42,6 +48,9 @@ export class KeyManager {
     const privateKey = fromUint8Array(keypair.privateKey)
     const publicKey = fromUint8Array(keypair.publicKey)
     const addr = await getAddressFromPublicKey(publicKey)
+
+    const logger = debug('KeyManager')
+    logger(`Created account with public key ${publicKey} and address ${addr}`)
 
     return new KeyManager({ privateKey, publicKey, address: addr })
   }

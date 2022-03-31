@@ -1,3 +1,4 @@
+import debug from 'debug'
 import AbortController from 'abort-controller'
 import { fetch, Response } from 'undici'
 import {
@@ -20,7 +21,6 @@ import {
   TimeoutError,
 } from './errors'
 import { V1RpcRoutes } from './routes'
-import debug from 'debug'
 
 const DEFAULT_TIMEOUT = 1000
 
@@ -56,6 +56,7 @@ export class JsonRpcProvider implements AbstractProvider {
     retryAttempts?: number
     retriesPerformed?: number
   }): Promise<Response> {
+    const startTime = process.hrtime()
     const shouldRetryOnFailure = retriesPerformed < retryAttempts
     const performRetry = () =>
       this.perform({
@@ -78,7 +79,9 @@ export class JsonRpcProvider implements AbstractProvider {
         ]
       : this.rpcUrl
 
-    const rpcResponse = await fetch(`${finalRpcUrl}${route}`, {
+    const routedRpcUrl = `${finalRpcUrl}${route}`
+
+    const rpcResponse = await fetch(routedRpcUrl, {
       method: 'POST',
       signal: controller.signal as AbortSignal,
       headers: {
@@ -86,12 +89,20 @@ export class JsonRpcProvider implements AbstractProvider {
       },
       body: JSON.stringify(body),
     }).catch((error) => {
+      debug(`${routedRpcUrl} attempt ${retriesPerformed + 1} failure`)
       if (shouldRetryOnFailure) {
         return performRetry()
       } else {
         throw error
       }
     })
+
+    const totalTime = process.hrtime(startTime)
+    debug(
+      `${routedRpcUrl} (attempt ${
+        retriesPerformed + 1
+      }) CALL DURATION: ${totalTime}`
+    )
 
     // Fetch can fail by either throwing due to a network error or responding with
     // ok === false on 40x/50x so both situations be explicitly handled separately.
@@ -365,7 +376,7 @@ export class JsonRpcProvider implements AbstractProvider {
           chain: request.sessionHeader.chain,
           session_height: request.sessionHeader.sessionBlockHeight,
         },
-        ...options
+        ...options,
       })
 
       const dispatch = (await dispatchRes.json()) as any

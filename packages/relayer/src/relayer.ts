@@ -1,3 +1,4 @@
+import debug from 'debug'
 import sha3 from 'js-sha3'
 import { JsonRpcProvider } from '@pokt-foundation/pocketjs-provider'
 import { AbstractSigner, KeyManager } from '@pokt-foundation/pocketjs-signer'
@@ -93,17 +94,23 @@ export class Relayer implements AbstractRelayer {
       timeout?: number
     }
   }) {
+    const logger = debug('Relayer')
+    const startTime = process.hrtime()
+
     if (!keyManager) {
+      logger('Found error: no keymanager')
       throw new EmptyKeyManagerError('You need a signer to send a relay')
     }
 
     const serviceNode = node ?? Relayer.getRandomSessionNode(session)
 
     if (!serviceNode) {
+      logger('Found error: no service node to use')
       throw new NoServiceNodeError(`Couldn't find a service node to use.`)
     }
 
     if (!this.isNodeInSession(session, serviceNode)) {
+      logger('Found error: provided node not in session')
       throw new ServiceNodeNotInSessionError(
         `Provided node is not in the current session`
       )
@@ -161,6 +168,9 @@ export class Relayer implements AbstractRelayer {
       meta: relayMeta,
       proof: relayProof,
     }
+
+    const totalTime = process.hrtime(startTime)
+    logger(`Relay data structure generated, TOOK ${totalTime}`)
 
     const relay = await provider.relay(
       relayRequest,

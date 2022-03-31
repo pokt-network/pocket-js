@@ -69,6 +69,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^5.10.2
       '@typescript-eslint/parser': ^5.10.2
       abort-controller: ^3.0.0
+      debug: ^4.3.3
       eslint: 7.32.0
       isomorphic-unfetch: ^3.1.0
       jest: ^27.4.7
@@ -80,6 +81,7 @@ importers:
     dependencies:
       '@pokt-foundation/pocketjs-abstract-provider': link:../abstract-provider
       abort-controller: 3.0.0
+      debug: 4.3.3
       isomorphic-unfetch: 3.1.0
       undici: 5.0.0
     devDependencies:
@@ -103,6 +105,7 @@ importers:
       '@types/jest': ^27.4.0
       '@typescript-eslint/eslint-plugin': ^5.10.2
       '@typescript-eslint/parser': ^5.10.2
+      debug: ^4.3.3
       eslint: 7.32.0
       jest: ^27.4.7
       js-sha256: ^0.9.0
@@ -115,6 +118,7 @@ importers:
       '@pokt-foundation/pocketjs-abstract-provider': link:../abstract-provider
       '@pokt-foundation/pocketjs-provider': link:../provider
       '@pokt-foundation/pocketjs-signer': link:../signer
+      debug: 4.3.3
       js-sha256: 0.9.0
       js-sha3: 0.8.0
     devDependencies:
@@ -139,6 +143,7 @@ importers:
       '@types/jest': ^27.4.0
       '@typescript-eslint/eslint-plugin': ^5.10.2
       '@typescript-eslint/parser': ^5.10.2
+      debug: ^4.3.3
       eslint: 7.32.0
       hex-lite: ^1.5.0
       jest: ^27.4.7
@@ -152,6 +157,7 @@ importers:
       '@pokt-foundation/pocketjs-abstract-provider': link:../abstract-provider
       '@pokt-foundation/pocketjs-provider': link:../provider
       '@pokt-foundation/pocketjs-utils': link:../utils
+      debug: 4.3.3
       hex-lite: 1.5.0
       libsodium-wrappers: 0.7.9
     devDependencies:
@@ -3000,7 +3006,6 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
-    dev: true
 
   /decimal.js/10.3.1:
     resolution: {integrity: sha512-V0pfhfr8suzyPGOx3nmq4aHqabehUZn6Ch9kyFpV79TGDTWFmHqUqXdabR7QHqxzrYolF4+tVmJhUG4OURg5dQ==}
@@ -4928,7 +4933,6 @@ packages:
 
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
-    dev: true
 
   /msrcrypto/1.5.8:
     resolution: {integrity: sha512-ujZ0TRuozHKKm6eGbKHfXef7f+esIhEckmThVnz7RNyiOJd7a6MXj2JGBoL9cnPDW+JMG16MoTUh5X+XXjI66Q==}

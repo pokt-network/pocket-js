@@ -1,3 +1,4 @@
+import AbortController from 'abort-controller'
 import { fetch, Response } from 'undici'
 import {
   Account,
@@ -76,7 +77,7 @@ export class JsonRpcProvider implements AbstractProvider {
 
     const rpcResponse = await fetch(`${finalRpcUrl}${route}`, {
       method: 'POST',
-      signal: controller.signal,
+      signal: controller.signal as AbortSignal,
       headers: {
         'Content-Type': 'application/json',
       },

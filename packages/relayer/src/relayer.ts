@@ -17,8 +17,6 @@ import {
   validateRelayResponse,
 } from './errors'
 
-const DEFAULT_RELAYER_TIMEOUT = 5000
-
 export class Relayer implements AbstractRelayer {
   readonly keyManager: KeyManager
   readonly provider: JsonRpcProvider
@@ -37,7 +35,6 @@ export class Relayer implements AbstractRelayer {
     options = {
       retryAttempts: 3,
       rejectSelfSignedCertificates: false,
-      timeout: 5000,
     },
   }: {
     applicationPubKey?: string
@@ -78,7 +75,6 @@ export class Relayer implements AbstractRelayer {
     options = {
       retryAttempts: 0,
       rejectSelfSignedCertificates: false,
-      timeout: DEFAULT_RELAYER_TIMEOUT,
     },
   }: {
     blockchain: string
@@ -169,10 +165,7 @@ export class Relayer implements AbstractRelayer {
     const relay = await provider.relay(
       relayRequest,
       serviceNode.serviceUrl.toString(),
-      {
-        timeout: options.timeout,
-        retryAttempts: options.retryAttempts,
-      }
+      options
     )
 
     const relayResponse = await validateRelayResponse(relay)
@@ -209,7 +202,6 @@ export class Relayer implements AbstractRelayer {
     options = {
       retryAttempts: 0,
       rejectSelfSignedCertificates: false,
-      timeout: DEFAULT_RELAYER_TIMEOUT,
     },
   }: {
     data: string

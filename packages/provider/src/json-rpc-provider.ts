@@ -1,3 +1,4 @@
+import AbortController from 'abort-controller'
 import { fetch, Response } from 'undici'
 import {
   Account,
@@ -20,7 +21,7 @@ import {
 } from './errors'
 import { V1RpcRoutes } from './routes'
 
-const DEFAULT_TIMEOUT = 5000
+const DEFAULT_TIMEOUT = 1000
 
 export class JsonRpcProvider implements AbstractProvider {
   private rpcUrl: string
@@ -76,7 +77,7 @@ export class JsonRpcProvider implements AbstractProvider {
 
     const rpcResponse = await fetch(`${finalRpcUrl}${route}`, {
       method: 'POST',
-      signal: controller.signal,
+      signal: controller.signal as AbortSignal,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -347,7 +348,6 @@ export class JsonRpcProvider implements AbstractProvider {
     } = {
       retryAttempts: 0,
       rejectSelfSignedCertificates: false,
-      timeout: 5000,
     }
   ): Promise<DispatchResponse> {
     if (!this.dispatchers.length) {
@@ -362,8 +362,7 @@ export class JsonRpcProvider implements AbstractProvider {
           chain: request.sessionHeader.chain,
           session_height: request.sessionHeader.sessionBlockHeight,
         },
-        timeout: options.timeout,
-        retryAttempts: options.retryAttempts,
+        ...options
       })
 
       const dispatch = (await dispatchRes.json()) as any
@@ -432,7 +431,6 @@ export class JsonRpcProvider implements AbstractProvider {
     } = {
       retryAttempts: 0,
       rejectSelfSignedCertificates: false,
-      timeout: 5000,
     }
   ): Promise<unknown> {
     try {
@@ -440,8 +438,7 @@ export class JsonRpcProvider implements AbstractProvider {
         route: V1RpcRoutes.ClientRelay,
         body: request,
         rpcUrl,
-        timeout: options.timeout,
-        retryAttempts: options.retryAttempts,
+        ...options,
       })
 
       const relayResponse = await relayAttempt.json()

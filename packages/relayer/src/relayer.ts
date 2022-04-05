@@ -29,6 +29,17 @@ export class Relayer implements AbstractRelayer {
     this.dispatchers = dispatchers
   }
 
+  /**
+   * Performs a dispatch request to obtain a new session. Fails if no dispatcher is provided through the provider.
+   * @param {string} applicationPubKey - The application's public key.
+   * @param {string} chain - The chain for the session.
+   * @param {string} sessionBlockHeight - The session block height. Defaults to 0, as usually you'd want the latest session.
+   * @param {object} options - The options available to tweak the request itself.
+   * @param {number} options.retryAttempts - The number of retries to perform if the first call fails.
+   * @param {boolean} options.rejectSelfSignedCertificates - Option to reject self signed certificates or not.
+   * @param {timeout} options.timeout - Timeout before the call fails. In milliseconds.
+   * @returns {DispatchResponse} - The dispatch response from the dispatcher node.
+   * */
   async getNewSession({
     applicationPubKey,
     chain,
@@ -200,6 +211,21 @@ export class Relayer implements AbstractRelayer {
     }
   }
 
+  /**
+   * Sends a relay to the network.
+   * @param {string} blockchain - The chain for the session.
+   * @param {string} data - The data to send, stringified.
+   * @param {object} headers - The headers to include in the call, if any.
+   * @param {Node} node - The node to send the relay to. The node must belong to the current session.
+   * @param {string} path - The path to query in the relay e.g "/v1/query/node". Useful for chains like AVAX.
+   * @param {AAT} pocketAAT - The pocket AAT used to authenticate the relay.
+   * @param {Session} session - The current session the app is assigned to.
+   * @param {object} options - The options available to tweak the request itself.
+   * @param {number} options.retryAttempts - The number of retries to perform if the first call fails.
+   * @param {boolean} options.rejectSelfSignedCertificates - Option to reject self signed certificates or not.
+   * @param {timeout} options.timeout - Timeout before the call fails. In milliseconds.
+   * @returns {RelayResponse} - The relay response.
+   * */
   async relay({
     blockchain,
     data,

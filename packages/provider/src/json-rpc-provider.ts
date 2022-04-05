@@ -24,6 +24,10 @@ import { V1RpcRoutes } from './routes'
 
 const DEFAULT_TIMEOUT = 1000
 
+/**
+ * A JSONRPCProvider lets you query data from the chain and send relays to the network.
+ * Node only, not isomorphic.
+ *  **/
 export class JsonRpcProvider implements AbstractProvider {
   private rpcUrl: string
   private dispatchers: string[]
@@ -111,6 +115,11 @@ export class JsonRpcProvider implements AbstractProvider {
       : rpcResponse
   }
 
+  /**
+   * Fetches the provided address's balance.
+   * @param {string} address - The address to query.
+   * @returns {bigint} - The address's balance.
+   * */
   async getBalance(address: string | Promise<string>): Promise<bigint> {
     const res = await this.perform({
       route: V1RpcRoutes.QueryBalance,
@@ -120,6 +129,11 @@ export class JsonRpcProvider implements AbstractProvider {
     return balance as bigint
   }
 
+  /**
+   * Fetches the provided address's transaction count.
+   * @param {string} address - The address to query.
+   * @returns {number} - The address's transaction count.
+   * */
   async getTransactionCount(
     address: string | Promise<string>
   ): Promise<number> {
@@ -138,6 +152,11 @@ export class JsonRpcProvider implements AbstractProvider {
     return total_count
   }
 
+  /**
+   * Gets the address's acount type (node, app, or account).
+   * @param {string} address - The address to query.
+   * @returns {'node' | 'app' | 'account'} - The address's account type.
+   * */
   async getType(
     address: string | Promise<string>
   ): Promise<'node' | 'app' | 'account'> {
@@ -163,7 +182,11 @@ export class JsonRpcProvider implements AbstractProvider {
     return 'account'
   }
 
-  // Txs
+  /**
+   * Sends a signed transaction from this provider.
+   * @param {TransactionRequest} transaction - The transaction to sign, formatted as a `TransactionRequest`.
+   * @returns {TransactionResponse} - The network's response to the transaction.
+   * */
   async sendTransaction(
     signerAddress: string | Promise<string>,
     signedTransaction: string | Promise<string>
@@ -182,7 +205,11 @@ export class JsonRpcProvider implements AbstractProvider {
     return transactionResponse
   }
 
-  // Network
+  /**
+   * Gets an specific block specified by its block number.
+   * @param {number} blockNumber - the number (height) of the block to query.
+   * @returns {Block} - The block requested.
+   * */
   async getBlock(blockNumber: number): Promise<Block> {
     const res = await this.perform({
       route: V1RpcRoutes.QueryBlock,
@@ -198,6 +225,11 @@ export class JsonRpcProvider implements AbstractProvider {
     return block
   }
 
+  /**
+   * Gets an specific transaction specified by its hash.
+   * @param {string} transactionHash - the hash of the transaction to get.
+   * @returns {TransactionResponse} - The transaction requested.
+   * */
   async getTransaction(transactionHash: string): Promise<TransactionResponse> {
     const res = await this.perform({
       route: V1RpcRoutes.QueryTX,
@@ -213,6 +245,10 @@ export class JsonRpcProvider implements AbstractProvider {
     return tx
   }
 
+  /**
+   * Fetches the latest block number.
+   * @returns {number} - The latest height as observed by the node the Provider is connected to.
+   * */
   async getBlockNumber(): Promise<number> {
     const res = await this.perform({
       route: V1RpcRoutes.QueryHeight,
@@ -228,10 +264,21 @@ export class JsonRpcProvider implements AbstractProvider {
     return height
   }
 
+  /**
+   * Fetches nodes active from the network with the options provided.
+   * @param {GetNodesOptions} getNodesOptions - the options to pass in to the query.
+   * @returns {Node[]} - An array with the nodes requested and their information.
+   * */
   getNodes(getNodesOptions: GetNodesOptions): Promise<Node[]> {
     throw new Error('Not implemented')
   }
 
+  /**
+   * Fetches a node from the network with the options provided.
+   * @param {string} address - The address corresponding to the node.
+   * @param {GetNodesOptions} getNodesOptions - The options to pass in to the query.
+   * @returns {Node} - The node requested and its information.
+   * */
   async getNode(
     address: string | Promise<string>,
     GetNodeOptions
@@ -268,10 +315,21 @@ export class JsonRpcProvider implements AbstractProvider {
     } as Node
   }
 
+  /**
+   * Fetches apps from the network with the options provided.
+   * @param {GetAppOptions} getAppOptions - The options to pass in to the query.
+   * @returns {App} - An array with the apps requested and their information.
+   * */
   getApps(getAppOption: GetAppOptions): Promise<App[]> {
     throw new Error('Not implemented')
   }
 
+  /**
+   * Fetches an app from the network with the options provided.
+   * @param {string} address - The address of the app to fetch.
+   * @param {GetAppOptions} getAppOptions - The options to pass in to the query.
+   * @returns {App} - The app requested and its information.
+   * */
   async getApp(
     address: string | Promise<string>,
     options: GetAppOptions
@@ -300,6 +358,11 @@ export class JsonRpcProvider implements AbstractProvider {
     } as App
   }
 
+  /**
+   * Fetches an account from the network.
+   * @param {string} address - The address of the account to fetch.
+   * @returns {Account} - The account requested and its information.
+   * */
   async getAccount(address: string | Promise<string>): Promise<Account> {
     const res = await this.perform({
       route: V1RpcRoutes.QueryAccount,
@@ -320,6 +383,11 @@ export class JsonRpcProvider implements AbstractProvider {
     }
   }
 
+  /**
+   * Fetches an account from the network, along with its transactions.
+   * @param {string} address - The address of the account to fetch.
+   * @returns {AccountWithTransaction} - The account requested and its information, along with its transactions.
+   * */
   async getAccountWithTransactions(
     address: string | Promise<string>
   ): Promise<AccountWithTransactions> {
@@ -353,6 +421,15 @@ export class JsonRpcProvider implements AbstractProvider {
     }
   }
 
+  /**
+   * Performs a dispatch request to a random dispatcher from the ones provided. Fails if no dispatcher is found.
+   * @param {DispatchRequest} request - The dispatch request.
+   * @param {object} options - The options available to tweak the request itself.
+   * @param {number} options.retryAttempts - The number of retries to perform if the first call fails.
+   * @param {boolean} options.rejectSelfSignedCertificates - Option to reject self signed certificates or not.
+   * @param {timeout} options.timeout - Timeout before the call fails. In milliseconds.
+   * @returns {DispatchResponse} - The dispatch response from the dispatcher node.
+   * */
   async dispatch(
     request: DispatchRequest,
     options: {
@@ -436,6 +513,16 @@ export class JsonRpcProvider implements AbstractProvider {
     }
   }
 
+  /**
+   * Sends a relay to the network through the main RPC URL provided. Best used through a Relayer.
+   * @param {request} request - The relay request.
+   * @param {string} rpcUrl - The RPC URL to use, if the main RPC URL is not a suitable node to relay requests.
+   * @param {object} options - The options available to tweak the request itself.
+   * @param {number} options.retryAttempts - The number of retries to perform if the first call fails.
+   * @param {boolean} options.rejectSelfSignedCertificates - Option to reject self signed certificates or not.
+   * @param {timeout} options.timeout - Timeout before the call fails. In milliseconds.
+   * @returns {any} - A relay response.
+   * * */
   async relay(
     request,
     rpcUrl: string,

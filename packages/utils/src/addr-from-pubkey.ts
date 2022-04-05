@@ -1,7 +1,13 @@
 import crypto from 'isomorphic-webcrypto'
 import { fromUint8Array } from 'hex-lite'
 
-function hexStringToByte(str: string): Uint8Array {
+/**
+* Converts a valid hex string to a byte array.
+* @param {string} str - The hex string to convert.
+* @returns {Uint8Array} - A byte array with the converted hex string.
+*
+* */
+function hexStringToByteArray(str: string): Uint8Array {
   const bytes: number[] = []
   for (let i = 0; i < str.length; i += 2) {
     bytes.push(parseInt(str.substr(i, 2), 16))
@@ -22,7 +28,7 @@ export async function getAddressFromPublicKey(
     {
       name: 'SHA-256',
     },
-    hexStringToByte(publicKey)
+    hexStringToByteArray(publicKey)
   )
 
   return fromUint8Array(new Uint8Array(hash)).slice(0, 40)

@@ -5,6 +5,11 @@ import { TransactionResponse } from '@pokt-foundation/pocketjs-types'
 import { AbstractSigner, TransactionRequest } from './abstract-signer'
 import { KeyManager } from './key-manager'
 
+/**
+ * A Wallet is a minimal wallet implementation that lets you import accounts
+ * with their private key or PPK (Portable Private Key), get its address, public key, private key, sign messages
+ * and query its own information from the chain if a provider is attached.
+ **/
 export class Wallet implements AbstractSigner {
   readonly provider?: AbstractProvider // Provider that will send all calls
   readonly _isSigner: boolean // mark signer as a proper signer (useful for non-writable signers)
@@ -25,6 +30,10 @@ export class Wallet implements AbstractSigner {
     this.keyManager = keyManager
   }
 
+  /**
+   * Creates a new, random Pocket account.
+   * @returns {Wallet} - A new Wallet instance with the account attached.
+   * */
   static async createRandom(): Promise<Wallet> {
     const keyManager = await KeyManager.createRandom()
     return new Wallet({
@@ -33,10 +42,18 @@ export class Wallet implements AbstractSigner {
     })
   }
 
+  /**
+   * Gets the account address.
+   * @returns {string} - The attached account's address.
+   * */
   getAddress(): Promise<string> {
     return new Promise(() => this.keyManager.getAddress())
   }
 
+  /**
+   * Attaches a provider to the Wallet.
+   * @returns {Wallet} - A clone instance of the Wallet with the provider attached.
+   * */
   connect(provider: AbstractProvider): Wallet {
     return new Wallet({
       provider,
@@ -45,23 +62,34 @@ export class Wallet implements AbstractSigner {
     })
   }
 
-  async getBalance(address: string | Promise<string>): Promise<bigint> {
+  /**
+   * Fetches the wallet's account balance. A provider is required.
+   * @returns {bigint} - The wallet account's balance.
+   * */
+  async getBalance(): Promise<bigint> {
     if (!this.provider) {
       throw new Error('No provider')
     }
 
-    return this.provider.getBalance(await address)
+    return this.provider.getBalance(this.getAddress())
   }
 
-  async getTransactionCount(
-    address: string | Promise<string>
-  ): Promise<number> {
+  /**
+   * Fetches the wallet's account transaction count. A provider is required.
+   * @returns {number} - The wallet account's transaction count.
+   * */
+  async getTransactionCount(): Promise<number> {
     if (!this.provider) {
       throw new Error('No provider')
     }
 
-    return this.provider.getTransactionCount(await address)
+    return this.provider.getTransactionCount(this.getAddress())
   }
+
+  /**
+   * Sends a transaction from this wallet's account. A provider is required.
+   * @returns {Transaction} - The network's response to the transaction.
+   * */
   async sendTransaction(
     signedTransaction: string | Promise<string>
   ): Promise<TransactionResponse> {
@@ -75,6 +103,11 @@ export class Wallet implements AbstractSigner {
     )
   }
 
+  /**
+   * signs a valid hex-string payload with the imported private key.
+   * @param {string} payload - The hex payload to sign.
+   * @returns {string} - The signed payload as a string.
+   * */
   async sign(payload: string): Promise<string> {
     await Sodium.ready
     return fromUint8Array(
@@ -85,6 +118,11 @@ export class Wallet implements AbstractSigner {
     )
   }
 
+  /**
+   * Signs a transaction from this wallet's account.
+   * @param {TransactionRequest} transaction - The transaction to sign, formatted as a `TransactionRequest`.
+   * @returns {string} - The signed transaction.
+   * */
   async signTransaction(transaction: TransactionRequest): Promise<string> {
     await Sodium.ready
 

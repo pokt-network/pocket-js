@@ -25,10 +25,9 @@ import { V1RpcRoutes } from './routes'
 const DEFAULT_TIMEOUT = 1000
 
 /**
- * A JSONRPCProvider lets you query data from the chain and send relays to the network.
- * Node only, not isomorphic.
+ * An IsomorphicProvider lets you query data from the chain and send relays to the network.
  *  **/
-export class JsonRpcProvider implements AbstractProvider {
+export class IsomorphicProvider implements AbstractProvider {
   private rpcUrl: string
   private dispatchers: string[]
   private logger

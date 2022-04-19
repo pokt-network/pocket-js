@@ -12,7 +12,8 @@
   "references": [
     { "path": "../utils" },
     { "path": "../signer" },
-    { "path": "../provider" }
+    { "path": "../provider" },
+    { "path": "../abstract-provider" }
   ],
   "include": ["src"],
   "exclude": ["node_modules", "dist", "jest.config.js"]

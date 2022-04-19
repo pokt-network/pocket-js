@@ -1,6 +1,7 @@
-import { bytesToBase64 } from "@tendermint/belt"
+import * as belt from "@tendermint/belt"
 import { PosmintStdSignature } from "@pokt-network/amino-js/types/src/types/pocket"
 
+const bytesToBase64 = belt.bytesToBase64
 /**
  * Represents a given signature for a Transaction
  */

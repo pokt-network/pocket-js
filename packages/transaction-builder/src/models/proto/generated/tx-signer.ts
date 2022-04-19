@@ -1,6 +1,10 @@
 /* eslint-disable */
 import Long from "long";
-import { util, configure, Writer, Reader } from "protobufjs/minimal";
+import * as proto from "protobufjs/minimal.js";
+
+// @ts-ignore
+const { util, configure, Reader, Writer } = proto.default
+
 import { Any } from "./google/protobuf/any";
 
 export const protobufPackage = "pocketjs";
@@ -80,6 +84,7 @@ export interface MsgSend {
 const baseProtoStdTx: object = { memo: "", entropy: 0 };
 
 export const ProtoStdTx = {
+  // @ts-ignore
   encode(message: ProtoStdTx, writer: Writer = Writer.create()): Writer {
     if (message.msg !== undefined && message.msg !== undefined) {
       Any.encode(message.msg, writer.uint32(10).fork()).ldelim();
@@ -98,6 +103,7 @@ export const ProtoStdTx = {
     return writer;
   },
 
+  // @ts-ignore
   decode(input: Reader | Uint8Array, length?: number): ProtoStdTx {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
@@ -213,12 +219,14 @@ export const ProtoStdTx = {
 const baseProtoStdSignature: object = {};
 
 export const ProtoStdSignature = {
+  // @ts-ignore
   encode(message: ProtoStdSignature, writer: Writer = Writer.create()): Writer {
     writer.uint32(10).bytes(message.publicKey);
     writer.uint32(18).bytes(message.Signature);
     return writer;
   },
 
+  // @ts-ignore
   decode(input: Reader | Uint8Array, length?: number): ProtoStdSignature {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
@@ -283,6 +291,7 @@ export const ProtoStdSignature = {
 const baseStdSignDoc: object = { ChainID: "", memo: "", entropy: 0 };
 
 export const StdSignDoc = {
+  // @ts-ignore
   encode(message: StdSignDoc, writer: Writer = Writer.create()): Writer {
     writer.uint32(10).string(message.ChainID);
     writer.uint32(18).bytes(message.fee);
@@ -292,6 +301,7 @@ export const StdSignDoc = {
     return writer;
   },
 
+  // @ts-ignore
   decode(input: Reader | Uint8Array, length?: number): StdSignDoc {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
@@ -398,12 +408,14 @@ export const StdSignDoc = {
 const baseCoin: object = { denom: "", amount: "" };
 
 export const Coin = {
+  // @ts-ignore
   encode(message: Coin, writer: Writer = Writer.create()): Writer {
     writer.uint32(10).string(message.denom);
     writer.uint32(18).string(message.amount);
     return writer;
   },
 
+  // @ts-ignore
   decode(input: Reader | Uint8Array, length?: number): Coin {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
@@ -466,12 +478,14 @@ export const Coin = {
 const baseDecCoin: object = { denom: "", amount: "" };
 
 export const DecCoin = {
+  // @ts-ignore
   encode(message: DecCoin, writer: Writer = Writer.create()): Writer {
     writer.uint32(10).string(message.denom);
     writer.uint32(18).string(message.amount);
     return writer;
   },
 
+  // @ts-ignore
   decode(input: Reader | Uint8Array, length?: number): DecCoin {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
@@ -534,6 +548,7 @@ export const DecCoin = {
 const baseMsgProtoStake: object = { chains: "", value: "" };
 
 export const MsgProtoStake = {
+  // @ts-ignore
   encode(message: MsgProtoStake, writer: Writer = Writer.create()): Writer {
     writer.uint32(10).bytes(message.pubKey);
     for (const v of message.chains) {
@@ -543,6 +558,7 @@ export const MsgProtoStake = {
     return writer;
   },
 
+  // @ts-ignore
   decode(input: Reader | Uint8Array, length?: number): MsgProtoStake {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
@@ -627,11 +643,13 @@ export const MsgProtoStake = {
 const baseMsgBeginUnstake: object = {};
 
 export const MsgBeginUnstake = {
+  // @ts-ignore
   encode(message: MsgBeginUnstake, writer: Writer = Writer.create()): Writer {
     writer.uint32(10).bytes(message.Address);
     return writer;
   },
 
+  // @ts-ignore
   decode(input: Reader | Uint8Array, length?: number): MsgBeginUnstake {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
@@ -681,11 +699,13 @@ export const MsgBeginUnstake = {
 const baseMsgUnjail: object = {};
 
 export const MsgUnjail = {
+  // @ts-ignore
   encode(message: MsgUnjail, writer: Writer = Writer.create()): Writer {
     writer.uint32(10).bytes(message.AppAddr);
     return writer;
   },
 
+  // @ts-ignore
   decode(input: Reader | Uint8Array, length?: number): MsgUnjail {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
@@ -735,6 +755,7 @@ export const MsgUnjail = {
 const baseMsgProtoNodeStake: object = { Chains: "", value: "", ServiceUrl: "" };
 
 export const MsgProtoNodeStake = {
+  // @ts-ignore
   encode(message: MsgProtoNodeStake, writer: Writer = Writer.create()): Writer {
     writer.uint32(10).bytes(message.Publickey);
     for (const v of message.Chains) {
@@ -745,6 +766,7 @@ export const MsgProtoNodeStake = {
     return writer;
   },
 
+  // @ts-ignore
   decode(input: Reader | Uint8Array, length?: number): MsgProtoNodeStake {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
@@ -845,12 +867,15 @@ const baseMsgBeginNodeUnstake: object = {};
 export const MsgBeginNodeUnstake = {
   encode(
     message: MsgBeginNodeUnstake,
+  // @ts-ignore
     writer: Writer = Writer.create()
+  // @ts-ignore
   ): Writer {
     writer.uint32(10).bytes(message.Address);
     return writer;
   },
 
+  // @ts-ignore
   decode(input: Reader | Uint8Array, length?: number): MsgBeginNodeUnstake {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
@@ -900,11 +925,13 @@ export const MsgBeginNodeUnstake = {
 const baseMsgNodeUnjail: object = {};
 
 export const MsgNodeUnjail = {
+  // @ts-ignore
   encode(message: MsgNodeUnjail, writer: Writer = Writer.create()): Writer {
     writer.uint32(10).bytes(message.ValidatorAddr);
     return writer;
   },
 
+  // @ts-ignore
   decode(input: Reader | Uint8Array, length?: number): MsgNodeUnjail {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
@@ -956,6 +983,7 @@ export const MsgNodeUnjail = {
 const baseMsgSend: object = { amount: "" };
 
 export const MsgSend = {
+  // @ts-ignore
   encode(message: MsgSend, writer: Writer = Writer.create()): Writer {
     writer.uint32(10).bytes(message.FromAddress);
     writer.uint32(18).bytes(message.ToAddress);
@@ -963,6 +991,7 @@ export const MsgSend = {
     return writer;
   },
 
+  // @ts-ignore
   decode(input: Reader | Uint8Array, length?: number): MsgSend {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
@@ -1092,5 +1121,6 @@ function longToNumber(long: Long): number {
 }
 
 
+console.log('util?',util, Long)
 util.Long = Long as any;
 configure();

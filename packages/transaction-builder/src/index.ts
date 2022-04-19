@@ -10,13 +10,13 @@ import {
 import { AbstractProvider } from '@pokt-foundation/pocketjs-abstract-provider'
 import { KeyManager } from '@pokt-foundation/pocketjs-signer'
 import { TxEncoderFactory } from './factory/tx-encoder-factory'
-import { TxMsg, CoinDenom, TxSignature } from './models/'
+import { TxMsg, CoinDenom, TxSignature, RawTxRequest } from './models/'
 
 export type ChainID = 'mainnet' | 'testnet'
 
 export const BASE_FEE = '10000'
 
-export class NewTransactionBuilder {
+export class TransactionBuilder {
   private provider: AbstractProvider
   private signer: KeyManager
   private chainID: ChainID
@@ -54,7 +54,7 @@ export class NewTransactionBuilder {
     feeDenom: CoinDenom
     memo: string
     txMsg: TxMsg
-  }) {
+  }): Promise<RawTxRequest> {
     // First, let's check if all required parameters are filled correctly
     // Let's avoid a footgun: if coindenom is not UPokt, let's make sure fee is not
     // BASE_FEE
@@ -69,9 +69,7 @@ export class NewTransactionBuilder {
       throw new Error('txMsg should be defined.')
     }
 
-    const entropy = Number(
-      BigInt(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)).toString()
-    ).toString()
+    const entropy = '1337'
 
     const signer = TxEncoderFactory.createEncoder(
       entropy,
@@ -87,11 +85,13 @@ export class NewTransactionBuilder {
     const txBytes = await this.signer.sign(bytesToSign.toString('hex'))
 
     const marshalledTx = new TxSignature(
-      Buffer.from(this.signer.getPublicKey()),
-      Buffer.from(txBytes)
+      Buffer.from(this.signer.getPublicKey(), 'hex'),
+      Buffer.from(txBytes, 'hex')
     )
 
-    const encodedTx = signer.marshalStdTx(marshalledTx)
+    const rawHexBytes = signer.marshalStdTx(marshalledTx).toString('hex')
+
+    return new RawTxRequest(this.signer.getAddress(), rawHexBytes)
   }
 
   /**

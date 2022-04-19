@@ -69,7 +69,7 @@ export class TransactionBuilder {
       throw new Error('txMsg should be defined.')
     }
 
-    const entropy = '1337'
+    const entropy = Number(BigInt(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)).toString()).toString()
 
     const signer = TxEncoderFactory.createEncoder(
       entropy,

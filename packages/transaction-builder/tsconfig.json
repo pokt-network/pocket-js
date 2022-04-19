@@ -13,6 +13,7 @@
     { "path": "../abstract-provider" },
     { "path": "../provider" },
     { "path": "../signer" },
+    { "path": "../types" },
     { "path": "../utils" }
   ],
   "include": ["src"],

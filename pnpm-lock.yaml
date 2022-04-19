@@ -176,6 +176,7 @@ importers:
     specifiers:
       '@pokt-foundation/pocketjs-abstract-provider': workspace:*
       '@pokt-foundation/pocketjs-signer': workspace:*
+      '@pokt-foundation/pocketjs-types': workspace:*
       '@pokt-foundation/pocketjs-utils': workspace:*
       '@pokt-network/amino-js': ^0.7.5-alpha.1
       '@tendermint/belt': ^0.3.0
@@ -197,6 +198,7 @@ importers:
     dependencies:
       '@pokt-foundation/pocketjs-abstract-provider': link:../abstract-provider
       '@pokt-foundation/pocketjs-signer': link:../signer
+      '@pokt-foundation/pocketjs-types': link:../types
       '@pokt-foundation/pocketjs-utils': link:../utils
       '@pokt-network/amino-js': 0.7.5-alpha.1
       '@tendermint/belt': 0.3.0

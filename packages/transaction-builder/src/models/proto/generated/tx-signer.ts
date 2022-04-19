@@ -1121,6 +1121,5 @@ function longToNumber(long: Long): number {
 }
 
 
-console.log('util?',util, Long)
 util.Long = Long as any;
 configure();

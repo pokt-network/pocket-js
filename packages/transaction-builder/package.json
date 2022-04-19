@@ -34,6 +34,7 @@
     "@pokt-foundation/pocketjs-abstract-provider": "workspace:*",
     "@pokt-foundation/pocketjs-signer": "workspace:*",
     "@pokt-foundation/pocketjs-utils": "workspace:*",
+    "@pokt-foundation/pocketjs-types": "workspace:*",
     "@pokt-network/amino-js": "^0.7.5-alpha.1",
     "@tendermint/belt": "^0.3.0",
     "buffer": "^6.0.3",

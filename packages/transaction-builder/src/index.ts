@@ -9,8 +9,12 @@ import {
 } from './models/msgs'
 import { AbstractProvider } from '@pokt-foundation/pocketjs-abstract-provider'
 import { KeyManager } from '@pokt-foundation/pocketjs-signer'
+import {
+  RawTxRequest,
+  TransactionResponse,
+} from '@pokt-foundation/pocketjs-types'
 import { TxEncoderFactory } from './factory/tx-encoder-factory'
-import { TxMsg, CoinDenom, TxSignature, RawTxRequest } from './models/'
+import { TxMsg, CoinDenom, TxSignature } from './models/'
 
 export type ChainID = 'mainnet' | 'testnet'
 
@@ -69,7 +73,9 @@ export class TransactionBuilder {
       throw new Error('txMsg should be defined.')
     }
 
-    const entropy = Number(BigInt(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)).toString()).toString()
+    const entropy = Number(
+      BigInt(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)).toString()
+    ).toString()
 
     const signer = TxEncoderFactory.createEncoder(
       entropy,
@@ -92,6 +98,28 @@ export class TransactionBuilder {
     const rawHexBytes = signer.marshalStdTx(marshalledTx).toString('hex')
 
     return new RawTxRequest(this.signer.getAddress(), rawHexBytes)
+  }
+
+  public async submit({
+    fee,
+    feeDenom = CoinDenom.Upokt,
+    memo = '',
+    txMsg,
+  }: {
+    fee: string | bigint
+    feeDenom: CoinDenom
+    memo: string
+    txMsg: TxMsg
+  }): Promise<TransactionResponse> {
+    const tx = await this.createTransaction({ fee, feeDenom, memo, txMsg })
+
+    return await this.provider.sendTransaction(tx)
+  }
+
+  public async submitRawTransaction(
+    tx: RawTxRequest
+  ): Promise<TransactionResponse> {
+    return await this.provider.sendTransaction(tx)
   }
 
   /**

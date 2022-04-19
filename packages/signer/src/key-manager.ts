@@ -52,21 +52,6 @@ export class KeyManager {
   }
 
   /**
-   * signs a valid hex-string payload with the imported private key and returns a valid Transaction Signature.
-   * @param {string} payload - The hex payload to sign.
-   * @returns {string} - The signed payload as a string.
-   * */
-  async signTransaction(payload: string): Promise<string> {
-    await Sodium.ready
-    return fromUint8Array(
-      Sodium.crypto_sign_detached(
-        toUint8Array(payload),
-        toUint8Array(this.getPrivateKey())
-      )
-    )
-  }
-
-  /**
    * Creates a new, random Pocket account.
    * @returns {KeyManager} - A new Key Manager instance with the account attached.
    * */

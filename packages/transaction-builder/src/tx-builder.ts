@@ -20,6 +20,10 @@ export type ChainID = 'mainnet' | 'testnet' | 'localnet'
 
 export const DEFAULT_BASE_FEE = '10000'
 
+/**
+ * A Transaction builder lets you create transaction messages, sign them, and send them over the network.
+ * Requires a properly initialized Provider and Signer to work.
+ */
 export class TransactionBuilder {
   private provider: AbstractProvider
   private signer: KeyManager
@@ -43,9 +47,8 @@ export class TransactionBuilder {
    * Signs and creates a transaction object that can be submitted to the network given the parameters and called upon Msgs.
    * Will empty the msg list after succesful creation
    * @param {string} fee - The amount to pay as a fee for executing this transaction, in uPOKT (1 POKT = 1*10^6 uPOKT).
-   * @param {string | undefined} memo - The memo field for this account
-   * @returns {Promise<RawTxResponse | RpcError>} - A Raw transaction Response object or Rpc error.
-   * @memberof TransactionSender
+   * @param {string} memo - The memo field for this account
+   * @returns {Promise<RawTxRequest>} - A Raw transaction Request which can be sent over the network.
    */
   public async createTransaction({
     fee = DEFAULT_BASE_FEE,
@@ -88,6 +91,13 @@ export class TransactionBuilder {
     return new RawTxRequest(this.signer.getAddress(), rawHexBytes)
   }
 
+  /**
+   * Submit receives a valid transaction message, creates a Raw Transaction Request and sends it over the network.
+   * @param {string} fee - The amount to pay as a fee for executing this transaction, in uPOKT (1 POKT = 1*10^6 uPOKT).
+   * @param {string} memo - The memo field for this account
+   * @param {TxMsg} txMsg - The transaction message to use for creating the RawTxRequest that will be sent over the network.
+   * @returns {Promise<TransactionResponse>} - The Transaction Response from the network, containing the transaction hash.
+   */
   public async submit({
     fee = DEFAULT_BASE_FEE,
     memo = '',
@@ -102,6 +112,11 @@ export class TransactionBuilder {
     return await this.provider.sendTransaction(tx)
   }
 
+  /**
+   * Submit receives an already made Raw Transaction Request and sends it over the network.
+   * @param {RawTxRequest} tx - The Raw Transaction Request use for creating the RawTxRequest that will be sent over the network.
+   * @returns {Promise<TransactionResponse>} - The Transaction Response from the network, containing the transaction hash.
+   */
   public async submitRawTransaction(
     tx: RawTxRequest
   ): Promise<TransactionResponse> {
@@ -112,7 +127,7 @@ export class TransactionBuilder {
    * Adds a MsgSend TxMsg for this transaction
    * @param {string} fromAddress - Origin address
    * @param {string} toAddress - Destination address
-   * @param {string} amount - Amount to be sent, needs to be a valid number greater than 0
+   * @param {string} amount - Amount to be sent, needs to be a valid number greater than 1 uPOKT.
    * @returns {MsgProtoSend} - The unsigned Send message.
    */
   public send(
@@ -127,7 +142,7 @@ export class TransactionBuilder {
    * Adds a MsgAppStake TxMsg for this transaction
    * @param {string} appPubKey - Application Public Key
    * @param {string[]} chains - Network identifier list to be requested by this app
-   * @param {string} amount - the amount to stake, must be greater than 0
+   * @param {string} amount - the amount to stake, must be greater than or equal to 1 POKT
    * @returns {MsgProtoAppStake} - The unsigned App Stake message.
    */
   public appStake(
@@ -151,7 +166,7 @@ export class TransactionBuilder {
    * Adds a NodeStake TxMsg for this transaction
    * @param {string} nodePubKey - Node Public key
    * @param {string[]} chains - Network identifier list to be serviced by this node
-   * @param {string} amount - the amount to stake, must be greater than 0
+   * @param {string} amount - the amount to stake, must be greater than or equal to 1 POKT
    * @param {URL} serviceURL - Node service url
    * @returns {MsgProtoNodeStakeTx} - The unsigned Node Stake message.
    */

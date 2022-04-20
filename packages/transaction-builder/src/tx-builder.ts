@@ -15,6 +15,7 @@ import {
 } from '@pokt-foundation/pocketjs-types'
 import { TxEncoderFactory } from './factory/tx-encoder-factory'
 import { CoinDenom, TxMsg, TxSignature } from './models/'
+import { InvalidChainIDError } from './errors'
 
 export type ChainID = 'mainnet' | 'testnet' | 'localnet'
 
@@ -47,6 +48,26 @@ export class TransactionBuilder {
     this.chainID = chainID
   }
 
+  /**
+   * Gets the current chain ID this Transaction Builder has been initialized for.
+   * @returns {ChainID} - 'mainnet', 'localnet', or 'testnet'.
+   */
+  public getChainID(): ChainID {
+    return this.chainID
+  }
+
+  /**
+   * Sets the chainID to one of the supported networks.
+   */
+  public setChainID(id: ChainID): void {
+    if (id === 'mainnet' || id === 'testnet' || id === 'localnet') {
+      this.chainID = id
+    } else {
+      throw new InvalidChainIDError(
+        `Invalid ChainID. Must be "mainnet", "testnet", or "localnet".`
+      )
+    }
+  }
   /**
    * Signs and creates a transaction object that can be submitted to the network given the parameters and called upon Msgs.
    * Will empty the msg list after succesful creation

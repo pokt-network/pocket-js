@@ -1,5 +1,4 @@
 import { Buffer } from 'buffer'
-import { toUint8Array } from 'hex-lite'
 import { MsgProtoStake } from '../proto/generated/tx-signer'
 import { Any } from '../proto/generated/google/protobuf/any'
 import { TxMsg } from './tx-msg'
@@ -22,7 +21,7 @@ export class MsgProtoAppStake extends TxMsg {
    */
   constructor(pubKey: string, chains: string[], amount: string) {
     super()
-    this.pubKey = toUint8Array(pubKey)
+    this.pubKey = Buffer.from(pubKey, 'hex')
     this.chains = chains
     this.amount = amount
     const amountNumber = Number(this.amount) || -1
@@ -77,7 +76,7 @@ export class MsgProtoAppStake extends TxMsg {
 
     return Any.fromJSON({
       typeUrl: this.KEY,
-      value: MsgProtoStake.encode(data).finish(),
+      value: MsgProtoStake.encode(data).finish().toString('base64'),
     })
   }
 }

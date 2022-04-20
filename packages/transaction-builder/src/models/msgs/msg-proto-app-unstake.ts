@@ -43,7 +43,7 @@ export class MsgProtoAppUnstake extends TxMsg {
 
     return Any.fromJSON({
       typeUrl: this.KEY,
-      value: MsgBeginUnstake.encode(data).finish(),
+      value: MsgBeginUnstake.encode(data).finish().toString('base64'),
     })
   }
 }

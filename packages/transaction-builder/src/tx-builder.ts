@@ -81,7 +81,7 @@ export class TransactionBuilder {
     txMsg,
   }: {
     fee?: string | bigint
-    memo: string
+    memo?: string
     txMsg: TxMsg
   }): Promise<RawTxRequest> {
     // Let's make sure txMsg is defined.
@@ -129,7 +129,7 @@ export class TransactionBuilder {
     txMsg,
   }: {
     fee?: string | bigint
-    memo: string
+    memo?: string
     txMsg: TxMsg
   }): Promise<TransactionResponse> {
     const tx = await this.createTransaction({ fee, memo, txMsg })

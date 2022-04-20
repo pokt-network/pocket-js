@@ -9,6 +9,7 @@ import {
   MsgProtoSend,
   MsgProtoNodeUnjail,
 } from '../src/models'
+import { RawTxRequest } from '@pokt-foundation/pocketjs-types'
 
 const PRIVATE_KEY =
   '1f8cbde30ef5a9db0a5a9d5eb40536fc9defc318b8581d543808b7504e0902bcb243b27bc9fbe5580457a46370ae5f03a6f6753633e51efdaf2cf534fdc26cc3'
@@ -17,6 +18,7 @@ const PUBLIC_KEY =
 const ADDRESS = 'b50a6e20d3733fb89631ae32385b3c85c533c560'
 
 describe('TransactionBuilder Tests', () => {
+  const serviceURL = new URL('http://localhost:8081')
   let signer: KeyManager,
     provider: JsonRpcProvider,
     chainID: ChainID,
@@ -142,7 +144,6 @@ describe('TransactionBuilder Tests', () => {
   })
 
   describe('TransactionBuilder:Messages:UnhappyPaths:MsgProtoNodeStakeTx', () => {
-    const serviceURL = new URL('http://localhost:8081')
     test('Invalid case: amount to stake too small', () => {
       expect(() =>
         transactionBuilder.nodeStake(PUBLIC_KEY, ['0040'], '69420', serviceURL)
@@ -162,6 +163,70 @@ describe('TransactionBuilder Tests', () => {
           serviceURL
         )
       ).toThrow(/Amount is not a valid number/)
+    })
+  })
+
+  describe('TransactionBuilder:createTransaction:HappyPath', () => {
+    test('Creates a RawTxRequest for MsgProtoSend', async () => {
+      const txMsg = transactionBuilder.send(
+        'b50a6e20d3733fb89631ae32385b3c85c533c560',
+        'fcf719ca739dccbc281b12bc0d671aaa7a015848',
+        '1000000'
+      )
+
+      const rawTxRequest = await transactionBuilder.createTransaction({ txMsg })
+
+      expect(rawTxRequest instanceof RawTxRequest).toBe(true)
+      expect(rawTxRequest.address).toBe(signer.getAddress())
+    })
+    test('Creates a RawTxRequest for MsgProtoAppStake', async () => {
+      const txMsg = transactionBuilder.appStake(
+        signer.getPublicKey(),
+        ['0040'],
+        '1000000'
+      )
+
+      const rawTxRequest = await transactionBuilder.createTransaction({ txMsg })
+
+      expect(rawTxRequest instanceof RawTxRequest).toBe(true)
+      expect(rawTxRequest.address).toBe(signer.getAddress())
+    })
+    test('Creates a RawTxRequest for MsgProtoAppUnstake', async () => {
+      const txMsg = transactionBuilder.appUnstake(signer.getAddress())
+
+      const rawTxRequest = await transactionBuilder.createTransaction({ txMsg })
+
+      expect(rawTxRequest instanceof RawTxRequest).toBe(true)
+      expect(rawTxRequest.address).toBe(signer.getAddress())
+    })
+    test('Creates a RawTxRequest for MsgProtoNodeStakeTx', async () => {
+      const txMsg = transactionBuilder.nodeStake(
+        signer.getPublicKey(),
+        ['0040'],
+        '15000000000',
+        serviceURL
+      )
+
+      const rawTxRequest = await transactionBuilder.createTransaction({ txMsg })
+
+      expect(rawTxRequest instanceof RawTxRequest).toBe(true)
+      expect(rawTxRequest.address).toBe(signer.getAddress())
+    })
+    test('Creates a RawTxRequest for MsgProtoNodeUnstake', async () => {
+      const txMsg = transactionBuilder.nodeUnstake(signer.getAddress())
+
+      const rawTxRequest = await transactionBuilder.createTransaction({ txMsg })
+
+      expect(rawTxRequest instanceof RawTxRequest).toBe(true)
+      expect(rawTxRequest.address).toBe(signer.getAddress())
+    })
+    test('Creates a RawTxRequest for MsgProtoNodeUnjail', async () => {
+      const txMsg = transactionBuilder.nodeUnjail(signer.getAddress())
+
+      const rawTxRequest = await transactionBuilder.createTransaction({ txMsg })
+
+      expect(rawTxRequest instanceof RawTxRequest).toBe(true)
+      expect(rawTxRequest.address).toBe(signer.getAddress())
     })
   })
 })

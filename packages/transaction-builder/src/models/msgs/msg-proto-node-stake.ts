@@ -1,5 +1,4 @@
 import { Buffer } from 'buffer'
-import { toUint8Array } from 'hex-lite'
 import { MsgProtoNodeStake } from './../proto/generated/tx-signer'
 import { Any } from '../proto/generated/google/protobuf/any'
 import { TxMsg } from './tx-msg'
@@ -32,7 +31,7 @@ export class MsgProtoNodeStakeTx extends TxMsg {
     serviceURL: URL
   ) {
     super()
-    this.pubKey = toUint8Array(pubKey)
+    this.pubKey = Buffer.from(pubKey, 'hex')
     this.chains = chains
     this.amount = amount
     this.serviceURL = serviceURL

@@ -113,8 +113,7 @@ export class TransactionBuilder {
    * @param {string} fromAddress - Origin address
    * @param {string} toAddress - Destination address
    * @param {string} amount - Amount to be sent, needs to be a valid number greater than 0
-   * @returns {ITransactionSender} - A transaction sender.
-   * @memberof TransactionSender
+   * @returns {MsgProtoSend} - The unsigned Send message.
    */
   public send(
     fromAddress: string,
@@ -129,8 +128,7 @@ export class TransactionBuilder {
    * @param {string} appPubKey - Application Public Key
    * @param {string[]} chains - Network identifier list to be requested by this app
    * @param {string} amount - the amount to stake, must be greater than 0
-   * @returns {ITransactionSender} - A transaction sender.
-   * @memberof TransactionSender
+   * @returns {MsgProtoAppStake} - The unsigned App Stake message.
    */
   public appStake(
     appPubKey: string,
@@ -143,21 +141,19 @@ export class TransactionBuilder {
   /**
    * Adds a MsgBeginAppUnstake TxMsg for this transaction
    * @param {string} address - Address of the Application to unstake for
-   * @returns {ITransactionSender} - A transaction sender.
-   * @memberof TransactionSender
+   * @returns {MsgProtoAppUnstake} - The unsigned App Unstake message.
    */
   public appUnstake(address: string): MsgProtoAppUnstake {
     return new MsgProtoAppUnstake(address)
   }
 
   /**
-   * Adds a MsgAppStake TxMsg for this transaction
+   * Adds a NodeStake TxMsg for this transaction
    * @param {string} nodePubKey - Node Public key
    * @param {string[]} chains - Network identifier list to be serviced by this node
    * @param {string} amount - the amount to stake, must be greater than 0
    * @param {URL} serviceURL - Node service url
-   * @returns {ITransactionSender} - A transaction sender.
-   * @memberof TransactionSender
+   * @returns {MsgProtoNodeStakeTx} - The unsigned Node Stake message.
    */
   public nodeStake(
     nodePubKey: string,
@@ -171,8 +167,7 @@ export class TransactionBuilder {
   /**
    * Adds a MsgBeginUnstake TxMsg for this transaction
    * @param {string} address - Address of the Node to unstake for
-   * @returns {ITransactionSender} - A transaction sender.
-   * @memberof TransactionSender
+   * @returns {MsgProtoNodeUnstake} - The unsigned Node Unstake message.
    */
   public nodeUnstake(address: string): MsgProtoNodeUnstake {
     return new MsgProtoNodeUnstake(address)
@@ -181,8 +176,7 @@ export class TransactionBuilder {
   /**
    * Adds a MsgUnjail TxMsg for this transaction
    * @param {string} address - Address of the Node to unjail
-   * @returns {ITransactionSender} - A transaction sender.
-   * @memberof TransactionSender
+   * @returns {MsgProtoNodeUnjail} - The unsigned Node Unjail message.
    */
   public nodeUnjail(address: string): MsgProtoNodeUnjail {
     return new MsgProtoNodeUnjail(address)

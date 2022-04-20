@@ -25,9 +25,15 @@ export class MsgProtoSend extends TxMsg {
     this.fromAddress = fromAddress
     this.toAddress = toAddress
     this.amount = amount
-    const amountNumber = Number(this.amount) || -1
+
+    if (fromAddress === toAddress) {
+      throw new Error('fromAddress cannot be equal to toAddress')
+    }
+
+    const amountNumber = Number(this.amount)
+
     if (isNaN(amountNumber)) {
-      throw new Error('Fee is not a valid number')
+      throw new Error('Amount is not a valid number')
     } else if (amountNumber < 0) {
       throw new Error('Amount < 0')
     }

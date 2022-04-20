@@ -4,6 +4,8 @@ import { MsgProtoNodeStake } from './../proto/generated/tx-signer'
 import { Any } from '../proto/generated/google/protobuf/any'
 import { TxMsg } from './tx-msg'
 
+const MINIMUM_STAKE_AMOUNT = 15000000000
+
 /**
  * Model representing a MsgNodeStake to stake as an Node in the Pocket Network
  */
@@ -39,11 +41,14 @@ export class MsgProtoNodeStakeTx extends TxMsg {
       this.serviceURL.port = '443'
     }
 
-    const amountNumber = Number(this.amount) || -1
+    const amountNumber = Number(this.amount)
+
     if (isNaN(amountNumber)) {
       throw new Error('Amount is not a valid number')
-    } else if (amountNumber < 0) {
-      throw new Error('Amount < 0')
+    } else if (amountNumber < MINIMUM_STAKE_AMOUNT) {
+      throw new Error(
+        `Amount below minimum stake amount (${MINIMUM_STAKE_AMOUNT})`
+      )
     } else if (this.chains.length === 0) {
       throw new Error('Chains is empty')
     }

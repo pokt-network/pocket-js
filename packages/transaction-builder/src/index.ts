@@ -16,9 +16,9 @@ import {
 import { TxEncoderFactory } from './factory/tx-encoder-factory'
 import { TxMsg, CoinDenom, TxSignature } from './models/'
 
-export type ChainID = 'mainnet' | 'testnet'
+export type ChainID = 'mainnet' | 'testnet' | 'localnet'
 
-export const BASE_FEE = '10000'
+export const DEFAULT_BASE_FEE = '10000'
 
 export class TransactionBuilder {
   private provider: AbstractProvider
@@ -61,8 +61,8 @@ export class TransactionBuilder {
   }): Promise<RawTxRequest> {
     // First, let's check if all required parameters are filled correctly
     // Let's avoid a footgun: if coindenom is not UPokt, let's make sure fee is not
-    // BASE_FEE
-    if (feeDenom != CoinDenom.Upokt && fee == BASE_FEE) {
+    // DEFAULT_BASE_FEE
+    if (feeDenom != CoinDenom.Upokt && fee == DEFAULT_BASE_FEE) {
       throw new Error(
         'You are using the POKT denomination and overpaying the base fee. Use a smaller amount.'
       )

@@ -175,6 +175,7 @@ importers:
   packages/transaction-builder:
     specifiers:
       '@pokt-foundation/pocketjs-abstract-provider': workspace:*
+      '@pokt-foundation/pocketjs-provider': workspace:*
       '@pokt-foundation/pocketjs-signer': workspace:*
       '@pokt-foundation/pocketjs-types': workspace:*
       '@pokt-foundation/pocketjs-utils': workspace:*
@@ -209,6 +210,7 @@ importers:
       ts-proto: 1.110.4
       varint: 6.0.0
     devDependencies:
+      '@pokt-foundation/pocketjs-provider': link:../provider
       '@types/jest': 27.4.0
       '@typescript-eslint/eslint-plugin': 5.10.2_3e19df30e549eb9672c3b79dc40c1d5f
       '@typescript-eslint/parser': 5.10.2_eslint@7.32.0+typescript@4.5.5

@@ -7,6 +7,7 @@ import {
   GetNodesOptions,
   Node,
   TransactionResponse,
+  RawTxRequest,
 } from '@pokt-foundation/pocketjs-types'
 
 export abstract class AbstractProvider {
@@ -20,8 +21,7 @@ export abstract class AbstractProvider {
   ): Promise<'node' | 'app' | 'account'>
   // Txs
   abstract sendTransaction(
-    signerAddress: string | Promise<string>,
-    signedTransaction: string | Promise<string>
+    transaction: RawTxRequest
   ): Promise<TransactionResponse>
   // Network
   abstract getBlock(blockNumber: number): Promise<Block>

@@ -93,14 +93,7 @@ export class Wallet implements AbstractSigner {
   async sendTransaction(
     signedTransaction: string | Promise<string>
   ): Promise<TransactionResponse> {
-    if (!this.provider) {
-      throw new Error('No provider')
-    }
-
-    return this.provider.sendTransaction(
-      this.keyManager.getAddress(),
-      await signedTransaction
-    )
+    throw new Error('not implemented')
   }
 
   /**
@@ -124,8 +117,6 @@ export class Wallet implements AbstractSigner {
    * @returns {string} - The signed transaction.
    * */
   async signTransaction(transaction: TransactionRequest): Promise<string> {
-    await Sodium.ready
-
-    throw new Error('Not implemented, needs transaction builder')
+    throw new Error('not implemented')
   }
 }

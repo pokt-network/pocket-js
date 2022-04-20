@@ -1,14 +1,11 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
+export interface RawTransactionResponse {
+  logs: string | null
+  txhash: string
+}
 export interface TransactionResponse {
-  code?: number
-  codeSpace?: string
-  data?: string
-  hash: string
-  height: number
-  info?: string
-  rawLog?: string
-  timestamp?: string
-  tx?: string
+  logs: string | null
+  txHash: string
 }
 
 export interface Block {}
@@ -133,4 +130,4 @@ export interface RelayResponse {
   readonly relayRequest: RelayRequest
 }
 
-export {}
+export * from './tx-request'

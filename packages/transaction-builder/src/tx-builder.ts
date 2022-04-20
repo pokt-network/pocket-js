@@ -14,10 +14,14 @@ import {
   TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
 import { TxEncoderFactory } from './factory/tx-encoder-factory'
-import { TxMsg, CoinDenom, TxSignature } from './models/'
+import { CoinDenom, TxMsg, TxSignature } from './models/'
 
 export type ChainID = 'mainnet' | 'testnet' | 'localnet'
 
+// Default Pocket Base fee.
+// Using anything above 10k uPOKT means overpaying--there is no reason to do so,
+// as the chain is merely focused on utility. No profit is gained by ordering txs
+// in a block in a certain way.
 export const DEFAULT_BASE_FEE = '10000'
 
 /**

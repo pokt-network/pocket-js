@@ -42,32 +42,20 @@ export class TransactionBuilder {
   /**
    * Signs and creates a transaction object that can be submitted to the network given the parameters and called upon Msgs.
    * Will empty the msg list after succesful creation
-   * @param {string} fee - The amount to pay as a fee for executing this transaction
-   * @param {CoinDenom | undefined} feeDenom - The denomination of the fee amount
+   * @param {string} fee - The amount to pay as a fee for executing this transaction, in uPOKT (1 POKT = 1*10^6 uPOKT).
    * @param {string | undefined} memo - The memo field for this account
    * @returns {Promise<RawTxResponse | RpcError>} - A Raw transaction Response object or Rpc error.
    * @memberof TransactionSender
    */
   public async createTransaction({
-    fee,
-    feeDenom = CoinDenom.Upokt,
+    fee = DEFAULT_BASE_FEE,
     memo = '',
     txMsg,
   }: {
-    fee: string | bigint
-    feeDenom: CoinDenom
+    fee?: string | bigint
     memo: string
     txMsg: TxMsg
   }): Promise<RawTxRequest> {
-    // First, let's check if all required parameters are filled correctly
-    // Let's avoid a footgun: if coindenom is not UPokt, let's make sure fee is not
-    // DEFAULT_BASE_FEE
-    if (feeDenom != CoinDenom.Upokt && fee == DEFAULT_BASE_FEE) {
-      throw new Error(
-        'You are using the POKT denomination and overpaying the base fee. Use a smaller amount.'
-      )
-    }
-
     // Let's make sure txMsg is defined.
     if (!txMsg) {
       throw new Error('txMsg should be defined.')
@@ -82,7 +70,7 @@ export class TransactionBuilder {
       this.chainID,
       txMsg,
       fee.toString(),
-      feeDenom,
+      CoinDenom.Upokt,
       memo
     )
 
@@ -101,17 +89,15 @@ export class TransactionBuilder {
   }
 
   public async submit({
-    fee,
-    feeDenom = CoinDenom.Upokt,
+    fee = DEFAULT_BASE_FEE,
     memo = '',
     txMsg,
   }: {
-    fee: string | bigint
-    feeDenom: CoinDenom
+    fee?: string | bigint
     memo: string
     txMsg: TxMsg
   }): Promise<TransactionResponse> {
-    const tx = await this.createTransaction({ fee, feeDenom, memo, txMsg })
+    const tx = await this.createTransaction({ fee, memo, txMsg })
 
     return await this.provider.sendTransaction(tx)
   }

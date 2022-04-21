@@ -21,6 +21,7 @@ import {
   DispatchersFailureError,
   RelayFailureError,
   TimeoutError,
+  validateTransactionResponse,
 } from './errors'
 import { V1RpcRoutes } from './routes'
 
@@ -199,14 +200,7 @@ export class JsonRpcProvider implements AbstractProvider {
 
     const transactionResponse = (await res.json()) as RawTransactionResponse
 
-    if (!transactionResponse?.txhash) {
-      throw new Error('RPC Error')
-    }
-
-    return {
-      logs: transactionResponse.logs,
-      txHash: transactionResponse.txhash,
-    }
+    return validateTransactionResponse(transactionResponse)
   }
 
   /**

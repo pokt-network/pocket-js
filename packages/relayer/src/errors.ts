@@ -161,8 +161,10 @@ export function validateRelayResponse(relayResponse: any) {
         relayResponse.error.message
       )
     case PocketCoreErrorCodes.OutOfSyncRequestError:
-      throw new OutOfSyncRequestError(PocketCoreErrorCodes.OutOfSyncRequestError,
-        relayResponse.error.message)
+      throw new OutOfSyncRequestError(
+        PocketCoreErrorCodes.OutOfSyncRequestError,
+        relayResponse.error.message
+      )
     case PocketCoreErrorCodes.OverServiceError:
       throw new OverServiceError(
         PocketCoreErrorCodes.OverServiceError,

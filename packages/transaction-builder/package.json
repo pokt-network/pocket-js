@@ -20,6 +20,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@pokt-foundation/pocketjs-provider": "workspace:*",
     "@types/jest": "^27.4.0",
     "@typescript-eslint/eslint-plugin": "^5.10.2",
     "@typescript-eslint/parser": "^5.10.2",
@@ -33,12 +34,11 @@
   "dependencies": {
     "@pokt-foundation/pocketjs-abstract-provider": "workspace:*",
     "@pokt-foundation/pocketjs-signer": "workspace:*",
-    "@pokt-foundation/pocketjs-utils": "workspace:*",
     "@pokt-foundation/pocketjs-types": "workspace:*",
+    "@pokt-foundation/pocketjs-utils": "workspace:*",
     "@pokt-network/amino-js": "^0.7.5-alpha.1",
     "@tendermint/belt": "^0.3.0",
     "buffer": "^6.0.3",
-    "hex-lite": "^1.5.0",
     "long": "^5.2.0",
     "protobufjs": "6.8.8",
     "ts-proto": "^1.110.4",

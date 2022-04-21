@@ -15,7 +15,7 @@ import {
 } from '@pokt-foundation/pocketjs-types'
 import { TxEncoderFactory } from './factory/tx-encoder-factory'
 import { CoinDenom, TxMsg, TxSignature } from './models/'
-import { InvalidChainIDError } from './errors'
+import { InvalidChainIDError, NoProviderError, NoSignerError } from './errors'
 
 export type ChainID = 'mainnet' | 'testnet' | 'localnet'
 
@@ -43,6 +43,13 @@ export class TransactionBuilder {
     signer: KeyManager
     chainID: ChainID
   }) {
+    if (!provider) {
+      throw new NoProviderError('Please add a provider.')
+    }
+    if (!signer) {
+      throw new NoSignerError('Please add a signer.')
+    }
+
     this.provider = provider
     this.signer = signer
     this.chainID = chainID

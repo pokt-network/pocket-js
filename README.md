@@ -43,6 +43,27 @@ const address = signer.getAddress();
 const publicKey = signer.getPublicKey();
 const signedMessage = signer.sign("deadbeef");
 
+// Instanciate a new TransactionBuilder for creating transaction messages and
+// and sending them over the network!
+export const transactionBuilder = new TransactionBuilder({
+  provider,
+  signer,
+});
+
+// Create a new `Send` Message which is used to send funds over the network.
+const sendMsg = transactionBuilder.send(
+  signer.getAddress(), 
+  "07a6fca4dea9f01e4c19f301df0d0afac128561b",
+  // Amount in uPOKT (1 POKT = 1*10^6 uPOKT)
+  "1000000"
+);
+// Send it over the network!
+const txresponse = await transactionBuilder.submit({
+  memo: "POKT Payment",
+  txMsg: sendMsg,
+});
+
+// Create a new relayer to send relays over the network!
 export const relayer = new Relayer({
   keyManager: signer,
   provider,

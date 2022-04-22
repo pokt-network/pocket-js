@@ -9,7 +9,7 @@ A complete, fast and slim SDK to interact with the Pocket Network.
 Add the packages for each part to your project:
 
 ```console
-yarn add @pokt-foundation/pocketjs-provider @pokt-foundation/pocketjs-signer @pokt-foundation/pocketjs-relayer @pokt-foundation/pocketjs-utils
+yarn add @pokt-foundation/pocketjs-provider @pokt-foundation/pocketjs-signer pokt-foundation/pocketjs-transaction-builder @pokt-foundation/pocketjs-relayer @pokt-foundation/pocketjs-utils
 ```
 
 And use each piece as you see fit:
@@ -17,6 +17,7 @@ And use each piece as you see fit:
 ```javascript
 import { JsonRpcProvider } from "@pokt-foundation/pocketjs-provider";
 import { KeyManager } from "@pokt-foundation/pocketjs-signer";
+import { TransactionBuilder } from "@pokt-foundation/pocketjs-transaction-builder";
 import { Relayer } from "@pokt-foundation/pocketjs-relayer";
 import {
   MAINNET_RPC_URL,

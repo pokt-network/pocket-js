@@ -110,6 +110,7 @@ export abstract class AbstractBuilder {
    */
   abstract nodeStake(
     nodePubKey: string,
+    outputAddress: string,
     chains: string[],
     amount: string,
     serviceURL: URL
@@ -120,12 +121,18 @@ export abstract class AbstractBuilder {
    * @param {string} address - Address of the Node to unstake for
    * @returns {MsgProtoNodeUnstake} - The unsigned Node Unstake message.
    */
-  abstract nodeUnstake(address: string): MsgProtoNodeUnstake
+  abstract nodeUnstake(
+    nodeAddress: string,
+    signerAddress: string
+  ): MsgProtoNodeUnstake
 
   /**
    * Adds a MsgUnjail TxMsg for this transaction
    * @param {string} address - Address of the Node to unjail
    * @returns {MsgProtoNodeUnjail} - The unsigned Node Unjail message.
    */
-  abstract nodeUnjail(address: string): MsgProtoNodeUnjail
+  abstract nodeUnjail(
+    nodeAddress: string,
+    signerAddress: string
+  ): MsgProtoNodeUnjail
 }

@@ -205,11 +205,12 @@ export class TransactionBuilder implements AbstractBuilder {
    */
   public nodeStake(
     nodePubKey: string,
+    outputAddress: string,
     chains: string[],
     amount: string,
     serviceURL: URL
   ): MsgProtoNodeStakeTx {
-    return new MsgProtoNodeStakeTx(nodePubKey, chains, amount, serviceURL)
+    return new MsgProtoNodeStakeTx(nodePubKey, outputAddress, chains, amount, serviceURL)
   }
 
   /**
@@ -217,8 +218,8 @@ export class TransactionBuilder implements AbstractBuilder {
    * @param {string} address - Address of the Node to unstake for
    * @returns {MsgProtoNodeUnstake} - The unsigned Node Unstake message.
    */
-  public nodeUnstake(address: string): MsgProtoNodeUnstake {
-    return new MsgProtoNodeUnstake(address)
+  public nodeUnstake(nodeAddress: string, signerAddress: string): MsgProtoNodeUnstake {
+    return new MsgProtoNodeUnstake(nodeAddress, signerAddress)
   }
 
   /**
@@ -226,7 +227,7 @@ export class TransactionBuilder implements AbstractBuilder {
    * @param {string} address - Address of the Node to unjail
    * @returns {MsgProtoNodeUnjail} - The unsigned Node Unjail message.
    */
-  public nodeUnjail(address: string): MsgProtoNodeUnjail {
-    return new MsgProtoNodeUnjail(address)
+  public nodeUnjail(nodeAddress: string, signerAddress: string): MsgProtoNodeUnjail {
+    return new MsgProtoNodeUnjail(nodeAddress, signerAddress)
   }
 }

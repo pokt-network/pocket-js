@@ -74,12 +74,15 @@ export abstract class AbstractBuilder {
    * @param {string} amount - Amount to be sent, needs to be a valid number greater than 1 uPOKT.
    * @returns {MsgProtoSend} - The unsigned Send message.
    */
-  abstract send(
-    fromAddress: string,
-    toAddress: string,
+  abstract send({
+    fromAddress,
+    toAddress,
+    amount,
+  }: {
+    fromAddress: string
+    toAddress: string
     amount: string
-  ): MsgProtoSend
-
+  }): MsgProtoSend
   /**
    * Adds a MsgAppStake TxMsg for this transaction
    * @param {string} appPubKey - Application Public Key
@@ -87,11 +90,15 @@ export abstract class AbstractBuilder {
    * @param {string} amount - the amount to stake, must be greater than or equal to 1 POKT
    * @returns {MsgProtoAppStake} - The unsigned App Stake message.
    */
-  abstract appStake(
-    appPubKey: string,
-    chains: string[],
+  abstract appStake({
+    appPubKey,
+    chains,
+    amount,
+  }: {
+    appPubKey: string
+    chains: string[]
     amount: string
-  ): MsgProtoAppStake
+  }): MsgProtoAppStake
 
   /**
    * Adds a MsgBeginAppUnstake TxMsg for this transaction
@@ -108,12 +115,17 @@ export abstract class AbstractBuilder {
    * @param {URL} serviceURL - Node service url
    * @returns {MsgProtoNodeStakeTx} - The unsigned Node Stake message.
    */
-  abstract nodeStake(
-    nodePubKey: string,
-    chains: string[],
-    amount: string,
+  abstract nodeStake({
+    nodePubKey,
+    chains,
+    amount,
+    serviceURL,
+  }: {
+    nodePubKey: string
+    chains: string[]
+    amount: string
     serviceURL: URL
-  ): MsgProtoNodeStakeTx
+  }): MsgProtoNodeStakeTx
 
   /**
    * Adds a MsgBeginUnstake TxMsg for this transaction

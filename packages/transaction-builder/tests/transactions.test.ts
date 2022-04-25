@@ -62,29 +62,29 @@ describe('TransactionBuilder Tests', () => {
         chainID,
       })
 
-      const sendMsg = transactionBuilder.send(
-        'b50a6e20d3733fb89631ae32385b3c85c533c560',
-        'fcf719ca739dccbc281b12bc0d671aaa7a015848',
-        '1000000'
-      )
+      const sendMsg = transactionBuilder.send({
+        toAddress: 'fcf719ca739dccbc281b12bc0d671aaa7a015848',
+        amount: '1000000',
+      })
       expect(sendMsg instanceof MsgProtoSend).toBe(true)
+      expect(sendMsg.fromAddress).toBe(signer.getAddress())
 
-      const appStakeMsg = transactionBuilder.appStake(
-        PUBLIC_KEY,
-        ['0040'],
-        '69420000000'
-      )
+      const appStakeMsg = transactionBuilder.appStake({
+        appPubKey: PUBLIC_KEY,
+        chains: ['0040'],
+        amount: '69420000000',
+      })
       expect(appStakeMsg instanceof MsgProtoAppStake).toBe(true)
 
       const appUnstakeMsg = transactionBuilder.appUnstake(ADDRESS)
       expect(appUnstakeMsg instanceof MsgProtoAppUnstake).toBe(true)
 
-      const nodeStakeMsg = transactionBuilder.nodeStake(
-        signer.getPublicKey(),
-        ['0040'],
-        '69420000000',
-        new URL('https://mofongonodes.co:8081')
-      )
+      const nodeStakeMsg = transactionBuilder.nodeStake({
+        nodePubKey: signer.getPublicKey(),
+        chains: ['0040'],
+        amount: '69420000000',
+        serviceURL: new URL('https://mofongonodes.co:8081'),
+      })
       expect(nodeStakeMsg instanceof MsgProtoNodeStakeTx).toBe(true)
 
       const nodeUnstakeMsg = transactionBuilder.nodeUnstake(signer.getAddress())
@@ -98,29 +98,29 @@ describe('TransactionBuilder Tests', () => {
   describe('TransactionBuilder:Messages:UnhappyPaths:MsgProtoSend', () => {
     test('Invalid case: same addresses', () => {
       expect(() =>
-        transactionBuilder.send(
-          'fcf719ca739dccbc281b12bc0d671aaa7a015848',
-          'fcf719ca739dccbc281b12bc0d671aaa7a015848',
-          '1000000'
-        )
+        transactionBuilder.send({
+          fromAddress: 'fcf719ca739dccbc281b12bc0d671aaa7a015848',
+          toAddress: 'fcf719ca739dccbc281b12bc0d671aaa7a015848',
+          amount: '1000000',
+        })
       ).toThrow(/fromAddress cannot be equal/)
     })
     test('Invalid case: amount < 0', () => {
       expect(() =>
-        transactionBuilder.send(
-          'b50a6e20d3733fb89631ae32385b3c85c533c560',
-          'fcf719ca739dccbc281b12bc0d671aaa7a015848',
-          '-1'
-        )
+        transactionBuilder.send({
+          fromAddress: 'b50a6e20d3733fb89631ae32385b3c85c533c560',
+          toAddress: 'fcf719ca739dccbc281b12bc0d671aaa7a015848',
+          amount: '-1',
+        })
       ).toThrow(/Amount < 0/)
     })
     test('Invalid case: invalid input for amount', () => {
       expect(() =>
-        transactionBuilder.send(
-          'b50a6e20d3733fb89631ae32385b3c85c533c560',
-          'fcf719ca739dccbc281b12bc0d671aaa7a015848',
-          'adf80'
-        )
+        transactionBuilder.send({
+          fromAddress: 'b50a6e20d3733fb89631ae32385b3c85c533c560',
+          toAddress: 'fcf719ca739dccbc281b12bc0d671aaa7a015848',
+          amount: 'adf80',
+        })
       ).toThrow(/Amount is not a valid number/)
     })
   })
@@ -128,17 +128,29 @@ describe('TransactionBuilder Tests', () => {
   describe('TransactionBuilder:Messages:UnhappyPaths:MsgProtoAppStake', () => {
     test('Invalid case: amount to stake too small (below 1 POKT)', () => {
       expect(() =>
-        transactionBuilder.appStake(PUBLIC_KEY, ['0040'], '10000')
+        transactionBuilder.appStake({
+          appPubKey: PUBLIC_KEY,
+          chains: ['0040'],
+          amount: '10000',
+        })
       ).toThrow(/Amount should be bigger than/)
     })
     test('Invalid case: chains empty', () => {
       expect(() =>
-        transactionBuilder.appStake(PUBLIC_KEY, [], '1000000')
+        transactionBuilder.appStake({
+          appPubKey: PUBLIC_KEY,
+          chains: [],
+          amount: '1000000',
+        })
       ).toThrow(/empty/)
     })
     test('Invalid case: invalid input for amount', () => {
       expect(() =>
-        transactionBuilder.appStake(PUBLIC_KEY, ['0040'], 'askdja0912')
+        transactionBuilder.appStake({
+          appPubKey: PUBLIC_KEY,
+          chains: ['0040'],
+          amount: 'askdja0912',
+        })
       ).toThrow(/Amount is not a valid number/)
     })
   })
@@ -146,33 +158,43 @@ describe('TransactionBuilder Tests', () => {
   describe('TransactionBuilder:Messages:UnhappyPaths:MsgProtoNodeStakeTx', () => {
     test('Invalid case: amount to stake too small', () => {
       expect(() =>
-        transactionBuilder.nodeStake(PUBLIC_KEY, ['0040'], '69420', serviceURL)
+        transactionBuilder.nodeStake({
+          nodePubKey: PUBLIC_KEY,
+          chains: ['0040'],
+          amount: '69420',
+          serviceURL: serviceURL,
+        })
       ).toThrow(/Amount below minimum/)
     })
     test('Invalid case: chains empty', () => {
       expect(() =>
-        transactionBuilder.nodeStake(PUBLIC_KEY, [], '15000000000', serviceURL)
+        transactionBuilder.nodeStake({
+          nodePubKey: PUBLIC_KEY,
+          chains: [],
+          amount: '69420000000000',
+          serviceURL: serviceURL,
+        })
       ).toThrow(/empty/)
     })
     test('Invalid case: invalid input for amount', () => {
       expect(() =>
-        transactionBuilder.nodeStake(
-          PUBLIC_KEY,
-          ['0040'],
-          'askdja0912',
-          serviceURL
-        )
+        transactionBuilder.nodeStake({
+          nodePubKey: PUBLIC_KEY,
+          chains: [],
+          amount: 'asdfasd6778',
+          serviceURL: serviceURL,
+        })
       ).toThrow(/Amount is not a valid number/)
     })
   })
 
   describe('TransactionBuilder:createTransaction:HappyPath', () => {
     test('Creates a RawTxRequest for MsgProtoSend', async () => {
-      const txMsg = transactionBuilder.send(
-        'b50a6e20d3733fb89631ae32385b3c85c533c560',
-        'fcf719ca739dccbc281b12bc0d671aaa7a015848',
-        '1000000'
-      )
+      const txMsg = transactionBuilder.send({
+        fromAddress: 'b50a6e20d3733fb89631ae32385b3c85c533c560',
+        toAddress: 'fcf719ca739dccbc281b12bc0d671aaa7a015848',
+        amount: '1000000',
+      })
 
       const rawTxRequest = await transactionBuilder.createTransaction({ txMsg })
 
@@ -180,11 +202,11 @@ describe('TransactionBuilder Tests', () => {
       expect(rawTxRequest.address).toBe(signer.getAddress())
     })
     test('Creates a RawTxRequest for MsgProtoAppStake', async () => {
-      const txMsg = transactionBuilder.appStake(
-        signer.getPublicKey(),
-        ['0040'],
-        '1000000'
-      )
+      const txMsg = transactionBuilder.appStake({
+        appPubKey: signer.getPublicKey(),
+        chains: ['0040'],
+        amount: '1000000',
+      })
 
       const rawTxRequest = await transactionBuilder.createTransaction({ txMsg })
 
@@ -200,12 +222,12 @@ describe('TransactionBuilder Tests', () => {
       expect(rawTxRequest.address).toBe(signer.getAddress())
     })
     test('Creates a RawTxRequest for MsgProtoNodeStakeTx', async () => {
-      const txMsg = transactionBuilder.nodeStake(
-        signer.getPublicKey(),
-        ['0040'],
-        '15000000000',
-        serviceURL
-      )
+      const txMsg = transactionBuilder.nodeStake({
+        nodePubKey: signer.getPublicKey(),
+        chains: ['0040'],
+        amount: '15000000000',
+        serviceURL,
+      })
 
       const rawTxRequest = await transactionBuilder.createTransaction({ txMsg })
 

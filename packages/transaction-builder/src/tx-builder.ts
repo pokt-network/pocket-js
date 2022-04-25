@@ -16,7 +16,7 @@ import {
 import { TxEncoderFactory } from './factory/tx-encoder-factory'
 import { CoinDenom, TxMsg, TxSignature } from './models/'
 import { InvalidChainIDError, NoProviderError, NoSignerError } from './errors'
-import {AbstractBuilder} from './abstract-tx-builder'
+import { AbstractBuilder } from './abstract-tx-builder'
 
 export type ChainID = 'mainnet' | 'testnet' | 'localnet'
 
@@ -198,6 +198,7 @@ export class TransactionBuilder implements AbstractBuilder {
   /**
    * Adds a NodeStake TxMsg for this transaction
    * @param {string} nodePubKey - Node Public key
+   * @param {string} outputAddress - The address that the coins will be sent to when the node is unstaked
    * @param {string[]} chains - Network identifier list to be serviced by this node
    * @param {string} amount - the amount to stake, must be greater than or equal to 1 POKT
    * @param {URL} serviceURL - Node service url
@@ -210,24 +211,38 @@ export class TransactionBuilder implements AbstractBuilder {
     amount: string,
     serviceURL: URL
   ): MsgProtoNodeStakeTx {
-    return new MsgProtoNodeStakeTx(nodePubKey, outputAddress, chains, amount, serviceURL)
+    return new MsgProtoNodeStakeTx(
+      nodePubKey,
+      outputAddress,
+      chains,
+      amount,
+      serviceURL
+    )
   }
 
   /**
    * Adds a MsgBeginUnstake TxMsg for this transaction
-   * @param {string} address - Address of the Node to unstake for
+   * @param {string} nodeAddress - Address of the Node to unstake for
+   * @param {string} signerAddress - The address that the coins will be sent to when the node is unstaked. Must be the same address entered when the node was staked
    * @returns {MsgProtoNodeUnstake} - The unsigned Node Unstake message.
    */
-  public nodeUnstake(nodeAddress: string, signerAddress: string): MsgProtoNodeUnstake {
+  public nodeUnstake(
+    nodeAddress: string,
+    signerAddress: string
+  ): MsgProtoNodeUnstake {
     return new MsgProtoNodeUnstake(nodeAddress, signerAddress)
   }
 
   /**
    * Adds a MsgUnjail TxMsg for this transaction
-   * @param {string} address - Address of the Node to unjail
+   * @param {string} nodeAddress - Address of the Node to unjail
+   * @param {string} signerAddress - The address of where the coins will be sent to when the node is unstaked (if it is ever). Necessary to unjail the node
    * @returns {MsgProtoNodeUnjail} - The unsigned Node Unjail message.
    */
-  public nodeUnjail(nodeAddress: string, signerAddress: string): MsgProtoNodeUnjail {
+  public nodeUnjail(
+    nodeAddress: string,
+    signerAddress: string
+  ): MsgProtoNodeUnjail {
     return new MsgProtoNodeUnjail(nodeAddress, signerAddress)
   }
 }

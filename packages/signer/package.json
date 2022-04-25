@@ -36,8 +36,10 @@
     "@pokt-foundation/pocketjs-abstract-provider": "workspace:*",
     "@pokt-foundation/pocketjs-provider": "workspace:*",
     "@pokt-foundation/pocketjs-utils": "workspace:*",
+    "buffer": "^6.0.3",
     "debug": "^4.3.3",
-    "hex-lite": "^1.5.0",
-    "libsodium-wrappers": "^0.7.9"
+    "isomorphic-crypto": "^3.0.0",
+    "libsodium-wrappers": "^0.7.9",
+    "scrypt-js": "^3.0.1"
   }
 }

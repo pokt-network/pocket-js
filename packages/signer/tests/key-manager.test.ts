@@ -22,6 +22,28 @@ describe('Signer: Key Manager tests', () => {
 
     expect(signedMessage).toBe(SIGNED_MESSAGE)
   })
+  it('Exports a PPK without failure and re-imports it', async () => {
+    const ppk = await KeyManager.exportPPK({
+      privateKey: PRIVATE_KEY,
+      password: 'vapenayshal',
+      hint: 'nayshal',
+    })
+    const importedKeyManager = await KeyManager.fromPPK({
+      ppk,
+      password: 'vapenayshal',
+    })
+    expect(importedKeyManager.getPrivateKey()).toBe(PRIVATE_KEY)
+    expect(importedKeyManager.getPublicKey()).toBe(PUBLIC_KEY)
+    expect(importedKeyManager.getAddress()).toBe(ADDRESS)
+  })
+  it('Creates a random private key, exports it as PPK and imports it correctly', async () => {
+    const km = await KeyManager.createRandom()
+    const ppk = await km.exportPPK({ password: 'vapenayshal' })
+    const km2 = await KeyManager.fromPPK({ password: 'vapenayshal', ppk })
+    expect(km2.getPrivateKey()).toBe(km.getPrivateKey())
+    expect(km2.getPublicKey()).toBe(km.getPublicKey())
+    expect(km2.getAddress()).toBe(km.getAddress())
+  })
 })
 
 export {}

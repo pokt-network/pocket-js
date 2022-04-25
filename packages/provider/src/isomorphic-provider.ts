@@ -126,8 +126,8 @@ export class IsomorphicProvider implements AbstractProvider {
       route: V1RpcRoutes.QueryBalance,
       body: { address: await address },
     })
-    const { balance } = (await res.json()) as { balance: bigint }
-    return balance as bigint
+    const { balance } = (await res.json()) as { balance: number }
+    return BigInt(balance.toString())
   }
 
   /**

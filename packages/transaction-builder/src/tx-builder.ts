@@ -16,7 +16,7 @@ import {
 import { TxEncoderFactory } from './factory/tx-encoder-factory'
 import { CoinDenom, TxMsg, TxSignature } from './models/'
 import { InvalidChainIDError, NoProviderError, NoSignerError } from './errors'
-import {AbstractBuilder} from './abstract-tx-builder'
+import { AbstractBuilder } from './abstract-tx-builder'
 
 export type ChainID = 'mainnet' | 'testnet' | 'localnet'
 
@@ -163,11 +163,15 @@ export class TransactionBuilder implements AbstractBuilder {
    * @param {string} amount - Amount to be sent, needs to be a valid number greater than 1 uPOKT.
    * @returns {MsgProtoSend} - The unsigned Send message.
    */
-  public send(
-    fromAddress: string,
-    toAddress: string,
+  public send({
+    fromAddress = this.signer.getAddress(),
+    toAddress,
+    amount,
+  }: {
+    fromAddress?: string
+    toAddress: string
     amount: string
-  ): MsgProtoSend {
+  }): MsgProtoSend {
     return new MsgProtoSend(fromAddress, toAddress, amount)
   }
 
@@ -178,11 +182,15 @@ export class TransactionBuilder implements AbstractBuilder {
    * @param {string} amount - the amount to stake, must be greater than or equal to 1 POKT
    * @returns {MsgProtoAppStake} - The unsigned App Stake message.
    */
-  public appStake(
-    appPubKey: string,
-    chains: string[],
+  public appStake({
+    appPubKey,
+    chains,
+    amount,
+  }: {
+    appPubKey: string
+    chains: string[]
     amount: string
-  ): MsgProtoAppStake {
+  }): MsgProtoAppStake {
     return new MsgProtoAppStake(appPubKey, chains, amount)
   }
 
@@ -203,12 +211,17 @@ export class TransactionBuilder implements AbstractBuilder {
    * @param {URL} serviceURL - Node service url
    * @returns {MsgProtoNodeStakeTx} - The unsigned Node Stake message.
    */
-  public nodeStake(
-    nodePubKey: string,
-    chains: string[],
-    amount: string,
+  public nodeStake({
+    nodePubKey,
+    chains,
+    amount,
+    serviceURL,
+  }: {
+    nodePubKey: string
+    chains: string[]
+    amount: string
     serviceURL: URL
-  ): MsgProtoNodeStakeTx {
+  }): MsgProtoNodeStakeTx {
     return new MsgProtoNodeStakeTx(nodePubKey, chains, amount, serviceURL)
   }
 

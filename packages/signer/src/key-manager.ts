@@ -6,7 +6,7 @@ import {
   getAddressFromPublicKey,
   publicKeyFromPrivate,
 } from '@pokt-foundation/pocketjs-utils'
-import { syncScrypt } from 'scrypt-js'
+import scrypt from 'scrypt-js'
 import { InvalidPPKError } from './errors'
 
 interface Account {
@@ -127,7 +127,7 @@ export class KeyManager {
     // Retrieve the salt
     const decryptSalt = Buffer.from(jsonObject.salt, 'hex')
     // Scrypt hash
-    const scryptHash = syncScrypt(
+    const scryptHash = scrypt.syncScrypt(
       Buffer.from(password, 'utf8'),
       decryptSalt,
       scryptOptions.N,
@@ -185,7 +185,7 @@ export class KeyManager {
     const secParam = 12
     const algorithm = 'aes-256-gcm'
     const salt = crypto.randomBytes(16)
-    const scryptHash = syncScrypt(
+    const scryptHash = scrypt.syncScrypt(
       Buffer.from(password, 'utf8'),
       salt,
       SCRYPT_OPTIONS.N,

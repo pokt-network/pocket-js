@@ -8,13 +8,15 @@ import {
   Block,
   DispatchRequest,
   DispatchResponse,
-  GetAppOptions,
+  GetAppsOptions,
   GetNodesOptions,
   Node,
+  PaginatedApp,
+  PaginatedNode,
+  RawTransactionResponse,
+  RawTxRequest,
   SessionHeader,
   TransactionResponse,
-  RawTxRequest,
-  RawTransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
 import { AbstractProvider } from '@pokt-foundation/pocketjs-abstract-provider'
 import {
@@ -267,8 +269,69 @@ export class JsonRpcProvider implements AbstractProvider {
    * @param {GetNodesOptions} getNodesOptions - the options to pass in to the query.
    * @returns {Node[]} - An array with the nodes requested and their information.
    * */
-  getNodes(getNodesOptions: GetNodesOptions): Promise<Node[]> {
-    throw new Error('Not implemented')
+  async getNodes(
+    GetNodesOptions: GetNodesOptions = {
+      blockHeight: 0,
+      page: 1,
+      perPage: 100,
+    }
+  ): Promise<PaginatedNode> {
+    const { blockHeight: height } = GetNodesOptions
+
+    const res = await this.perform({
+      route: V1RpcRoutes.QueryApps,
+      body: {
+        height,
+        opts: {
+          page: GetNodesOptions.page ?? 1,
+          per_page: GetNodesOptions.perPage ?? 100,
+          ...(GetNodesOptions?.blockchain
+            ? { blockchain: GetNodesOptions.blockchain }
+            : {}),
+          ...(GetNodesOptions?.stakingStatus
+            ? { staking_status: GetNodesOptions.stakingStatus }
+            : {}),
+          ...(GetNodesOptions?.jailedStatus
+            ? { jailed_status: GetNodesOptions.jailedStatus }
+            : {}),
+        },
+      },
+    })
+
+    const parsedRes = (await res.json()) as any
+
+    if (!('result' in parsedRes)) {
+      throw new Error('Failed to get apps')
+    }
+
+    const nodes = parsedRes.result.map((node) => {
+      const {
+        address,
+        chains,
+        jailed,
+        public_key,
+        staked_tokens,
+        status,
+        service_url,
+      } = node
+
+      return {
+        address,
+        chains,
+        publicKey: public_key,
+        jailed,
+        stakedTokens: staked_tokens ?? '0',
+        status,
+        serviceUrl: service_url,
+      } as Node
+    })
+
+    return {
+      nodes,
+      page: GetNodesOptions.page,
+      perPage: GetNodesOptions.perPage,
+      totalPages: parsedRes.total_pages,
+    } as PaginatedNode
   }
 
   /**
@@ -277,13 +340,19 @@ export class JsonRpcProvider implements AbstractProvider {
    * @param {GetNodesOptions} getNodesOptions - The options to pass in to the query.
    * @returns {Node} - The node requested and its information.
    * */
-  async getNode(
-    address: string | Promise<string>,
-    GetNodeOptions
-  ): Promise<Node> {
+  async getNode({
+    address,
+    blockHeight,
+  }: {
+    address: string | Promise<string>
+    blockHeight?: number
+  }): Promise<Node> {
     const res = await this.perform({
       route: V1RpcRoutes.QueryNode,
-      body: { address: await address },
+      body: {
+        address: await address,
+        ...(blockHeight ? { height: blockHeight } : {}),
+      },
     })
     const node = (await res.json()) as any
 
@@ -318,8 +387,66 @@ export class JsonRpcProvider implements AbstractProvider {
    * @param {GetAppOptions} getAppOptions - The options to pass in to the query.
    * @returns {App} - An array with the apps requested and their information.
    * */
-  getApps(getAppOption: GetAppOptions): Promise<App[]> {
-    throw new Error('Not implemented')
+  async getApps(
+    GetAppsOptions: GetAppsOptions = {
+      blockHeight: 0,
+      page: 1,
+      perPage: 100,
+    }
+  ): Promise<PaginatedApp> {
+    const { blockHeight: height } = GetAppsOptions
+
+    const res = await this.perform({
+      route: V1RpcRoutes.QueryApps,
+      body: {
+        height,
+        opts: {
+          page: GetAppsOptions.page ?? 1,
+          per_page: GetAppsOptions.perPage ?? 100,
+          ...(GetAppsOptions?.stakingStatus
+            ? { staking_status: GetAppsOptions.stakingStatus }
+            : {}),
+          ...(GetAppsOptions?.blockchain
+            ? { blockchain: GetAppsOptions.blockchain }
+            : {}),
+        },
+      },
+    })
+
+    const parsedRes = (await res.json()) as any
+
+    if (!('result' in parsedRes)) {
+      throw new Error('Failed to get apps')
+    }
+
+    const apps = parsedRes.result.map((app) => {
+      const {
+        address,
+        chains,
+        jailed,
+        max_relays,
+        public_key,
+        staked_tokens,
+        status,
+      } = app
+
+      return {
+        address,
+        chains,
+        publicKey: public_key,
+        jailed,
+        maxRelays: max_relays ?? '',
+        stakedTokens: staked_tokens ?? '0',
+        status,
+      } as App
+    })
+
+    return {
+      apps,
+      page: GetAppsOptions.page,
+      perPage: GetAppsOptions.perPage,
+      totalPages: parsedRes.total_pages,
+    } as PaginatedApp
   }
 
   /**
@@ -328,14 +455,21 @@ export class JsonRpcProvider implements AbstractProvider {
    * @param {GetAppOptions} getAppOptions - The options to pass in to the query.
    * @returns {App} - The app requested and its information.
    * */
-  async getApp(
-    address: string | Promise<string>,
-    options: GetAppOptions
-  ): Promise<App> {
+  async getApp({
+    address,
+    blockHeight,
+  }: {
+    address: string | Promise<string>
+    blockHeight?: number
+  }): Promise<App> {
     const res = await this.perform({
       route: V1RpcRoutes.QueryApp,
-      body: { address: await address },
+      body: {
+        address: await address,
+        ...(blockHeight ? { height: blockHeight } : {}),
+      },
     })
+
     const app = (await res.json()) as any
 
     if (!('chains' in app)) {
@@ -350,8 +484,8 @@ export class JsonRpcProvider implements AbstractProvider {
       chains,
       publicKey: public_key,
       jailed,
-      maxRelays: max_relays ?? 0,
-      stakedTokens: staked_tokens ?? 0,
+      maxRelays: max_relays ?? '',
+      stakedTokens: staked_tokens ?? '0',
       status,
     } as App
   }

@@ -3,11 +3,13 @@ import {
   AccountWithTransactions,
   App,
   Block,
-  GetAppOptions,
+  GetAppsOptions,
   GetNodesOptions,
   Node,
-  TransactionResponse,
+  PaginatedApp,
+  PaginatedNode,
   RawTxRequest,
+  TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
 
 export abstract class AbstractProvider {
@@ -27,16 +29,22 @@ export abstract class AbstractProvider {
   abstract getBlock(blockNumber: number): Promise<Block>
   abstract getTransaction(transactionHash: string): Promise<TransactionResponse>
   abstract getBlockNumber(): Promise<number>
-  abstract getNodes(getNodesOptions: GetNodesOptions): Promise<Node[]>
-  abstract getNode(
-    address: string | Promise<string>,
-    options: GetNodesOptions
-  ): Promise<Node>
-  abstract getApps(getAppOption: GetAppOptions): Promise<App[]>
-  abstract getApp(
-    address: string | Promise<string>,
-    options: GetAppOptions
-  ): Promise<App>
+  abstract getNodes(getNodesOptions: GetNodesOptions): Promise<PaginatedNode>
+  abstract getNode({
+    address,
+    blockHeight,
+  }: {
+    address: string | Promise<string>
+    blockHeight?: number
+  }): Promise<Node>
+  abstract getApps(getAppOption: GetAppsOptions): Promise<PaginatedApp>
+  abstract getApp({
+    address,
+    blockHeight,
+  }: {
+    address: string | Promise<string>
+    blockHeight?: number
+  }): Promise<App>
   abstract getAccount(address: string | Promise<string>): Promise<Account>
   abstract getAccountWithTransactions(
     address: string | Promise<string>

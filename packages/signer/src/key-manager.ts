@@ -217,7 +217,6 @@ export class KeyManager {
    * Validates the PPK json string properties
    * @param {string} jsonStr - JSON String holding the ppk information.
    * @returns {boolean} True or false.
-   * @memberof Keybase
    */
   static validatePPKJSON(jsonStr: string): boolean {
     const jsonObject = JSON.parse(jsonStr)
@@ -282,7 +281,7 @@ export class KeyManager {
    * Exports a private key as a Portable-Private-Key, unlockable with the used password.
    * @param {string} password - The password to use in the PPK.
    * @param {string} hint - Password hint.
-   * @returns {KeyManager} - A new Key Manager instance with the account attached.
+   * @returns {string} - The stringified PPK.
    * */
   async exportPPK({
     password,

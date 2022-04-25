@@ -1,9 +1,13 @@
 import Sodium from 'libsodium-wrappers'
-import { toUint8Array, fromUint8Array } from 'hex-lite'
+import { Buffer } from 'buffer'
 import { AbstractProvider } from '@pokt-foundation/pocketjs-abstract-provider'
 import { TransactionResponse } from '@pokt-foundation/pocketjs-types'
 import { AbstractSigner, TransactionRequest } from './abstract-signer'
 import { KeyManager } from './key-manager'
+import {
+  getAddressFromPublicKey,
+  publicKeyFromPrivate,
+} from '@pokt-foundation/pocketjs-utils'
 
 /**
  * A Wallet is a minimal wallet implementation that lets you import accounts
@@ -39,6 +43,58 @@ export class Wallet implements AbstractSigner {
     return new Wallet({
       keyManager,
       isSigner: true,
+    })
+  }
+
+  /**
+   * Instanciates a new Wallet from a valid ED25519 private key.
+   * @param {string} privateKey - The private key to use to instanciate the new Key manager.
+   * @returns {Wallet} - A new Key Manager instance with the account attached.
+   * */
+  static async fromPrivateKey(privateKey: string): Promise<Wallet> {
+    await Sodium.ready
+    const publicKey = publicKeyFromPrivate(privateKey)
+    const addr = await getAddressFromPublicKey(publicKey)
+
+    const keyManager = new KeyManager({ address: addr, privateKey, publicKey })
+
+    return new Wallet({ keyManager, isSigner: true })
+  }
+
+  /**
+   * Instanciates a new Wallet from a valid PPK.
+   * @param {string} privateKey - The private key to use to instanciate the new Key manager.
+   * @returns {Wallet} - A new Key Manager instance with the account attached.
+   * */
+  static async fromPPK({
+    password,
+    ppk,
+  }: {
+    password: string
+    ppk: string
+  }): Promise<Wallet> {
+    await Sodium.ready
+    const keyManager = await KeyManager.fromPPK({ password, ppk })
+    return new Wallet({ keyManager, isSigner: true })
+  }
+
+  /**
+   * Exports a private key as a Portable-Private-Key, unlockable with the used password.
+   * @param {string} password - The password to use in the PPK.
+   * @param {string} hint - Password hint.
+   * @returns {KeyManager} - A new Key Manager instance with the account attached.
+   * */
+  async exportPPK({
+    password,
+    hint = '',
+  }: {
+    password: string
+    hint?: string
+  }): Promise<string> {
+    return KeyManager.exportPPK({
+      privateKey: this.keyManager.getPrivateKey(),
+      password,
+      hint,
     })
   }
 
@@ -103,12 +159,12 @@ export class Wallet implements AbstractSigner {
    * */
   async sign(payload: string): Promise<string> {
     await Sodium.ready
-    return fromUint8Array(
+    return Buffer.from(
       Sodium.crypto_sign_detached(
-        toUint8Array(payload),
-        toUint8Array(this.keyManager.getPrivateKey())
+        Buffer.from(payload, 'hex'),
+        Buffer.from(this.keyManager.getPrivateKey(), 'hex')
       )
-    )
+    ).toString('hex')
   }
 
   /**

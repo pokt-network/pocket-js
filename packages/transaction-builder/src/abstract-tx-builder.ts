@@ -136,18 +136,24 @@ export abstract class AbstractBuilder {
    * @param {string} signerAddress - The address that the coins will be sent to when the node is unstaked. Must be the same address entered when the node was staked
    * @returns {MsgProtoNodeUnstake} - The unsigned Node Unstake message.
    */
-  abstract nodeUnstake(
-    nodeAddress: string,
-    signerAddress: string
-  ): MsgProtoNodeUnstake
+  abstract nodeUnstake({
+    nodeAddress,
+    signerAddress,
+  }: {
+    nodeAddress?: string
+    signerAddress?: string
+  }): MsgProtoNodeUnstake
 
   /**
    * Adds a MsgUnjail TxMsg for this transaction
    * @param {string} nodeAddress - Address of the Node to unjail
    * @returns {MsgProtoNodeUnjail} - The unsigned Node Unjail message.
    */
-  abstract nodeUnjail(
-    nodeAddress: string,
-    signerAddress: string
-  ): MsgProtoNodeUnjail
+  abstract nodeUnjail({
+    nodeAddress,
+    signerAddress,
+  }: {
+    nodeAddress?: string
+    signerAddress?: string
+  }): MsgProtoNodeUnjail
 }

@@ -213,14 +213,14 @@ export class TransactionBuilder implements AbstractBuilder {
    * @returns {MsgProtoNodeStakeTx} - The unsigned Node Stake message.
    */
   public nodeStake({
-    nodePubKey,
-    outputAddress,
+    nodePubKey = this.signer.getPublicKey(),
+    outputAddress = this.signer.getAddress(),
     chains,
     amount,
     serviceURL,
   }: {
-    nodePubKey: string
-    outputAddress: string
+    nodePubKey?: string
+    outputAddress?: string
     chains: string[]
     amount: string
     serviceURL: URL
@@ -240,10 +240,13 @@ export class TransactionBuilder implements AbstractBuilder {
    * @param {string} signerAddress - The address that the coins will be sent to when the node is unstaked. Must be the same address entered when the node was staked
    * @returns {MsgProtoNodeUnstake} - The unsigned Node Unstake message.
    */
-  public nodeUnstake(
-    nodeAddress: string,
-    signerAddress: string
-  ): MsgProtoNodeUnstake {
+  public nodeUnstake({
+    nodeAddress = this.signer.getAddress(),
+    signerAddress = this.signer.getAddress(),
+  }: {
+    nodeAddress?: string
+    signerAddress?: string
+  }): MsgProtoNodeUnstake {
     return new MsgProtoNodeUnstake(nodeAddress, signerAddress)
   }
 
@@ -253,10 +256,13 @@ export class TransactionBuilder implements AbstractBuilder {
    * @param {string} signerAddress - The address of where the coins will be sent to when the node is unstaked (if it is ever). Necessary to unjail the node
    * @returns {MsgProtoNodeUnjail} - The unsigned Node Unjail message.
    */
-  public nodeUnjail(
-    nodeAddress: string,
-    signerAddress: string
-  ): MsgProtoNodeUnjail {
+  public nodeUnjail({
+    nodeAddress = this.signer.getAddress(),
+    signerAddress = this.signer.getAddress(),
+  }: {
+    nodeAddress?: string
+    signerAddress?: string
+  }): MsgProtoNodeUnjail {
     return new MsgProtoNodeUnjail(nodeAddress, signerAddress)
   }
 }

@@ -8,6 +8,7 @@ import {
   Block,
   DispatchRequest,
   DispatchResponse,
+  GetAccountWithTransactionsOptions,
   GetAppsOptions,
   GetNodesOptions,
   Node,
@@ -295,6 +296,9 @@ export class JsonRpcProvider implements AbstractProvider {
             ? { jailed_status: GetNodesOptions.jailedStatus }
             : {}),
         },
+        ...(GetNodesOptions?.timeout
+          ? { jailed_status: GetNodesOptions.timeout }
+          : {}),
       },
     })
 
@@ -410,6 +414,7 @@ export class JsonRpcProvider implements AbstractProvider {
             ? { blockchain: GetAppsOptions.blockchain }
             : {}),
         },
+        ...(GetAppsOptions?.timeout ? { timeout: GetAppsOptions.timeout } : {}),
       },
     })
 
@@ -521,7 +526,11 @@ export class JsonRpcProvider implements AbstractProvider {
    * @returns {AccountWithTransaction} - The account requested and its information, along with its transactions.
    * */
   async getAccountWithTransactions(
-    address: string | Promise<string>
+    address: string | Promise<string>,
+    options: GetAccountWithTransactionsOptions = {
+      page: 1,
+      perPage: 100,
+    }
   ): Promise<AccountWithTransactions> {
     const accountRes = await this.perform({
       route: V1RpcRoutes.QueryAccount,
@@ -529,7 +538,7 @@ export class JsonRpcProvider implements AbstractProvider {
     })
     const txsRes = await this.perform({
       route: V1RpcRoutes.QueryAccountTxs,
-      body: { address: await address },
+      body: { address: await address, ...options },
     })
     const account = (await accountRes.json()) as any
     const txs = (await txsRes.json()) as any

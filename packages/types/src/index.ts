@@ -17,6 +17,7 @@ export interface GetNodesOptions {
   blockchain?: string
   page?: number
   perPage?: number
+  timeout?: number
 }
 
 export interface GetAppsOptions {
@@ -25,6 +26,14 @@ export interface GetAppsOptions {
   blockchain?: string
   page?: number
   perPage?: number
+  timeout?: number
+}
+
+export interface GetAccountWithTransactionsOptions {
+  received?: boolean
+  page?: number
+  perPage?: number
+  timeout?: number
 }
 
 export enum StakingStatus {

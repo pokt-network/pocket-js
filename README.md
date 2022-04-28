@@ -86,6 +86,25 @@ const relay = await relayer.relay({
 
 ## Contributing
 
+## Setting up
+
+Download the repo from Github, and just run `pnpm i` at the root folder. This will install all of the individual packages in the necessary order. If you'd like to build all packages manually, you'll need follow the order in which they're referenced:
+- Install `packages/utils`
+- Install `packages/types`
+- Install `packages/abstract-provider`
+- Install `packages/provider`
+- Install `packages/signer`
+- Install `packages/relayer`
+- Install `packages/transaction-builder`
+
+The best way to develop locally is to link the local packages from your clone to the project you're working on; this will let you either run the dev server or build the packages to see the changes in real time.
+
+We use Turborepo to manage build caches and our general build/test pipeline. This means that only the packages that have changed will get built again, saving you time. At the root `package.json` we've also defined a collection of scripts you can use to run individual packages on their dev server.
+
+### Running tests
+
+For running tests, either run `pnpm jest` on the corresponding repo or run `pnpm turbo run test` on the root folder to run all tests.
+
 #### 👋 Get started contributing with a [good first issue](https://github.com/pokt-foundation/pocket-js-slim/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 
 Don't be shy to contribute even the smallest tweak. 🐲 There are still some dragons to be aware of, but we'll be here to help you get started!

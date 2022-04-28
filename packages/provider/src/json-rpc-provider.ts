@@ -296,10 +296,8 @@ export class JsonRpcProvider implements AbstractProvider {
             ? { jailed_status: GetNodesOptions.jailedStatus }
             : {}),
         },
-        ...(GetNodesOptions?.timeout
-          ? { jailed_status: GetNodesOptions.timeout }
-          : {}),
       },
+      ...(GetNodesOptions?.timeout ? { timeout: GetNodesOptions.timeout } : {}),
     })
 
     const parsedRes = (await res.json()) as any
@@ -414,8 +412,8 @@ export class JsonRpcProvider implements AbstractProvider {
             ? { blockchain: GetAppsOptions.blockchain }
             : {}),
         },
-        ...(GetAppsOptions?.timeout ? { timeout: GetAppsOptions.timeout } : {}),
       },
+      ...(GetAppsOptions?.timeout ? { timeout: GetAppsOptions.timeout } : {}),
     })
 
     const parsedRes = (await res.json()) as any

@@ -3,6 +3,7 @@ import {
   AccountWithTransactions,
   App,
   Block,
+  GetAccountWithTransactionsOptions,
   GetAppsOptions,
   GetNodesOptions,
   Node,
@@ -47,7 +48,8 @@ export abstract class AbstractProvider {
   }): Promise<App>
   abstract getAccount(address: string | Promise<string>): Promise<Account>
   abstract getAccountWithTransactions(
-    address: string | Promise<string>
+    address: string | Promise<string>,
+    options: GetAccountWithTransactionsOptions
   ): Promise<AccountWithTransactions>
 
   // TODO: Add methods for params/requestChallenge

@@ -8,6 +8,7 @@ import {
   Block,
   DispatchRequest,
   DispatchResponse,
+  GetAccountWithTransactionsOptions,
   GetAppsOptions,
   GetNodesOptions,
   Node,
@@ -296,6 +297,7 @@ export class JsonRpcProvider implements AbstractProvider {
             : {}),
         },
       },
+      ...(GetNodesOptions?.timeout ? { timeout: GetNodesOptions.timeout } : {}),
     })
 
     const parsedRes = (await res.json()) as any
@@ -411,6 +413,7 @@ export class JsonRpcProvider implements AbstractProvider {
             : {}),
         },
       },
+      ...(GetAppsOptions?.timeout ? { timeout: GetAppsOptions.timeout } : {}),
     })
 
     const parsedRes = (await res.json()) as any
@@ -521,7 +524,11 @@ export class JsonRpcProvider implements AbstractProvider {
    * @returns {AccountWithTransaction} - The account requested and its information, along with its transactions.
    * */
   async getAccountWithTransactions(
-    address: string | Promise<string>
+    address: string | Promise<string>,
+    options: GetAccountWithTransactionsOptions = {
+      page: 1,
+      perPage: 100,
+    }
   ): Promise<AccountWithTransactions> {
     const accountRes = await this.perform({
       route: V1RpcRoutes.QueryAccount,
@@ -529,7 +536,7 @@ export class JsonRpcProvider implements AbstractProvider {
     })
     const txsRes = await this.perform({
       route: V1RpcRoutes.QueryAccountTxs,
-      body: { address: await address },
+      body: { address: await address, ...options },
     })
     const account = (await accountRes.json()) as any
     const txs = (await txsRes.json()) as any
@@ -542,13 +549,13 @@ export class JsonRpcProvider implements AbstractProvider {
     }
 
     const { coins, public_key } = account
-    const { total_count, txs: transactions } = txs
+    const { total_txs, txs: transactions } = txs
 
     return {
       address: await address,
       balance: coins[0]?.amount ?? 0,
       publicKey: public_key,
-      totalCount: total_count,
+      totalCount: total_txs,
       transactions: transactions,
     }
   }

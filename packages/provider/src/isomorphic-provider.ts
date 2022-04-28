@@ -547,13 +547,13 @@ export class IsomorphicProvider implements AbstractProvider {
     }
 
     const { coins, public_key } = account
-    const { total_count, txs: transactions } = txs
+    const { total_txs, txs: transactions } = txs
 
     return {
       address: await address,
       balance: coins[0]?.amount ?? 0,
       publicKey: public_key,
-      totalCount: total_count,
+      totalCount: total_txs,
       transactions: transactions,
     }
   }

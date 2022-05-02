@@ -31,6 +31,7 @@ const DEFAULT_TIMEOUT = 1000
 
 /**
  * An IsomorphicProvider lets you query data from the chain and send relays to the network.
+ * Browser & NodeJS Compatible.
  *  **/
 export class IsomorphicProvider implements AbstractProvider {
   private rpcUrl: string

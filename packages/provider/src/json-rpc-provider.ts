@@ -32,7 +32,7 @@ const DEFAULT_TIMEOUT = 1000
 
 /**
  * A JSONRPCProvider lets you query data from the chain and send relays to the network.
- * Node only, not isomorphic.
+ * NodeJS only, not Isomorphic or Browser compatible.
  *  **/
 export class JsonRpcProvider implements AbstractProvider {
   private rpcUrl: string

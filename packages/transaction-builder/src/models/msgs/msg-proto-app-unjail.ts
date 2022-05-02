@@ -44,7 +44,7 @@ export class MsgProtoAppUnjail extends TxMsg {
 
     return Any.fromJSON({
       typeUrl: this.KEY,
-      value: MsgUnjail.encode(data).finish().toString('base64'),
+      value: Buffer.from(MsgUnjail.encode(data).finish()).toString('base64'),
     })
   }
 }

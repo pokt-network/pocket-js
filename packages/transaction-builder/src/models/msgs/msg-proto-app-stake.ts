@@ -32,7 +32,9 @@ export class MsgProtoAppStake extends TxMsg {
     if (isNaN(amountNumber)) {
       throw new Error('Amount is not a valid number')
     } else if (amountNumber < MINIMUM_STAKE_AMOUNT) {
-      throw new Error('Amount should be bigger than ${MINIMUM_STAKE_AMOUNT} uPOKT')
+      throw new Error(
+        'Amount should be bigger than ${MINIMUM_STAKE_AMOUNT} uPOKT'
+      )
     } else if (this.chains.length === 0) {
       throw new Error('Chains is empty')
     }
@@ -80,7 +82,9 @@ export class MsgProtoAppStake extends TxMsg {
 
     return Any.fromJSON({
       typeUrl: this.KEY,
-      value: MsgProtoStake.encode(data).finish().toString('base64'),
+      value: Buffer.from(MsgProtoStake.encode(data).finish()).toString(
+        'base64'
+      ),
     })
   }
 }

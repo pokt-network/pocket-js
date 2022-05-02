@@ -1,5 +1,5 @@
 {
-  "name": "isomorphic-provider",
+  "name": "@pokt-foundation/pocketjs-isomorphic-provider",
   "version": "1.0.0",
   "description": "",
   "type": "module",

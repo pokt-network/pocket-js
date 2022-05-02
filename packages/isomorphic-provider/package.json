@@ -1,5 +1,5 @@
 {
-  "name": "@pokt-foundation/pocketjs-provider",
+  "name": "isomorphic-provider",
   "version": "1.0.0",
   "description": "",
   "type": "module",
@@ -35,6 +35,6 @@
     "debug": "^4.3.3",
     "@pokt-foundation/pocketjs-abstract-provider": "workspace:*",
     "abort-controller": "^3.0.0",
-    "undici": "^5.0.0"
+    "isomorphic-unfetch": "^3.1.0"
   }
 }

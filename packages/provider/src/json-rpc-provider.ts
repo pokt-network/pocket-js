@@ -1,5 +1,5 @@
-import debug from 'debug'
 import AbortController from 'abort-controller'
+import debug from 'debug'
 import { fetch, Response } from 'undici'
 import {
   Account,
@@ -19,14 +19,14 @@ import {
   SessionHeader,
   TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
-import { AbstractProvider } from '@pokt-foundation/pocketjs-abstract-provider'
 import {
+  AbstractProvider,
   DispatchersFailureError,
   RelayFailureError,
   TimeoutError,
   validateTransactionResponse,
-} from './errors'
-import { V1RpcRoutes } from './routes'
+  V1RpcRoutes,
+} from '@pokt-foundation/pocketjs-abstract-provider'
 
 const DEFAULT_TIMEOUT = 1000
 

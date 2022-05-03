@@ -148,13 +148,13 @@ export class IsomorphicProvider implements AbstractProvider {
     })
     const txs = (await txsRes.json()) as any
 
-    if (!('total_count' in txs)) {
+    if (!('total_txs' in txs)) {
       throw new Error('RPC Error')
     }
 
-    const { total_count } = txs
+    const { total_txs } = txs
 
-    return total_count
+    return total_txs
   }
 
   /**
@@ -550,7 +550,7 @@ export class IsomorphicProvider implements AbstractProvider {
     if (!('address' in account)) {
       throw new Error('RPC Error')
     }
-    if (!('total_count' in txs)) {
+    if (!('total_txs' in txs)) {
       throw new Error('RPC Error')
     }
 

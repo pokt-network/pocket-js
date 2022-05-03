@@ -1,5 +1,5 @@
-import debug from 'debug'
 import AbortController from 'abort-controller'
+import debug from 'debug'
 import { fetch, Response } from 'undici'
 import {
   Account,
@@ -19,20 +19,20 @@ import {
   SessionHeader,
   TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
-import { AbstractProvider } from '@pokt-foundation/pocketjs-abstract-provider'
 import {
+  AbstractProvider,
   DispatchersFailureError,
   RelayFailureError,
   TimeoutError,
   validateTransactionResponse,
-} from './errors'
-import { V1RpcRoutes } from './routes'
+  V1RpcRoutes,
+} from '@pokt-foundation/pocketjs-abstract-provider'
 
 const DEFAULT_TIMEOUT = 1000
 
 /**
  * A JSONRPCProvider lets you query data from the chain and send relays to the network.
- * Node only, not isomorphic.
+ * NodeJS only, not Isomorphic or Browser compatible.
  *  **/
 export class JsonRpcProvider implements AbstractProvider {
   private rpcUrl: string
@@ -149,13 +149,13 @@ export class JsonRpcProvider implements AbstractProvider {
     })
     const txs = (await txsRes.json()) as any
 
-    if (!('total_count' in txs)) {
+    if (!('total_txs' in txs)) {
       throw new Error('RPC Error')
     }
 
-    const { total_count } = txs
+    const { total_txs } = txs
 
-    return total_count
+    return total_txs
   }
 
   /**

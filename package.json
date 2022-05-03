@@ -21,6 +21,7 @@
     "dev:types": "turbo run dev --scope=*types* --no-cache --no-deps",
     "dev:utils": "turbo run dev --scope=*utils* --no-cache --no-deps",
     "lint": "turbo run lint",
+    "test": "turbo run test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {

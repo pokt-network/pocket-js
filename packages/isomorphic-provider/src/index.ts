@@ -1,5 +1,5 @@
-import debug from 'debug'
 import AbortController from 'abort-controller'
+import debug from 'debug'
 import fetch from 'isomorphic-unfetch'
 import {
   Account,
@@ -19,18 +19,19 @@ import {
   SessionHeader,
   TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
-import { AbstractProvider } from '@pokt-foundation/pocketjs-abstract-provider'
 import {
+  AbstractProvider,
   DispatchersFailureError,
   RelayFailureError,
   TimeoutError,
-} from './errors'
-import { V1RpcRoutes } from './routes'
+  V1RpcRoutes,
+} from '@pokt-foundation/pocketjs-abstract-provider'
 
 const DEFAULT_TIMEOUT = 1000
 
 /**
  * An IsomorphicProvider lets you query data from the chain and send relays to the network.
+ * Browser & NodeJS Compatible.
  *  **/
 export class IsomorphicProvider implements AbstractProvider {
   private rpcUrl: string
@@ -147,13 +148,13 @@ export class IsomorphicProvider implements AbstractProvider {
     })
     const txs = (await txsRes.json()) as any
 
-    if (!('total_count' in txs)) {
+    if (!('total_txs' in txs)) {
       throw new Error('RPC Error')
     }
 
-    const { total_count } = txs
+    const { total_txs } = txs
 
-    return total_count
+    return total_txs
   }
 
   /**
@@ -549,7 +550,7 @@ export class IsomorphicProvider implements AbstractProvider {
     if (!('address' in account)) {
       throw new Error('RPC Error')
     }
-    if (!('total_count' in txs)) {
+    if (!('total_txs' in txs)) {
       throw new Error('RPC Error')
     }
 

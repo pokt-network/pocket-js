@@ -103,6 +103,7 @@ export class JsonRpcProvider implements AbstractProvider {
       if (shouldRetryOnFailure) {
         return performRetry()
       } else {
+        debug(`${routedRpcUrl} total failure`)
         throw error
       }
     })

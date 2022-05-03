@@ -1,22 +1,22 @@
-import { setGlobalDispatcher } from 'undici'
+import { MockAgent, setGlobalDispatcher } from 'undici'
 import { DEFAULT_URL } from './test-utils'
 import { JsonRpcProvider } from '../src/json-rpc-provider'
-import {
-  jsonRpcMockAgent,
-  jsonRpcMockClient,
-} from './json-rpc-provider-mock-agent'
-import { responseSamples } from './response-samples'
 import { V1RpcRoutes } from '@pokt-foundation/pocketjs-abstract-provider'
-
-setGlobalDispatcher(jsonRpcMockAgent)
+import { responseSamples } from './response-samples'
 
 describe('JsonRpcProvider tests', () => {
   let provider: JsonRpcProvider
+  let jsonRpcMockAgent: MockAgent
+  let jsonRpcMockClient
   beforeEach(() => {
     provider = new JsonRpcProvider({
       rpcUrl: DEFAULT_URL,
       dispatchers: [DEFAULT_URL],
     })
+    jsonRpcMockAgent = new MockAgent()
+    jsonRpcMockAgent.disableNetConnect()
+    jsonRpcMockClient = jsonRpcMockAgent.get(DEFAULT_URL)
+    setGlobalDispatcher(jsonRpcMockAgent)
   })
 
   it('Gets the balance of an account', async () => {
@@ -64,11 +64,23 @@ describe('JsonRpcProvider tests', () => {
         body: responseSamples.queryNodeFail().request,
       })
       .reply(200, responseSamples.queryNodeFail().response)
-    const ans = await provider.getType(
-      'ce16bb2714f93cfb3c00b5bd4b16dc5d8ca1687a'
-    )
+    let ans = await provider.getType('ce16bb2714f93cfb3c00b5bd4b16dc5d8ca1687a')
     expect(ans).toBe('account')
+    jsonRpcMockClient
+      .intercept({
+        path: `${DEFAULT_URL}${V1RpcRoutes.QueryApp}`,
+        method: 'POST',
+        body: responseSamples.queryApp().request,
+      })
+      .reply(200, responseSamples.queryApp().response)
+    jsonRpcMockClient
+      .intercept({
+        path: `${DEFAULT_URL}${V1RpcRoutes.QueryNode}`,
+        method: 'POST',
+        body: responseSamples.queryNodeFail().request,
+      })
+      .reply(200, responseSamples.queryNodeFail().response)
+    ans = await provider.getType('3808c2de7d2e8eeaa2e13768feb78b10b13c8699')
+    expect(ans).toBe('app')
   })
 })
-
-export {}

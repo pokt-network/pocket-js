@@ -33,6 +33,7 @@ describe('JsonRpcProvider tests', () => {
     expect(ans.toString()).toBe(
       responseSamples.balance().response.balance.toString()
     )
+    await jsonRpcMockClient.close()
   })
 
   it('Gets the transaction count of an account', async () => {
@@ -47,6 +48,7 @@ describe('JsonRpcProvider tests', () => {
       'ce16bb2714f93cfb3c00b5bd4b16dc5d8ca1687a'
     )
     expect(ans).toBe(responseSamples.accountTxs().response.total_txs)
+    await jsonRpcMockClient.close()
   })
 
   it('Gets the type of an account', async () => {
@@ -64,8 +66,13 @@ describe('JsonRpcProvider tests', () => {
         body: responseSamples.queryNodeFail().request,
       })
       .reply(200, responseSamples.queryNodeFail().response)
-    let ans = await provider.getType('ce16bb2714f93cfb3c00b5bd4b16dc5d8ca1687a')
+    const ans = await provider.getType(
+      'ce16bb2714f93cfb3c00b5bd4b16dc5d8ca1687a'
+    )
     expect(ans).toBe('account')
+    await jsonRpcMockClient.close()
+  })
+  it('Gets the type of an app', async () => {
     jsonRpcMockClient
       .intercept({
         path: `${DEFAULT_URL}${V1RpcRoutes.QueryApp}`,
@@ -77,10 +84,13 @@ describe('JsonRpcProvider tests', () => {
       .intercept({
         path: `${DEFAULT_URL}${V1RpcRoutes.QueryNode}`,
         method: 'POST',
-        body: responseSamples.queryNodeFail().request,
+        body: responseSamples.queryApp().request,
       })
       .reply(200, responseSamples.queryNodeFail().response)
-    ans = await provider.getType('3808c2de7d2e8eeaa2e13768feb78b10b13c8699')
+    const ans = await provider.getType(
+      '3808c2de7d2e8eeaa2e13768feb78b10b13c8699'
+    )
     expect(ans).toBe('app')
+    await jsonRpcMockClient.close()
   })
 })

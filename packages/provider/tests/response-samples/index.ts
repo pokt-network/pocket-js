@@ -45,9 +45,7 @@ export const responseSamples = {
   },
   queryApp() {
     return {
-      request: JSON.stringify({
-        address: '3808c2de7d2e8eeaa2e13768feb78b10b13c8699',
-      }),
+      request: /3808c2de7d2e8eeaa2e13768feb78b10b13c8699/,
       response: {
         address: '3808c2de7d2e8eeaa2e13768feb78b10b13c8699',
         chains: ['0021'],

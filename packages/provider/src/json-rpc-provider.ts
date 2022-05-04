@@ -197,6 +197,7 @@ export class JsonRpcProvider implements AbstractProvider {
   async sendTransaction(
     transaction: RawTxRequest
   ): Promise<TransactionResponse> {
+    console.log(transaction.toJSON())
     const res = await this.perform({
       route: V1RpcRoutes.ClientRawTx,
       body: { ...transaction.toJSON() },

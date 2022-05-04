@@ -261,6 +261,10 @@ export class Relayer implements AbstractRelayer {
     }
     const serviceNode = node ?? undefined
 
+    // React native only:
+    // If this SDK is used in a mobile context,
+    // the native crypto library needs to be used in a secure context to properly
+    // generate random values.
     if (!this.secureEnsured) {
       if (crypto.ensureSecure) {
         await crypto.ensureSecure()

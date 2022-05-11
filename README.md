@@ -9,7 +9,7 @@ A complete, fast and slim SDK to interact with the Pocket Network.
 Add the packages for each part to your project:
 
 ```console
-yarn add @pokt-foundation/pocketjs-provider @pokt-foundation/pocketjs-signer pokt-foundation/pocketjs-transaction-builder @pokt-foundation/pocketjs-relayer @pokt-foundation/pocketjs-utils
+yarn add @pokt-foundation/pocketjs-provider @pokt-foundation/pocketjs-signer @pokt-foundation/pocketjs-transaction-builder @pokt-foundation/pocketjs-relayer @pokt-foundation/pocketjs-utils
 ```
 
 And use each piece as you see fit:

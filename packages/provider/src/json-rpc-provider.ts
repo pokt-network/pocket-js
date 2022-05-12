@@ -10,10 +10,10 @@ import {
   DispatchResponse,
   GetAccountWithTransactionsOptions,
   GetAppsOptions,
+  GetBlockTransactionsOptions,
   GetNodesOptions,
   Node,
-  PaginatedApp,
-  PaginatedNode,
+  Paginable,
   RawTransactionResponse,
   RawTxRequest,
   SessionHeader,
@@ -267,6 +267,39 @@ export class JsonRpcProvider implements AbstractProvider {
     return height
   }
 
+  async getBlockTransactions(
+    GetBlockTransactionsOptions: GetBlockTransactionsOptions = {
+      blockHeight: 0,
+      page: 1,
+      perPage: 100,
+      includeProofs: false,
+    }
+  ): Promise<any> {
+    const {
+      blockHeight: height,
+      includeProofs,
+      page,
+      perPage,
+    } = GetBlockTransactionsOptions
+    const res = await this.perform({
+      route: V1RpcRoutes.QueryBlockTxs,
+      body: {
+        height,
+        prove: includeProofs,
+        page,
+        perPage,
+      },
+    })
+
+    const blockTxs = (await res.json()) as object
+
+    if (!('txs' in blockTxs)) {
+      throw new Error('RPC Error')
+    }
+
+    return blockTxs
+  }
+
   /**
    * Fetches nodes active from the network with the options provided.
    * @param {GetNodesOptions} getNodesOptions - the options to pass in to the query.
@@ -278,7 +311,7 @@ export class JsonRpcProvider implements AbstractProvider {
       page: 1,
       perPage: 100,
     }
-  ): Promise<PaginatedNode> {
+  ): Promise<Paginable<Node>> {
     const { blockHeight: height } = GetNodesOptions
 
     const res = await this.perform({
@@ -331,11 +364,11 @@ export class JsonRpcProvider implements AbstractProvider {
     })
 
     return {
-      nodes,
+      data: nodes,
       page: GetNodesOptions.page,
       perPage: GetNodesOptions.perPage,
       totalPages: parsedRes.total_pages,
-    } as PaginatedNode
+    } as Paginable<Node>
   }
 
   /**
@@ -397,7 +430,7 @@ export class JsonRpcProvider implements AbstractProvider {
       page: 1,
       perPage: 100,
     }
-  ): Promise<PaginatedApp> {
+  ): Promise<Paginable<App>> {
     const { blockHeight: height } = GetAppsOptions
 
     const res = await this.perform({
@@ -447,11 +480,11 @@ export class JsonRpcProvider implements AbstractProvider {
     })
 
     return {
-      apps,
+      data: apps,
       page: GetAppsOptions.page,
       perPage: GetAppsOptions.perPage,
       totalPages: parsedRes.total_pages,
-    } as PaginatedApp
+    } as Paginable<App>
   }
 
   /**

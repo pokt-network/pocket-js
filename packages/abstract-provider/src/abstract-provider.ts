@@ -7,9 +7,9 @@ import {
   GetAppsOptions,
   GetNodesOptions,
   Node,
-  PaginatedApp,
-  PaginatedNode,
+  Paginable,
   RawTxRequest,
+  Transaction,
   TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
 
@@ -28,9 +28,9 @@ export abstract class AbstractProvider {
   ): Promise<TransactionResponse>
   // Network
   abstract getBlock(blockNumber: number): Promise<Block>
-  abstract getTransaction(transactionHash: string): Promise<TransactionResponse>
+  abstract getTransaction(transactionHash: string): Promise<Transaction>
   abstract getBlockNumber(): Promise<number>
-  abstract getNodes(getNodesOptions: GetNodesOptions): Promise<PaginatedNode>
+  abstract getNodes(getNodesOptions: GetNodesOptions): Promise<Paginable<Node>>
   abstract getNode({
     address,
     blockHeight,
@@ -38,7 +38,7 @@ export abstract class AbstractProvider {
     address: string | Promise<string>
     blockHeight?: number
   }): Promise<Node>
-  abstract getApps(getAppOption: GetAppsOptions): Promise<PaginatedApp>
+  abstract getApps(getAppOption: GetAppsOptions): Promise<Paginable<App>>
   abstract getApp({
     address,
     blockHeight,

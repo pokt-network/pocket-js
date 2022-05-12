@@ -1,4 +1,15 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
+export interface Paginable<T> {
+  data: T[]
+  page: number
+  totalPages: number
+  perPage: number
+}
+
+export interface Timeoutable {
+  timeout?: number
+}
+
 export interface RawTransactionResponse {
   logs: string | null
   txhash: string
@@ -8,32 +19,133 @@ export interface TransactionResponse {
   txHash: string
 }
 
-export interface Block {}
+export interface Block {
+  block: {
+    data: {
+      txs: string[]
+    }
+    evidence: {
+      evidence: any
+    }
+    header: {
+      app_hash: string
+      chain_id: string
+      consensus_hash: string
+      data_hash: string
+      evidence_hash: string
+      height: string
+      last_block_id: {
+        hash: string
+        parts: {
+          hash: string
+          total: string
+        }
+      }
+      last_commit_hash: string
+      last_results_hash: string
+      next_validators_hash: string
+      num_txs: string
+      proposer_address: string
+      time: string
+      total_txs: string
+      validators_hash: string
+      version: {
+        app: string
+        block: string
+      }
+    }
+    last_commit: {
+      block_id: {
+        hash: string
+        parts: {
+          hash: string
+          total: string
+        }
+      }
+      precommits: any[]
+    }
+  }
+  block_id: {
+    hash: string
+    parts: {
+      hash: string
+      total: string
+    }
+  }
+}
 
-export interface GetNodesOptions {
+export interface Transaction {
+  hash: string
+  height: number
+  index: number
+  tx_result: {
+    code: number
+    data: string
+    log: string
+    info: string
+    events: string[]
+    codespace: string
+    signer: string
+    recipient: string
+    message_type: string
+  }
+  tx: string
+  proof: {
+    root_hash: string
+    data: string
+    proof: {
+      total: number
+      index: number
+      leaf_hash: string
+      aunts: string[]
+    }
+  }
+  stdTx: {
+    entropy: number
+    fee: {
+      amount: string
+      denom: string
+    }[]
+    memo: string
+    msg: object
+    signature: {
+      pub_key: string
+      signature: string
+    }
+  }
+}
+
+export interface PaginableBlockTransactions {
+  pageCount: number
+  totalTxs: number
+  txs: Transaction[]
+}
+
+export interface GetPaginableOptions extends Timeoutable {
+  page?: number
+  perPage?: number
+}
+
+export interface GetBlockTransactionsOptions extends GetPaginableOptions {
+  blockHeight?: number
+  includeProofs?: boolean
+}
+
+export interface GetNodesOptions extends GetPaginableOptions {
   stakingStatus?: StakingStatus
   jailedStatus?: JailedStatus
   blockHeight?: number
   blockchain?: string
-  page?: number
-  perPage?: number
-  timeout?: number
 }
 
-export interface GetAppsOptions {
+export interface GetAppsOptions extends GetPaginableOptions {
   stakingStatus?: StakingStatus
   blockHeight?: number
   blockchain?: string
-  page?: number
-  perPage?: number
-  timeout?: number
 }
 
-export interface GetAccountWithTransactionsOptions {
+export interface GetAccountWithTransactionsOptions extends GetPaginableOptions {
   received?: boolean
-  page?: number
-  perPage?: number
-  timeout?: number
 }
 
 export enum StakingStatus {
@@ -58,13 +170,6 @@ export interface App {
   status: StakingStatus
 }
 
-export interface PaginatedApp {
-  apps: App[]
-  page: number
-  totalPages: number
-  perPage: number
-}
-
 export interface Node {
   address: string
   chains: string[]
@@ -74,13 +179,6 @@ export interface Node {
   stakedTokens: string
   status: StakingStatus
   unstakingTime: string
-}
-
-export interface PaginatedNode {
-  nodes: Node[]
-  page: number
-  totalPages: number
-  perPage: number
 }
 
 export interface Account {

@@ -10,13 +10,15 @@ import {
   DispatchResponse,
   GetAccountWithTransactionsOptions,
   GetAppsOptions,
+  GetBlockTransactionsOptions,
   GetNodesOptions,
   Node,
-  PaginatedApp,
-  PaginatedNode,
+  Paginable,
+  PaginableBlockTransactions,
   RawTransactionResponse,
   RawTxRequest,
   SessionHeader,
+  Transaction,
   TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
 import {
@@ -197,7 +199,6 @@ export class JsonRpcProvider implements AbstractProvider {
   async sendTransaction(
     transaction: RawTxRequest
   ): Promise<TransactionResponse> {
-    console.log(transaction.toJSON())
     const res = await this.perform({
       route: V1RpcRoutes.ClientRawTx,
       body: { ...transaction.toJSON() },
@@ -233,13 +234,13 @@ export class JsonRpcProvider implements AbstractProvider {
    * @param {string} transactionHash - the hash of the transaction to get.
    * @returns {TransactionResponse} - The transaction requested.
    * */
-  async getTransaction(transactionHash: string): Promise<TransactionResponse> {
+  async getTransaction(transactionHash: string): Promise<Transaction> {
     const res = await this.perform({
       route: V1RpcRoutes.QueryTX,
       body: { hash: transactionHash },
     })
 
-    const tx = (await res.json()) as TransactionResponse
+    const tx = (await res.json()) as Transaction
 
     if (!('hash' in tx)) {
       throw new Error('RPC Error')
@@ -268,6 +269,48 @@ export class JsonRpcProvider implements AbstractProvider {
   }
 
   /**
+   * Fetches the requested block's transactions.
+   * @param {GetBlockTransactionsOptions} GetBlockTransactionsOptions - The options to pass in to the query.
+   * @ returns {PaginableBlockTransactions} - The block's transactions.
+   * */
+  async getBlockTransactions(
+    GetBlockTransactionsOptions: GetBlockTransactionsOptions = {
+      blockHeight: 0,
+      page: 1,
+      perPage: 100,
+      includeProofs: false,
+    }
+  ): Promise<PaginableBlockTransactions> {
+    const {
+      blockHeight: height,
+      includeProofs,
+      page,
+      perPage,
+    } = GetBlockTransactionsOptions
+    const res = await this.perform({
+      route: V1RpcRoutes.QueryBlockTxs,
+      body: {
+        height,
+        prove: includeProofs,
+        page,
+        perPage,
+      },
+    })
+
+    const blockTxs = (await res.json()) as any
+
+    if (!('txs' in blockTxs)) {
+      throw new Error('RPC Error')
+    }
+
+    return {
+      pageCount: blockTxs.page_count,
+      totalTxs: blockTxs.total_txs,
+      txs: blockTxs.txs,
+    } as PaginableBlockTransactions
+  }
+
+  /**
    * Fetches nodes active from the network with the options provided.
    * @param {GetNodesOptions} getNodesOptions - the options to pass in to the query.
    * @returns {Node[]} - An array with the nodes requested and their information.
@@ -278,7 +321,7 @@ export class JsonRpcProvider implements AbstractProvider {
       page: 1,
       perPage: 100,
     }
-  ): Promise<PaginatedNode> {
+  ): Promise<Paginable<Node>> {
     const { blockHeight: height } = GetNodesOptions
 
     const res = await this.perform({
@@ -331,11 +374,11 @@ export class JsonRpcProvider implements AbstractProvider {
     })
 
     return {
-      nodes,
+      data: nodes,
       page: GetNodesOptions.page,
       perPage: GetNodesOptions.perPage,
       totalPages: parsedRes.total_pages,
-    } as PaginatedNode
+    } as Paginable<Node>
   }
 
   /**
@@ -397,7 +440,7 @@ export class JsonRpcProvider implements AbstractProvider {
       page: 1,
       perPage: 100,
     }
-  ): Promise<PaginatedApp> {
+  ): Promise<Paginable<App>> {
     const { blockHeight: height } = GetAppsOptions
 
     const res = await this.perform({
@@ -447,11 +490,11 @@ export class JsonRpcProvider implements AbstractProvider {
     })
 
     return {
-      apps,
+      data: apps,
       page: GetAppsOptions.page,
       perPage: GetAppsOptions.perPage,
       totalPages: parsedRes.total_pages,
-    } as PaginatedApp
+    } as Paginable<App>
   }
 
   /**

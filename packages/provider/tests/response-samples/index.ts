@@ -1,4 +1,6 @@
 import accountTxs from './accounttxs.json'
+import queryBlockResponse from './queryblockres.json'
+import txResponse from './tx.json'
 
 export const responseSamples = {
   balance() {
@@ -106,6 +108,25 @@ export const responseSamples = {
     }
   },
   queryBlock() {
-    return {}
-  }
+    return {
+      request: JSON.stringify({
+        height: 59133,
+      }),
+      response: queryBlockResponse,
+    }
+  },
+  queryTransaction() {
+    return {
+      request: JSON.stringify({
+        hash: '2145F7E1C9017DEC6008E9C957B7448AEAB28A1719BF35DF1ADB5D08E4742586',
+      }),
+      response: txResponse,
+    }
+  },
+  queryHeight() {
+    return {
+      request: JSON.stringify({}),
+      response: { height: 59133 },
+    }
+  },
 }

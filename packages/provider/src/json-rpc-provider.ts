@@ -14,9 +14,11 @@ import {
   GetNodesOptions,
   Node,
   Paginable,
+  PaginableBlockTransactions,
   RawTransactionResponse,
   RawTxRequest,
   SessionHeader,
+  Transaction,
   TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
 import {
@@ -197,7 +199,6 @@ export class JsonRpcProvider implements AbstractProvider {
   async sendTransaction(
     transaction: RawTxRequest
   ): Promise<TransactionResponse> {
-    console.log(transaction.toJSON())
     const res = await this.perform({
       route: V1RpcRoutes.ClientRawTx,
       body: { ...transaction.toJSON() },
@@ -233,13 +234,13 @@ export class JsonRpcProvider implements AbstractProvider {
    * @param {string} transactionHash - the hash of the transaction to get.
    * @returns {TransactionResponse} - The transaction requested.
    * */
-  async getTransaction(transactionHash: string): Promise<TransactionResponse> {
+  async getTransaction(transactionHash: string): Promise<Transaction> {
     const res = await this.perform({
       route: V1RpcRoutes.QueryTX,
       body: { hash: transactionHash },
     })
 
-    const tx = (await res.json()) as TransactionResponse
+    const tx = (await res.json()) as Transaction
 
     if (!('hash' in tx)) {
       throw new Error('RPC Error')
@@ -267,6 +268,11 @@ export class JsonRpcProvider implements AbstractProvider {
     return height
   }
 
+  /**
+   * Fetches the requested block's transactions.
+   * @param {GetBlockTransactionsOptions} GetBlockTransactionsOptions - The options to pass in to the query.
+   * @ returns {PaginableBlockTransactions} - The block's transactions.
+   * */
   async getBlockTransactions(
     GetBlockTransactionsOptions: GetBlockTransactionsOptions = {
       blockHeight: 0,
@@ -274,7 +280,7 @@ export class JsonRpcProvider implements AbstractProvider {
       perPage: 100,
       includeProofs: false,
     }
-  ): Promise<any> {
+  ): Promise<PaginableBlockTransactions> {
     const {
       blockHeight: height,
       includeProofs,
@@ -291,13 +297,17 @@ export class JsonRpcProvider implements AbstractProvider {
       },
     })
 
-    const blockTxs = (await res.json()) as object
+    const blockTxs = (await res.json()) as any
 
     if (!('txs' in blockTxs)) {
       throw new Error('RPC Error')
     }
 
-    return blockTxs
+    return {
+      pageCount: blockTxs.page_count,
+      totalTxs: blockTxs.total_txs,
+      txs: blockTxs.txs,
+    } as PaginableBlockTransactions
   }
 
   /**

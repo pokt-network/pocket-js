@@ -74,6 +74,53 @@ export interface Block {
   }
 }
 
+export interface Transaction {
+  hash: string
+  height: number
+  index: number
+  tx_result: {
+    code: number
+    data: string
+    log: string
+    info: string
+    events: string[]
+    codespace: string
+    signer: string
+    recipient: string
+    message_type: string
+  }
+  tx: string
+  proof: {
+    root_hash: string
+    data: string
+    proof: {
+      total: number
+      index: number
+      leaf_hash: string
+      aunts: string[]
+    }
+  }
+  stdTx: {
+    entropy: number
+    fee: {
+      amount: string
+      denom: string
+    }[]
+    memo: string
+    msg: object
+    signature: {
+      pub_key: string
+      signature: string
+    }
+  }
+}
+
+export interface PaginableBlockTransactions {
+  pageCount: number
+  totalTxs: number
+  txs: Transaction[]
+}
+
 export interface GetPaginableOptions extends Timeoutable {
   page?: number
   perPage?: number

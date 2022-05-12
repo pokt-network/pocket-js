@@ -6,7 +6,8 @@
     "baseUrl": ".",
     "composite": true,
     "declaration": true,
-    "declarationDir": "dist"
+    "declarationDir": "dist",
+    "resolveJsonModule": true
   },
   "references": [{ "path": "../types" }, { "path": "../abstract-provider" }],
   "include": ["src"],

@@ -18,6 +18,7 @@ import {
   RawTransactionResponse,
   RawTxRequest,
   SessionHeader,
+  Transaction,
   TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
 import {
@@ -274,13 +275,13 @@ export class IsomorphicProvider implements AbstractProvider {
    * @param {string} transactionHash - the hash of the transaction to get.
    * @returns {TransactionResponse} - The transaction requested.
    * */
-  async getTransaction(transactionHash: string): Promise<TransactionResponse> {
+  async getTransaction(transactionHash: string): Promise<Transaction> {
     const res = await this.perform({
       route: V1RpcRoutes.QueryTX,
       body: { hash: transactionHash },
     })
 
-    const tx = (await res.json()) as TransactionResponse
+    const tx = (await res.json()) as Transaction
 
     if (!('hash' in tx)) {
       throw new Error('RPC Error')

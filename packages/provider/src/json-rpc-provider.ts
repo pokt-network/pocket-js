@@ -11,7 +11,9 @@ import {
   GetAccountWithTransactionsOptions,
   GetAppsOptions,
   GetBlockTransactionsOptions,
+  GetNodeClaimsOptions,
   GetNodesOptions,
+  GetPaginableOptions,
   Node,
   Paginable,
   PaginableBlockTransactions,
@@ -739,6 +741,233 @@ export class JsonRpcProvider implements AbstractProvider {
         throw new TimeoutError()
       }
       throw new RelayFailureError()
+    }
+  }
+
+  /**
+   * Gets all the parameters used to configure the Pocket Network.
+   * @param {number} height - The block height to use to determine the params.
+   * @param {object} options - The options available to tweak the request itself.
+   * @param {number} options.timeout - Timeout before the call fails. In milliseconds.
+   * @returns {any} - The raw params.
+   * * */
+  public async getAllParams(
+    height: number,
+    options: {
+      timeout?: number
+    }
+  ): Promise<unknown> {
+    if (height < 0) {
+      throw new Error('Invalid height input')
+    }
+
+    try {
+      const res = await this.perform({
+        route: V1RpcRoutes.QueryAllParams,
+        body: { height },
+        ...options,
+      })
+
+      const params = await res.json()
+      this.logger(JSON.stringify(params))
+
+      return params
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        throw new TimeoutError()
+      }
+      throw err
+    }
+  }
+
+  /**
+   * Gets the corresponding node's claims.
+   * @param {string} address - The address of the node to get the claims from.
+   * @param {object} GetNodeClaimsOptions - The options available to tweak the request itself.
+   * @param {number} options.height - The block height to use to determine the result of the call.
+   * @param {number} options.page - The page to get the node claims from.
+   * @param {number} options.perPage - How many claims per page to retrieve.
+   * @param {timeout} options.timeout - Timeout before the call fails. In milliseconds.
+   * @returns {any} - The raw node claims.
+   * * */
+  public async getNodeClaims(
+    address: string,
+    options: GetNodeClaimsOptions
+  ): Promise<Paginable<unknown>> {
+    try {
+      const res = await this.perform({
+        route: V1RpcRoutes.QueryNodeClaims,
+        body: {
+          address,
+          ...(options.height ? { height: options.height } : {}),
+          ...(options.page ? { page: options.page } : {}),
+          ...(options.perPage ? { per_page: options.perPage } : {}),
+        },
+        ...options,
+      })
+
+      const nodeClaims = (await res.json()) as any
+      this.logger(JSON.stringify(nodeClaims))
+
+      if (!('result' in nodeClaims)) {
+        throw new Error('RPC Error')
+      }
+
+      return {
+        data: nodeClaims.result,
+        page: nodeClaims.page,
+        totalPages: nodeClaims.total_pages,
+        perPage: options?.perPage ?? 100,
+      }
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        throw new TimeoutError()
+      }
+      throw err
+    }
+  }
+
+  /**
+   * Gets the requested supply information.
+   * @param {number} height - The block height to use to determine the current supply.
+   * @param {object} options - The options available to tweak the request itself.
+   * @param {number} options.timeout - Timeout before the call fails. In milliseconds.
+   * @returns {any} - The raw supply info.
+   * * */
+  public async getSupply(
+    height: number = 0,
+    options: {
+      timeout?: number
+    }
+  ): Promise<unknown> {
+    if (height < 0) {
+      throw new Error('Invalid height input')
+    }
+
+    try {
+      const res = await this.perform({
+        route: V1RpcRoutes.QuerySupply,
+        body: { height },
+        ...options,
+      })
+
+      const supply = await res.json()
+      this.logger(JSON.stringify(supply))
+
+      return supply
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        throw new TimeoutError()
+      }
+      throw err
+    }
+  }
+
+  /**
+   * Gets the supported chains.
+   * @param {number} height - The block height to use to determine the supported chains at that point in time.
+   * @param {object} options - The options available to tweak the request itself.
+   * @param {number} options.timeout - Timeout before the call fails. In milliseconds.
+   * @returns {any} - The currently supported chains.
+   * * */
+  public async getSupportedChains(
+    height: number = 0,
+    options: {
+      timeout?: number
+    }
+  ): Promise<unknown> {
+    if (height < 0) {
+      throw new Error('Invalid height input')
+    }
+
+    try {
+      const res = await this.perform({
+        route: V1RpcRoutes.QuerySupportedChains,
+        body: { height },
+        ...options,
+      })
+
+      const supportedChains = await res.json()
+      this.logger(JSON.stringify(supportedChains))
+
+      return supportedChains
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        throw new TimeoutError()
+      }
+      throw err
+    }
+  }
+
+  /**
+   * Gets the current Pocket Network Params.
+   * @param {number} height - The block height to use to determine the Pocket Params at that point in time.
+   * @param {object} options - The options available to tweak the request itself.
+   * @param {number} options.timeout - Timeout before the call fails. In milliseconds.
+   * @returns {any} - The raw pocket params.
+   * * */
+  public async getPocketParams(
+    height: number = 0,
+    options: {
+      timeout?: number
+    }
+  ): Promise<unknown> {
+    if (height < 0) {
+      throw new Error('Invalid height input')
+    }
+
+    try {
+      const res = await this.perform({
+        route: V1RpcRoutes.QueryPocketParams,
+        body: { height },
+        ...options,
+      })
+
+      const pocketParams = await res.json()
+      this.logger(JSON.stringify(pocketParams))
+
+      return pocketParams
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        throw new TimeoutError()
+      }
+      throw err
+    }
+  }
+
+  /**
+   * Gets the current Application Params.
+   * @param {number} height - The block height to use to determine the Application Params at that point in time.
+   * @param {object} options - The options available to tweak the request itself.
+   * @param {number} options.timeout - Timeout before the call fails. In milliseconds.
+   * @returns {any} - The raw application params.
+   * * */
+  public async getAppParams(
+    height: number = 0,
+    options: {
+      timeout?: number
+    }
+  ): Promise<unknown> {
+    if (height < 0) {
+      throw new Error('Invalid height input')
+    }
+
+    try {
+      const res = await this.perform({
+        route: V1RpcRoutes.QueryAppParams,
+        body: { height },
+        ...options,
+      })
+
+      const appParams = await res.json()
+      this.logger(JSON.stringify(appParams))
+
+      return appParams
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        throw new TimeoutError()
+      }
+      throw err
     }
   }
 }

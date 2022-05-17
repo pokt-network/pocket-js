@@ -148,6 +148,10 @@ export interface GetAccountWithTransactionsOptions extends GetPaginableOptions {
   received?: boolean
 }
 
+export interface GetNodeClaimsOptions extends GetPaginableOptions {
+  height?: number
+}
+
 export enum StakingStatus {
   Unstaked = 0,
   Unstaking = 1,

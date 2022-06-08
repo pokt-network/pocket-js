@@ -1,28 +1,28 @@
-# JSONRPCProvider
+# IsomorphicProvider
 
-The JSONRPCProvider is the NodeJS-only provider for making queries to the Pocket network chain, sending relays or dispatching sessions.
+The IsomorphicProvider is the NodeJS and browser compatble provider for making queries to the Pocket network chain, sending relays or dispatching sessions.
 
 ## Installation
 Install from NPM, using your favorite package manager:
 
 ```js
-pnpm i @pokt-foundation/pocketjs-provider
+pnpm i @pokt-foundation/pocketjs-isomorphic-provider
 ```
 
 ## Usage
 ### Initialization
 ```js
-import { JsonRpcProvider } from '@pokt-foundation/pocketjs-provider'
+import { IsomorphicProvider } from '@pokt-foundation/pocketjs-isomorphic-provider'
 
 // If you wanna just send queries to the chain, this is the simplest way to Initialize it:
-const simpleProvider = new JsonRpcProvider({ 
+const simpleProvider = new IsomorphicProvider({ 
   // RPC_URL = any URL that connects to a Pocket node, or a Pocket mainnet portal endpoint
   rpcUrl: process.env.RPC_URL 
 })
 
 // If you wanna also send relays, you'll need to initialize dispatchers as well.
 // Dispatchers are Pocket nodes that only perform dispatch calls (to the route /client/dispatch) to generate sessions.
-const providerWithDispatchers = new JsonRpcProvider({
+const providerWithDispatchers = new IsomorphicProvider({
     // RPC_URL = needs to be a pocket node to send relays.
     rpcUrl: process.env.RPC_URL
     // DISPATCHER_1, DISPATCHER_2 = pocket node URLs for dispatching. You can include as many as you can for redundancy.
@@ -32,9 +32,9 @@ const providerWithDispatchers = new JsonRpcProvider({
 ```
 ### Usage examples
 ```js
-import { JsonRpcProvider } from '@pokt-foundation/pocketjs-provider'
+import { IsomorphicProvider } from '@pokt-foundation/pocketjs-isomorphic-provider'
 
-const simpleProvider = new JsonRpcProvider({ 
+const simpleProvider = new IsomorphicProvider({ 
   rpcUrl: process.env.RPC_URL 
 })
 

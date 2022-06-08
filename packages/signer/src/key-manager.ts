@@ -171,7 +171,7 @@ export class KeyManager {
    * @param {string} password - The password to use in the PPK.
    * @param {string} privateKey - The private key to create the PPK from.
    * @param {string} hint - Password hint.
-   * @returns {KeyManager} - A new Key Manager instance with the account attached.
+   * @returns {string} - The PPK in string format.
    * */
   static async exportPPK({
     privateKey,
@@ -295,13 +295,5 @@ export class KeyManager {
       password,
       hint,
     })
-  }
-
-  /**
-   * Checks if the Key Manager has all the required parts of an account.
-   * @returns {boolean} - If the key manager is properly instanciated or not.
-   * */
-  isConnected(): boolean {
-    return Boolean(this.privateKey && this.publicKey && this.address)
   }
 }

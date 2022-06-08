@@ -40,7 +40,7 @@ export class Relayer implements AbstractRelayer {
    * @param {number} options.retryAttempts - The number of retries to perform if the first call fails.
    * @param {boolean} options.rejectSelfSignedCertificates - Option to reject self signed certificates or not.
    * @param {timeout} options.timeout - Timeout before the call fails. In milliseconds.
-   * @returns {DispatchResponse} - The dispatch response from the dispatcher node.
+   * @returns {DispatchResponse} - The dispatch response from the dispatcher node, as a session.
    * */
   async getNewSession({
     applicationPubKey,

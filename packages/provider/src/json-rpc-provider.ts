@@ -195,7 +195,7 @@ export class JsonRpcProvider implements AbstractProvider {
 
   /**
    * Sends a signed transaction from this provider.
-   * @param {TransactionRequest} transaction - The transaction to sign, formatted as a `TransactionRequest`.
+   * @param {TransactionRequest} transaction - The transaction to send, formatted as a `TransactionRequest`.
    * @returns {TransactionResponse} - The network's response to the transaction.
    * */
   async sendTransaction(
@@ -212,7 +212,7 @@ export class JsonRpcProvider implements AbstractProvider {
   }
 
   /**
-   * Gets an specific block specified by its block number.
+   * Gets an specific block by its block number.
    * @param {number} blockNumber - the number (height) of the block to query.
    * @returns {Block} - The block requested.
    * */
@@ -701,7 +701,7 @@ export class JsonRpcProvider implements AbstractProvider {
 
   /**
    * Sends a relay to the network through the main RPC URL provided. Best used through a Relayer.
-   * @param {request} request - The relay request.
+   * @param {any} request - The relay request.
    * @param {string} rpcUrl - The RPC URL to use, if the main RPC URL is not a suitable node to relay requests.
    * @param {object} options - The options available to tweak the request itself.
    * @param {number} options.retryAttempts - The number of retries to perform if the first call fails.
@@ -756,7 +756,7 @@ export class JsonRpcProvider implements AbstractProvider {
     options: {
       timeout?: number
     }
-  ): Promise<unknown> {
+  ): Promise<any> {
     if (height < 0) {
       throw new Error('Invalid height input')
     }
@@ -793,7 +793,7 @@ export class JsonRpcProvider implements AbstractProvider {
   public async getNodeClaims(
     address: string,
     options: GetNodeClaimsOptions
-  ): Promise<Paginable<unknown>> {
+  ): Promise<Paginable<any>> {
     try {
       const res = await this.perform({
         route: V1RpcRoutes.QueryNodeClaims,
@@ -839,7 +839,7 @@ export class JsonRpcProvider implements AbstractProvider {
     options: {
       timeout?: number
     }
-  ): Promise<unknown> {
+  ): Promise<any> {
     if (height < 0) {
       throw new Error('Invalid height input')
     }
@@ -875,7 +875,7 @@ export class JsonRpcProvider implements AbstractProvider {
     options: {
       timeout?: number
     }
-  ): Promise<unknown> {
+  ): Promise<any> {
     if (height < 0) {
       throw new Error('Invalid height input')
     }
@@ -911,7 +911,7 @@ export class JsonRpcProvider implements AbstractProvider {
     options: {
       timeout?: number
     }
-  ): Promise<unknown> {
+  ): Promise<any> {
     if (height < 0) {
       throw new Error('Invalid height input')
     }
@@ -947,7 +947,7 @@ export class JsonRpcProvider implements AbstractProvider {
     options: {
       timeout?: number
     }
-  ): Promise<unknown> {
+  ): Promise<any> {
     if (height < 0) {
       throw new Error('Invalid height input')
     }

@@ -169,6 +169,7 @@ Fetches apps from the network with the options provided.
 Returns `Promise<Paginable<App>>`: An array with the apps requested and their information.
 
 - `GetAppsOptions` params:
+
 | Param       | Type     | Description                                     |
 |-------------|----------|-------------------------------------------------|
 | blockHeight | `number` | The block's height.                             |

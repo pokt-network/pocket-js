@@ -130,6 +130,7 @@ Fetches the requested block's transactions.
 Returns a `Promise<PaginableBlockTransactions>`: The block's transactions.
 
 - `GetBlockTransactionOptions` object params:
+
 | Param         | Type      | Description                                     |
 |---------------|-----------|-------------------------------------------------|
 | blockHeight   | `number`  | The block's height.                             |
@@ -144,6 +145,7 @@ Fetches nodes acrtibve from the network with the options provided.
 Returns `Promise<Paginable<Node>>`: An array with the nodes requested and their information.
 
 - `GetNodesOptions` params:
+
 | Param       | Type     | Description                                     |
 |-------------|----------|-------------------------------------------------|
 | blockHeight | `number` | The block's height.                             |

@@ -67,7 +67,7 @@ Returns `ChainID`: 'mainnet', 'localnet', or 'testnet'.
 Sets the chainID to one of the supported networks.
 
 | Param       | Type      | Description                                                                     |
-|-------------------------|---------------------------------------------------------------------------------|
+|-------------|-----------|---------------------------------------------------------------------------------|
 | id          | `string`  | The chain to send transactions to. The provider must be connected to that chain |
 
 #### createTransaction({ fee, memo, txMsg }): Promise<RawTxRequest>

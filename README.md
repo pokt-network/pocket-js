@@ -26,10 +26,10 @@ import {
   POCKET_AAT,
 } from "./config.js";
 
-// Instanciate a provider for querying information on the chain!
+// Instantiate a provider for querying information on the chain!
 export const provider = new JsonRpcProvider({
   rpcUrl: MAINNET_RPC_URL,
-  // If you'll instanciate a relayer, you need to add dispatchers as well
+  // If you'll Instantiate a relayer, you need to add dispatchers as well
   dispatchers: DISPATCHERS,
 });
 
@@ -37,14 +37,14 @@ const balance = await provider.getBalance(
   "07a6fca4dea9f01e4c19f301df0d0afac128561b"
 );
 
-// Instanciate a signer for importing an account and signing messages!
+// Instantiate a signer for importing an account and signing messages!
 export const signer = await KeyManager.fromPrivateKey(process.env.PRIVATE_KEY);
 
 const address = signer.getAddress();
 const publicKey = signer.getPublicKey();
 const signedMessage = signer.sign("deadbeef");
 
-// Instanciate a new TransactionBuilder for creating transaction messages and
+// Instantiate a new TransactionBuilder for creating transaction messages and
 // and sending them over the network!
 export const transactionBuilder = new TransactionBuilder({
   provider,

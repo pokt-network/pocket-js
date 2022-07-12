@@ -6,7 +6,7 @@ import {
   getAddressFromPublicKey,
   publicKeyFromPrivate,
 } from '@pokt-foundation/pocketjs-utils'
-import { syncScrypt } from 'scrypt-js'
+import scrypt from 'scrypt-js'
 import { InvalidPPKError } from './errors'
 
 interface Account {
@@ -127,7 +127,7 @@ export class KeyManager {
     // Retrieve the salt
     const decryptSalt = Buffer.from(jsonObject.salt, 'hex')
     // Scrypt hash
-    const scryptHash = syncScrypt(
+    const scryptHash = scrypt.syncScrypt(
       Buffer.from(password, 'utf8'),
       decryptSalt,
       scryptOptions.N,
@@ -171,7 +171,7 @@ export class KeyManager {
    * @param {string} password - The password to use in the PPK.
    * @param {string} privateKey - The private key to create the PPK from.
    * @param {string} hint - Password hint.
-   * @returns {KeyManager} - A new Key Manager instance with the account attached.
+   * @returns {string} - The PPK in string format.
    * */
   static async exportPPK({
     privateKey,
@@ -185,7 +185,7 @@ export class KeyManager {
     const secParam = 12
     const algorithm = 'aes-256-gcm'
     const salt = crypto.randomBytes(16)
-    const scryptHash = syncScrypt(
+    const scryptHash = scrypt.syncScrypt(
       Buffer.from(password, 'utf8'),
       salt,
       SCRYPT_OPTIONS.N,
@@ -295,13 +295,5 @@ export class KeyManager {
       password,
       hint,
     })
-  }
-
-  /**
-   * Checks if the Key Manager has all the required parts of an account.
-   * @returns {boolean} - If the key manager is properly instanciated or not.
-   * */
-  isConnected(): boolean {
-    return Boolean(this.privateKey && this.publicKey && this.address)
   }
 }

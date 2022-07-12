@@ -1,5 +1,5 @@
-import debug from 'debug'
 import AbortController from 'abort-controller'
+import debug from 'debug'
 import { fetch, Response } from 'undici'
 import {
   Account,
@@ -8,28 +8,35 @@ import {
   Block,
   DispatchRequest,
   DispatchResponse,
-  GetAppOptions,
+  GetAccountWithTransactionsOptions,
+  GetAppsOptions,
+  GetBlockTransactionsOptions,
+  GetNodeClaimsOptions,
   GetNodesOptions,
+  GetPaginableOptions,
   Node,
-  SessionHeader,
-  TransactionResponse,
-  RawTxRequest,
+  Paginable,
+  PaginableBlockTransactions,
   RawTransactionResponse,
+  RawTxRequest,
+  SessionHeader,
+  Transaction,
+  TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
-import { AbstractProvider } from '@pokt-foundation/pocketjs-abstract-provider'
 import {
+  AbstractProvider,
   DispatchersFailureError,
   RelayFailureError,
   TimeoutError,
   validateTransactionResponse,
-} from './errors'
-import { V1RpcRoutes } from './routes'
+  V1RpcRoutes,
+} from '@pokt-foundation/pocketjs-abstract-provider'
 
 const DEFAULT_TIMEOUT = 1000
 
 /**
  * A JSONRPCProvider lets you query data from the chain and send relays to the network.
- * Node only, not isomorphic.
+ * NodeJS only, not Isomorphic or Browser compatible.
  *  **/
 export class JsonRpcProvider implements AbstractProvider {
   private rpcUrl: string
@@ -100,6 +107,7 @@ export class JsonRpcProvider implements AbstractProvider {
       if (shouldRetryOnFailure) {
         return performRetry()
       } else {
+        debug(`${routedRpcUrl} total failure`)
         throw error
       }
     })
@@ -128,8 +136,8 @@ export class JsonRpcProvider implements AbstractProvider {
       route: V1RpcRoutes.QueryBalance,
       body: { address: await address },
     })
-    const { balance } = (await res.json()) as { balance: bigint }
-    return balance as bigint
+    const { balance } = (await res.json()) as { balance: number }
+    return BigInt(balance.toString())
   }
 
   /**
@@ -146,13 +154,13 @@ export class JsonRpcProvider implements AbstractProvider {
     })
     const txs = (await txsRes.json()) as any
 
-    if (!('total_count' in txs)) {
+    if (!('total_txs' in txs)) {
       throw new Error('RPC Error')
     }
 
-    const { total_count } = txs
+    const { total_txs } = txs
 
-    return total_count
+    return total_txs
   }
 
   /**
@@ -187,7 +195,7 @@ export class JsonRpcProvider implements AbstractProvider {
 
   /**
    * Sends a signed transaction from this provider.
-   * @param {TransactionRequest} transaction - The transaction to sign, formatted as a `TransactionRequest`.
+   * @param {TransactionRequest} transaction - The transaction to send, formatted as a `TransactionRequest`.
    * @returns {TransactionResponse} - The network's response to the transaction.
    * */
   async sendTransaction(
@@ -204,7 +212,7 @@ export class JsonRpcProvider implements AbstractProvider {
   }
 
   /**
-   * Gets an specific block specified by its block number.
+   * Gets an specific block by its block number.
    * @param {number} blockNumber - the number (height) of the block to query.
    * @returns {Block} - The block requested.
    * */
@@ -228,13 +236,13 @@ export class JsonRpcProvider implements AbstractProvider {
    * @param {string} transactionHash - the hash of the transaction to get.
    * @returns {TransactionResponse} - The transaction requested.
    * */
-  async getTransaction(transactionHash: string): Promise<TransactionResponse> {
+  async getTransaction(transactionHash: string): Promise<Transaction> {
     const res = await this.perform({
       route: V1RpcRoutes.QueryTX,
       body: { hash: transactionHash },
     })
 
-    const tx = (await res.json()) as TransactionResponse
+    const tx = (await res.json()) as Transaction
 
     if (!('hash' in tx)) {
       throw new Error('RPC Error')
@@ -263,12 +271,116 @@ export class JsonRpcProvider implements AbstractProvider {
   }
 
   /**
+   * Fetches the requested block's transactions.
+   * @param {GetBlockTransactionsOptions} GetBlockTransactionsOptions - The options to pass in to the query.
+   * @ returns {PaginableBlockTransactions} - The block's transactions.
+   * */
+  async getBlockTransactions(
+    GetBlockTransactionsOptions: GetBlockTransactionsOptions = {
+      blockHeight: 0,
+      page: 1,
+      perPage: 100,
+      includeProofs: false,
+    }
+  ): Promise<PaginableBlockTransactions> {
+    const {
+      blockHeight: height,
+      includeProofs,
+      page,
+      perPage,
+    } = GetBlockTransactionsOptions
+    const res = await this.perform({
+      route: V1RpcRoutes.QueryBlockTxs,
+      body: {
+        height,
+        prove: includeProofs,
+        page,
+        perPage,
+      },
+    })
+
+    const blockTxs = (await res.json()) as any
+
+    if (!('txs' in blockTxs)) {
+      throw new Error('RPC Error')
+    }
+
+    return {
+      pageCount: blockTxs.page_count,
+      totalTxs: blockTxs.total_txs,
+      txs: blockTxs.txs,
+    } as PaginableBlockTransactions
+  }
+
+  /**
    * Fetches nodes active from the network with the options provided.
    * @param {GetNodesOptions} getNodesOptions - the options to pass in to the query.
    * @returns {Node[]} - An array with the nodes requested and their information.
    * */
-  getNodes(getNodesOptions: GetNodesOptions): Promise<Node[]> {
-    throw new Error('Not implemented')
+  async getNodes(
+    GetNodesOptions: GetNodesOptions = {
+      blockHeight: 0,
+      page: 1,
+      perPage: 100,
+    }
+  ): Promise<Paginable<Node>> {
+    const { blockHeight: height } = GetNodesOptions
+
+    const res = await this.perform({
+      route: V1RpcRoutes.QueryApps,
+      body: {
+        height,
+        opts: {
+          page: GetNodesOptions.page ?? 1,
+          per_page: GetNodesOptions.perPage ?? 100,
+          ...(GetNodesOptions?.blockchain
+            ? { blockchain: GetNodesOptions.blockchain }
+            : {}),
+          ...(GetNodesOptions?.stakingStatus
+            ? { staking_status: GetNodesOptions.stakingStatus }
+            : {}),
+          ...(GetNodesOptions?.jailedStatus
+            ? { jailed_status: GetNodesOptions.jailedStatus }
+            : {}),
+        },
+      },
+      ...(GetNodesOptions?.timeout ? { timeout: GetNodesOptions.timeout } : {}),
+    })
+
+    const parsedRes = (await res.json()) as any
+
+    if (!('result' in parsedRes)) {
+      throw new Error('Failed to get apps')
+    }
+
+    const nodes = parsedRes.result.map((node) => {
+      const {
+        address,
+        chains,
+        jailed,
+        public_key,
+        staked_tokens,
+        status,
+        service_url,
+      } = node
+
+      return {
+        address,
+        chains,
+        publicKey: public_key,
+        jailed,
+        stakedTokens: staked_tokens ?? '0',
+        status,
+        serviceUrl: service_url,
+      } as Node
+    })
+
+    return {
+      data: nodes,
+      page: GetNodesOptions.page,
+      perPage: GetNodesOptions.perPage,
+      totalPages: parsedRes.total_pages,
+    } as Paginable<Node>
   }
 
   /**
@@ -277,13 +389,19 @@ export class JsonRpcProvider implements AbstractProvider {
    * @param {GetNodesOptions} getNodesOptions - The options to pass in to the query.
    * @returns {Node} - The node requested and its information.
    * */
-  async getNode(
-    address: string | Promise<string>,
-    GetNodeOptions
-  ): Promise<Node> {
+  async getNode({
+    address,
+    blockHeight,
+  }: {
+    address: string | Promise<string>
+    blockHeight?: number
+  }): Promise<Node> {
     const res = await this.perform({
       route: V1RpcRoutes.QueryNode,
-      body: { address: await address },
+      body: {
+        address: await address,
+        ...(blockHeight ? { height: blockHeight } : {}),
+      },
     })
     const node = (await res.json()) as any
 
@@ -318,8 +436,67 @@ export class JsonRpcProvider implements AbstractProvider {
    * @param {GetAppOptions} getAppOptions - The options to pass in to the query.
    * @returns {App} - An array with the apps requested and their information.
    * */
-  getApps(getAppOption: GetAppOptions): Promise<App[]> {
-    throw new Error('Not implemented')
+  async getApps(
+    GetAppsOptions: GetAppsOptions = {
+      blockHeight: 0,
+      page: 1,
+      perPage: 100,
+    }
+  ): Promise<Paginable<App>> {
+    const { blockHeight: height } = GetAppsOptions
+
+    const res = await this.perform({
+      route: V1RpcRoutes.QueryApps,
+      body: {
+        height,
+        opts: {
+          page: GetAppsOptions.page ?? 1,
+          per_page: GetAppsOptions.perPage ?? 100,
+          ...(GetAppsOptions?.stakingStatus
+            ? { staking_status: GetAppsOptions.stakingStatus }
+            : {}),
+          ...(GetAppsOptions?.blockchain
+            ? { blockchain: GetAppsOptions.blockchain }
+            : {}),
+        },
+      },
+      ...(GetAppsOptions?.timeout ? { timeout: GetAppsOptions.timeout } : {}),
+    })
+
+    const parsedRes = (await res.json()) as any
+
+    if (!('result' in parsedRes)) {
+      throw new Error('Failed to get apps')
+    }
+
+    const apps = parsedRes.result.map((app) => {
+      const {
+        address,
+        chains,
+        jailed,
+        max_relays,
+        public_key,
+        staked_tokens,
+        status,
+      } = app
+
+      return {
+        address,
+        chains,
+        publicKey: public_key,
+        jailed,
+        maxRelays: max_relays ?? '',
+        stakedTokens: staked_tokens ?? '0',
+        status,
+      } as App
+    })
+
+    return {
+      data: apps,
+      page: GetAppsOptions.page,
+      perPage: GetAppsOptions.perPage,
+      totalPages: parsedRes.total_pages,
+    } as Paginable<App>
   }
 
   /**
@@ -328,14 +505,21 @@ export class JsonRpcProvider implements AbstractProvider {
    * @param {GetAppOptions} getAppOptions - The options to pass in to the query.
    * @returns {App} - The app requested and its information.
    * */
-  async getApp(
-    address: string | Promise<string>,
-    options: GetAppOptions
-  ): Promise<App> {
+  async getApp({
+    address,
+    blockHeight,
+  }: {
+    address: string | Promise<string>
+    blockHeight?: number
+  }): Promise<App> {
     const res = await this.perform({
       route: V1RpcRoutes.QueryApp,
-      body: { address: await address },
+      body: {
+        address: await address,
+        ...(blockHeight ? { height: blockHeight } : {}),
+      },
     })
+
     const app = (await res.json()) as any
 
     if (!('chains' in app)) {
@@ -350,8 +534,8 @@ export class JsonRpcProvider implements AbstractProvider {
       chains,
       publicKey: public_key,
       jailed,
-      maxRelays: max_relays ?? 0,
-      stakedTokens: staked_tokens ?? 0,
+      maxRelays: max_relays ?? '',
+      stakedTokens: staked_tokens ?? '0',
       status,
     } as App
   }
@@ -387,7 +571,11 @@ export class JsonRpcProvider implements AbstractProvider {
    * @returns {AccountWithTransaction} - The account requested and its information, along with its transactions.
    * */
   async getAccountWithTransactions(
-    address: string | Promise<string>
+    address: string | Promise<string>,
+    options: GetAccountWithTransactionsOptions = {
+      page: 1,
+      perPage: 100,
+    }
   ): Promise<AccountWithTransactions> {
     const accountRes = await this.perform({
       route: V1RpcRoutes.QueryAccount,
@@ -395,7 +583,7 @@ export class JsonRpcProvider implements AbstractProvider {
     })
     const txsRes = await this.perform({
       route: V1RpcRoutes.QueryAccountTxs,
-      body: { address: await address },
+      body: { address: await address, ...options },
     })
     const account = (await accountRes.json()) as any
     const txs = (await txsRes.json()) as any
@@ -408,13 +596,13 @@ export class JsonRpcProvider implements AbstractProvider {
     }
 
     const { coins, public_key } = account
-    const { total_count, txs: transactions } = txs
+    const { total_txs, txs: transactions } = txs
 
     return {
       address: await address,
       balance: coins[0]?.amount ?? 0,
       publicKey: public_key,
-      totalCount: total_count,
+      totalCount: total_txs,
       transactions: transactions,
     }
   }
@@ -513,7 +701,7 @@ export class JsonRpcProvider implements AbstractProvider {
 
   /**
    * Sends a relay to the network through the main RPC URL provided. Best used through a Relayer.
-   * @param {request} request - The relay request.
+   * @param {any} request - The relay request.
    * @param {string} rpcUrl - The RPC URL to use, if the main RPC URL is not a suitable node to relay requests.
    * @param {object} options - The options available to tweak the request itself.
    * @param {number} options.retryAttempts - The number of retries to perform if the first call fails.
@@ -553,6 +741,233 @@ export class JsonRpcProvider implements AbstractProvider {
         throw new TimeoutError()
       }
       throw new RelayFailureError()
+    }
+  }
+
+  /**
+   * Gets all the parameters used to configure the Pocket Network.
+   * @param {number} height - The block height to use to determine the params.
+   * @param {object} options - The options available to tweak the request itself.
+   * @param {number} options.timeout - Timeout before the call fails. In milliseconds.
+   * @returns {any} - The raw params.
+   * * */
+  public async getAllParams(
+    height: number,
+    options: {
+      timeout?: number
+    }
+  ): Promise<any> {
+    if (height < 0) {
+      throw new Error('Invalid height input')
+    }
+
+    try {
+      const res = await this.perform({
+        route: V1RpcRoutes.QueryAllParams,
+        body: { height },
+        ...options,
+      })
+
+      const params = await res.json()
+      this.logger(JSON.stringify(params))
+
+      return params
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        throw new TimeoutError()
+      }
+      throw err
+    }
+  }
+
+  /**
+   * Gets the corresponding node's claims.
+   * @param {string} address - The address of the node to get the claims from.
+   * @param {object} GetNodeClaimsOptions - The options available to tweak the request itself.
+   * @param {number} options.height - The block height to use to determine the result of the call.
+   * @param {number} options.page - The page to get the node claims from.
+   * @param {number} options.perPage - How many claims per page to retrieve.
+   * @param {timeout} options.timeout - Timeout before the call fails. In milliseconds.
+   * @returns {any} - The raw node claims.
+   * * */
+  public async getNodeClaims(
+    address: string,
+    options: GetNodeClaimsOptions
+  ): Promise<Paginable<any>> {
+    try {
+      const res = await this.perform({
+        route: V1RpcRoutes.QueryNodeClaims,
+        body: {
+          address,
+          ...(options.height ? { height: options.height } : {}),
+          ...(options.page ? { page: options.page } : {}),
+          ...(options.perPage ? { per_page: options.perPage } : {}),
+        },
+        ...options,
+      })
+
+      const nodeClaims = (await res.json()) as any
+      this.logger(JSON.stringify(nodeClaims))
+
+      if (!('result' in nodeClaims)) {
+        throw new Error('RPC Error')
+      }
+
+      return {
+        data: nodeClaims.result,
+        page: nodeClaims.page,
+        totalPages: nodeClaims.total_pages,
+        perPage: options?.perPage ?? 100,
+      }
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        throw new TimeoutError()
+      }
+      throw err
+    }
+  }
+
+  /**
+   * Gets the requested supply information.
+   * @param {number} height - The block height to use to determine the current supply.
+   * @param {object} options - The options available to tweak the request itself.
+   * @param {number} options.timeout - Timeout before the call fails. In milliseconds.
+   * @returns {any} - The raw supply info.
+   * * */
+  public async getSupply(
+    height: number = 0,
+    options: {
+      timeout?: number
+    }
+  ): Promise<any> {
+    if (height < 0) {
+      throw new Error('Invalid height input')
+    }
+
+    try {
+      const res = await this.perform({
+        route: V1RpcRoutes.QuerySupply,
+        body: { height },
+        ...options,
+      })
+
+      const supply = await res.json()
+      this.logger(JSON.stringify(supply))
+
+      return supply
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        throw new TimeoutError()
+      }
+      throw err
+    }
+  }
+
+  /**
+   * Gets the supported chains.
+   * @param {number} height - The block height to use to determine the supported chains at that point in time.
+   * @param {object} options - The options available to tweak the request itself.
+   * @param {number} options.timeout - Timeout before the call fails. In milliseconds.
+   * @returns {any} - The currently supported chains.
+   * * */
+  public async getSupportedChains(
+    height: number = 0,
+    options: {
+      timeout?: number
+    }
+  ): Promise<any> {
+    if (height < 0) {
+      throw new Error('Invalid height input')
+    }
+
+    try {
+      const res = await this.perform({
+        route: V1RpcRoutes.QuerySupportedChains,
+        body: { height },
+        ...options,
+      })
+
+      const supportedChains = await res.json()
+      this.logger(JSON.stringify(supportedChains))
+
+      return supportedChains
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        throw new TimeoutError()
+      }
+      throw err
+    }
+  }
+
+  /**
+   * Gets the current Pocket Network Params.
+   * @param {number} height - The block height to use to determine the Pocket Params at that point in time.
+   * @param {object} options - The options available to tweak the request itself.
+   * @param {number} options.timeout - Timeout before the call fails. In milliseconds.
+   * @returns {any} - The raw pocket params.
+   * * */
+  public async getPocketParams(
+    height: number = 0,
+    options: {
+      timeout?: number
+    }
+  ): Promise<any> {
+    if (height < 0) {
+      throw new Error('Invalid height input')
+    }
+
+    try {
+      const res = await this.perform({
+        route: V1RpcRoutes.QueryPocketParams,
+        body: { height },
+        ...options,
+      })
+
+      const pocketParams = await res.json()
+      this.logger(JSON.stringify(pocketParams))
+
+      return pocketParams
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        throw new TimeoutError()
+      }
+      throw err
+    }
+  }
+
+  /**
+   * Gets the current Application Params.
+   * @param {number} height - The block height to use to determine the Application Params at that point in time.
+   * @param {object} options - The options available to tweak the request itself.
+   * @param {number} options.timeout - Timeout before the call fails. In milliseconds.
+   * @returns {any} - The raw application params.
+   * * */
+  public async getAppParams(
+    height: number = 0,
+    options: {
+      timeout?: number
+    }
+  ): Promise<any> {
+    if (height < 0) {
+      throw new Error('Invalid height input')
+    }
+
+    try {
+      const res = await this.perform({
+        route: V1RpcRoutes.QueryAppParams,
+        body: { height },
+        ...options,
+      })
+
+      const appParams = await res.json()
+      this.logger(JSON.stringify(appParams))
+
+      return appParams
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        throw new TimeoutError()
+      }
+      throw err
     }
   }
 }

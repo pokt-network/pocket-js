@@ -1,3 +1,4 @@
+import crypto from 'isomorphic-webcrypto'
 import debug from 'debug'
 import sha3 from 'js-sha3'
 import { JsonRpcProvider } from '@pokt-foundation/pocketjs-provider'
@@ -22,6 +23,7 @@ export class Relayer implements AbstractRelayer {
   readonly keyManager: KeyManager
   readonly provider: JsonRpcProvider
   readonly dispatchers: string[]
+  private secureEnsured = false
 
   constructor({ keyManager, provider, dispatchers }) {
     this.keyManager = keyManager
@@ -38,7 +40,7 @@ export class Relayer implements AbstractRelayer {
    * @param {number} options.retryAttempts - The number of retries to perform if the first call fails.
    * @param {boolean} options.rejectSelfSignedCertificates - Option to reject self signed certificates or not.
    * @param {timeout} options.timeout - Timeout before the call fails. In milliseconds.
-   * @returns {DispatchResponse} - The dispatch response from the dispatcher node.
+   * @returns {DispatchResponse} - The dispatch response from the dispatcher node, as a session.
    * */
   async getNewSession({
     applicationPubKey,
@@ -145,7 +147,7 @@ export class Relayer implements AbstractRelayer {
       meta: relayMeta,
     }
 
-    const entropy = Number(BigInt(Math.floor(Math.random() * 99999999999999)))
+    const entropy = this.getRandomIntInclusive()
 
     const proofBytes = this.generateProofBytes({
       entropy,
@@ -259,6 +261,17 @@ export class Relayer implements AbstractRelayer {
     }
     const serviceNode = node ?? undefined
 
+    // React native only:
+    // If this SDK is used in a mobile context,
+    // the native crypto library needs to be used in a secure context to properly
+    // generate random values.
+    if (!this.secureEnsured) {
+      if (crypto.ensureSecure) {
+        await crypto.ensureSecure()
+      }
+      this.secureEnsured = true
+    }
+
     return Relayer.relay({
       blockchain,
       data,
@@ -332,5 +345,17 @@ export class Relayer implements AbstractRelayer {
     const hash = sha3.sha3_256.create()
     hash.update(JSON.stringify(requestHash))
     return hash.hex()
+  }
+
+  static getRandomIntInclusive(min = 0, max = Number.MAX_SAFE_INTEGER) {
+    const randomBuffer = new Uint32Array(1)
+
+    crypto.getRandomValues(randomBuffer)
+
+    const randomNumber = randomBuffer[0] / (0xffffffff + 1)
+
+    min = Math.ceil(min)
+    max = Math.floor(max)
+    return Math.floor(randomNumber * (max - min + 1)) + min
   }
 }

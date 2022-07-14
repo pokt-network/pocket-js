@@ -8,12 +8,7 @@ import {
 } from '@pokt-foundation/pocketjs-utils'
 import scrypt from 'scrypt-js'
 import { InvalidPPKError } from './errors'
-
-interface Account {
-  address: string
-  publicKey: string
-  privateKey: string
-}
+import { AbstractSigner, Account } from './abstract-signer'
 
 const HEX_REGEX = /^[0-9a-fA-F]+$/
 // Scrypt-related constants
@@ -29,7 +24,7 @@ const SCRYPT_OPTIONS = {
  * A KeyManager lets you import accounts with their private key or PPK (Portable Private Key)
  * and get its address, public key, private key, and sign messages.
  **/
-export class KeyManager {
+export class KeyManager implements AbstractSigner {
   private address: string
 
   private publicKey: string

@@ -8,7 +8,7 @@ import {
   MsgProtoSend,
 } from './models/msgs'
 import { AbstractProvider } from '@pokt-foundation/pocketjs-abstract-provider'
-import { KeyManager } from '@pokt-foundation/pocketjs-signer'
+import { AbstractSigner } from '@pokt-foundation/pocketjs-signer'
 import {
   RawTxRequest,
   TransactionResponse,
@@ -32,7 +32,7 @@ export const DEFAULT_BASE_FEE = '10000'
  */
 export class TransactionBuilder implements AbstractBuilder {
   private provider: AbstractProvider
-  private signer: KeyManager
+  private signer: AbstractSigner
   private chainID: ChainID
 
   constructor({
@@ -41,7 +41,7 @@ export class TransactionBuilder implements AbstractBuilder {
     chainID = 'mainnet',
   }: {
     provider: AbstractProvider
-    signer: KeyManager
+    signer: AbstractSigner
     chainID: ChainID
   }) {
     if (!provider) {

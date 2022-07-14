@@ -1,6 +1,6 @@
 {
   "name": "@pokt-foundation/pocketjs-signer",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Signer for Pocket Network V0 accounts",
   "type": "module",
   "source": "src/index.ts",

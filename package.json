@@ -3,6 +3,7 @@
   "version": "0.0.3",
   "scripts": {
     "build": "turbo run build",
+    "release": "RELEASE_MODE=true pnpm publish",
     "build:abstract-provider": "turbo run build --scope=*abstract-provider* --no-deps",
     "build:pocket": "turbo run build --scope=@pokt-foundation/pocketjs --no-deps",
     "build:provider": "turbo run build --scope=*provider* --no-deps",
@@ -22,7 +23,8 @@
     "dev:utils": "turbo run dev --scope=*utils* --no-cache --no-deps",
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "prepublishOnly": "node ./scripts/prepublish.js"
   },
   "devDependencies": {
     "prettier": "^2.5.1",

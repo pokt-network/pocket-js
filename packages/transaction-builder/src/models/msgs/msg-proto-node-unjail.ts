@@ -7,8 +7,8 @@ import { TxMsg } from './tx-msg'
  * Model representing a MsgNodeUnjail to unjail as an Node in the Pocket Network
  */
 export class MsgProtoNodeUnjail extends TxMsg {
-  public readonly KEY: string = '/x.nodes.MsgUnjail'
-  public readonly AMINO_KEY: string = 'pos/MsgUnjail'
+  public readonly KEY: string = '/x.nodes.MsgUnjail8'
+  public readonly AMINO_KEY: string = 'pos/8.0MsgUnjail'
   public readonly nodeAddress: string
   public readonly signerAddress: string
 

@@ -6,8 +6,8 @@ import { TxMsg } from './tx-msg'
  * Model representing a MsgNodeStake to unstake as an Node in the Pocket Network
  */
 export class MsgProtoNodeUnstake extends TxMsg {
-  public readonly KEY: string = '/x.nodes.MsgBeginUnstake'
-  public readonly AMINO_KEY: string = 'pos/MsgBeginUnstake'
+  public readonly KEY: string = '/x.nodes.MsgBeginUnstake8'
+  public readonly AMINO_KEY: string = 'pos/8.0MsgBeginUnstake'
   public readonly nodeAddress: string
   public readonly signerAddress: string
 

@@ -32,7 +32,7 @@ import {
   V1RpcRoutes,
 } from '@pokt-foundation/pocketjs-abstract-provider'
 
-const DEFAULT_TIMEOUT = 1000
+const DEFAULT_TIMEOUT = 3000
 
 /**
  * A JSONRPCProvider lets you query data from the chain and send relays to the network.

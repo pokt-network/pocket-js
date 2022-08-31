@@ -5,7 +5,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* tslint:disable */
 import Long from "long";
-import _m0 from "protobufjs/minimal";
+import _m0 from "protobufjs/minimal.js";
 import { Any } from "./google/protobuf/any";
 
 export const protobufPackage = "pocketjs";

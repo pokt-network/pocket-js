@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@pokt-foundation/pocketjs-abstract-provider": "workspace:*",
+    "isomorphic-webcrypto": "^2.3.8",
     "abort-controller": "^3.0.0",
     "debug": "^4.3.3",
     "isomorphic-unfetch": "^3.1.0"

@@ -47,6 +47,7 @@ importers:
       debug: ^4.3.3
       eslint: 7.32.0
       isomorphic-unfetch: ^3.1.0
+      isomorphic-webcrypto: ^2.3.8
       jest: ^27.4.7
       microbundle: ^0.14.2
       nock: ^13.2.4
@@ -58,6 +59,7 @@ importers:
       abort-controller: 3.0.0
       debug: 4.3.3
       isomorphic-unfetch: 3.1.0
+      isomorphic-webcrypto: 2.3.8
     devDependencies:
       '@pokt-foundation/pocketjs-types': link:../types
       '@types/jest': 27.4.0

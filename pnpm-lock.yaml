@@ -40,6 +40,7 @@ importers:
     specifiers:
       '@pokt-foundation/pocketjs-abstract-provider': workspace:*
       '@pokt-foundation/pocketjs-types': workspace:*
+      '@pokt-foundation/pocketjs-utils': workspace:*
       '@types/jest': ^27.4.0
       '@typescript-eslint/eslint-plugin': ^5.10.2
       '@typescript-eslint/parser': ^5.10.2
@@ -56,6 +57,7 @@ importers:
       typescript: ^4.5.5
     dependencies:
       '@pokt-foundation/pocketjs-abstract-provider': link:../abstract-provider
+      '@pokt-foundation/pocketjs-utils': link:../utils
       abort-controller: 3.0.0
       debug: 4.3.3
       isomorphic-unfetch: 3.1.0

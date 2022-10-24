@@ -1,7 +1,7 @@
 const _perfomancePolyfill = () => {
   // based on https://gist.github.com/paulirish/5438650 copyright Paul Irish 2015.
   if ('performance' in window === false) {
-    ;(window.performance as any) = {}
+    (window.performance as unknown) = {}
   }
 
   Date.now =
@@ -39,7 +39,7 @@ const _hrtime = (previousTimestamp?: [number, number]): [number, number] => {
   }
   return [seconds, nanoseconds]
 }
-const NS_PER_SEC: number = 1e9
+const NS_PER_SEC = 1e9
 _hrtime.bigint = (time?: [number, number]): bigint => {
   const diff = _hrtime(time)
   return (diff[0] * NS_PER_SEC + diff[1]) as unknown as bigint
@@ -48,7 +48,7 @@ if (
   (typeof process === 'undefined' || typeof process.hrtime === 'undefined') &&
   typeof window.process === 'undefined'
 ) {
-  window.process = {} as any
+  window.process = {} as NodeJS.Process
 }
 export const hrtime =
   typeof process.hrtime === 'undefined'

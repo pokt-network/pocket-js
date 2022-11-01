@@ -9,7 +9,11 @@
     "declaration": true,
     "declarationDir": "dist"
   },
-  "references": [{ "path": "../types" }, { "path": "../abstract-provider" }],
+  "references": [
+    { "path": "../types" },
+    { "path": "../abstract-provider" },
+    { "path": "../utils" }
+  ],
   "include": ["src"],
   "exclude": ["node_modules"]
 }

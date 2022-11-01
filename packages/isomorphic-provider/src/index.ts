@@ -30,6 +30,7 @@ import {
   validateTransactionResponse,
   V1RpcRoutes,
 } from '@pokt-foundation/pocketjs-abstract-provider'
+import { hrtime } from '@pokt-foundation/pocketjs-utils'
 
 const DEFAULT_TIMEOUT = 1000
 
@@ -69,7 +70,7 @@ export class IsomorphicProvider implements AbstractProvider {
     retryAttempts?: number
     retriesPerformed?: number
   }): Promise<Response> {
-    const startTime = process.hrtime()
+    const startTime = hrtime()
     const shouldRetryOnFailure = retriesPerformed < retryAttempts
     const performRetry = () =>
       this.perform({
@@ -110,7 +111,7 @@ export class IsomorphicProvider implements AbstractProvider {
       }
     })
 
-    const totalTime = process.hrtime(startTime)
+    const totalTime = hrtime(startTime)
     debug(
       `${routedRpcUrl} (attempt ${
         retriesPerformed + 1

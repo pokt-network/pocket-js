@@ -32,7 +32,7 @@ import {
 } from '@pokt-foundation/pocketjs-abstract-provider'
 import { hrtime } from '@pokt-foundation/pocketjs-utils'
 
-const DEFAULT_TIMEOUT = 1000
+const DEFAULT_TIMEOUT = 10000
 
 /**
  * An IsomorphicProvider lets you query data from the chain and send relays to the network.

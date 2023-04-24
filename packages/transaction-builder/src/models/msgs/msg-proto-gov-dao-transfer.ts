@@ -29,6 +29,15 @@ export class MsgProtoGovDAOTransfer extends TxMsg {
     this.toAddress = toAddress
     this.amount = amount
     this.action = action;
+
+    if(fromAddress.length == 0) {
+      throw new Error('from address cannot be empty')
+    }
+
+    if(toAddress.length == 0) {
+      throw new Error('to address cannot be empty')
+    }
+
     if (fromAddress === toAddress) {
       throw new Error('fromAddress cannot be equal to toAddress')
     }

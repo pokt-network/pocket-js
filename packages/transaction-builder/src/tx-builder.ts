@@ -14,9 +14,13 @@ import {
   TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
 import { TxEncoderFactory } from './factory/tx-encoder-factory'
-import { CoinDenom, TxMsg, TxSignature } from './models/'
+import {CoinDenom, DAOAction, TxMsg, TxSignature} from './models/'
 import { InvalidChainIDError, NoProviderError, NoSignerError } from './errors'
 import { AbstractBuilder } from './abstract-tx-builder'
+import {MsgProtoGovDAOTransfer} from "./models/msgs/msg-proto-gov-dao-transfer";
+import {MsgProtoGovChangeParam} from "./models/msgs/msg-proto-gov-change-param";
+import {Upgrade} from "./models/proto/generated/tx-signer";
+import {MsgProtoGovUpgrade} from "./models/msgs/msg-proto-gov-upgrade";
 
 export type ChainID = 'mainnet' | 'testnet' | 'localnet'
 
@@ -265,4 +269,47 @@ export class TransactionBuilder implements AbstractBuilder {
   }): MsgProtoNodeUnjail {
     return new MsgProtoNodeUnjail(nodeAddress, signerAddress)
   }
+
+
+  public govDAOTransfer(
+      {
+        fromAddress = this.signer.getAddress(),
+        toAddress,
+        amount,
+        action
+      }: {
+      fromAddress?: string
+      toAddress: string
+      amount: string
+      action: DAOAction
+  }): MsgProtoGovDAOTransfer {
+    return new MsgProtoGovDAOTransfer(fromAddress, toAddress, amount, action)
+  }
+
+  public govChangeParam(
+      {
+        fromAddress = this.signer.getAddress(),
+        paramKey,
+        paramValue,
+      }: {
+        fromAddress?: string
+        paramKey: string
+        paramValue: string
+      }): MsgProtoGovChangeParam {
+    return new MsgProtoGovChangeParam(fromAddress, paramKey, paramValue)
+  }
+
+  public govUpgrade(
+      {
+        fromAddress = this.signer.getAddress(),
+        upgrade,
+      }: {
+        fromAddress?: string
+        upgrade: Upgrade,
+      }): MsgProtoGovUpgrade {
+    return new MsgProtoGovUpgrade(fromAddress, upgrade)
+  }
+
 }
+
+

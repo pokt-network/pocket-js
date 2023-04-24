@@ -5,7 +5,7 @@ import {TxMsg} from './tx-msg'
 import {DAOAction} from "../dao-action";
 
 /**
- * Model representing a MsgDAOTransfer to send POKT from the DAO Module Account to another account
+ * Model representing a MsgGovDAOTransfer to send POKT from the DAO Module Account to another account
  */
 export class MsgProtoGovDAOTransfer extends TxMsg {
   public readonly fromAddress: string

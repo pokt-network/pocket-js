@@ -79,3 +79,28 @@ message MsgSend {
     bytes ToAddress = 2;
     string amount = 3;
 }
+
+message MsgDAOTransfer {
+    bytes FromAddress = 1;
+    bytes ToAddress = 2;
+    string amount = 3;
+    string action = 4;
+}
+
+message Upgrade {
+    int64 height = 1;
+    string version = 2;
+    int64 oldUpgradeHeight = 3;
+    repeated string features = 4;
+}
+
+message MsgUpgrade {
+    bytes address = 1;
+    Upgrade upgrade = 2;
+}
+
+message MsgChangeParam {
+    bytes FromAddress = 1;
+    string paramKey = 2;
+    bytes paramVal = 3;
+}

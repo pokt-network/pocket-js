@@ -270,7 +270,13 @@ export class TransactionBuilder implements AbstractBuilder {
     return new MsgProtoNodeUnjail(nodeAddress, signerAddress)
   }
 
-
+  /**
+   * Adds a MsgDAOTransfer TxMsg for this transaction
+   * @param {string} fromAddress - Address of the sender of the dao transfer
+   * @param {string} toAddress - The receiver of the dao transfer
+   * @param {string} - Amount to be used, needs to be a valid number greater than 1 uPOKT.
+   * @param {DAOAction} - the action to perform using the specified amount (i.e burn or transfer)
+   */
   public govDAOTransfer(
       {
         fromAddress = this.signer.getAddress(),
@@ -286,6 +292,12 @@ export class TransactionBuilder implements AbstractBuilder {
     return new MsgProtoGovDAOTransfer(fromAddress, toAddress, amount, action)
   }
 
+  /**
+   * Adds a MsgChangeParam TxMsg for this transaction
+   * @param {string} fromAddress - Address of the signer, must be on the ACL
+   * @param {string} paramKey - the governance parameter key
+   * @param {string} paramValue - the governance parameter's new value in human-readable format (utf8).
+   */
   public govChangeParam(
       {
         fromAddress = this.signer.getAddress(),
@@ -299,6 +311,11 @@ export class TransactionBuilder implements AbstractBuilder {
     return new MsgProtoGovChangeParam(fromAddress, paramKey, paramValue)
   }
 
+  /**
+   * Adds a MsgUpgrade TxMsg for this transaction
+   * @param {string} fromAddress - Address of the signer
+   * @param {Upgrade} upgrade - the upgrade object such as the new upgrade height and new values.
+   */
   public govUpgrade(
       {
         fromAddress = this.signer.getAddress(),

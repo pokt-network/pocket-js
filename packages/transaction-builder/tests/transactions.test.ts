@@ -1,6 +1,6 @@
 import { KeyManager } from '@pokt-foundation/pocketjs-signer'
 import { JsonRpcProvider } from '@pokt-foundation/pocketjs-provider'
-import { ChainID, TransactionBuilder } from '../src/tx-builder'
+import { ChainID, TransactionBuilder } from '../src'
 import {
   MsgProtoAppStake,
   MsgProtoAppUnstake,

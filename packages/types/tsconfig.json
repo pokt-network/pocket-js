@@ -3,6 +3,7 @@
   "display": "Default",
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "lib": [ "es2020", "dom"],
     "baseUrl": ".",
     "allowJs": true,
     "composite": true,

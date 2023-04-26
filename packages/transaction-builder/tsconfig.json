@@ -3,6 +3,7 @@
   "display": "Default",
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "lib": [ "es2020", "dom"],
     "baseUrl": ".",
     "allowJs": true,
     "composite": true,
@@ -16,6 +17,6 @@
     { "path": "../types" },
     { "path": "../utils" }
   ],
-  "include": ["src"],
+  "include": ["src", "tests"],
   "exclude": ["node_modules", "dist", "jest.config.js"]
 }

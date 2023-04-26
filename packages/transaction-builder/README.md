@@ -224,9 +224,9 @@ An opinionated way of creating an upgrade transaction for updating the protocol'
 
 Returns a `MsgProtoGovUpgrade`: The unsigned upgrade message
 
-| Param    | Type       | Description                                                                                                        |
-|----------|------------|--------------------------------------------------------------------------------------------------------------------|
-| features | `string[]` | array features to deactivate / activate with the notation: `[ {featureName1}:{height1}, {featureName2}:{height2}]` | |
+| Param    | Type       | Description                                                                                                            |
+|----------|------------|------------------------------------------------------------------------------------------------------------------------|
+| features | `string[]` | array of features to deactivate / activate with the notation: `[ {featureName1}:{height1}, {featureName2}:{height2} ]` | |
 
 #### govUpgrade({ features, height, version }): MsgProtoGovUpgrade
 
@@ -234,8 +234,8 @@ Adds a MsgProtoGovUpgradeTxMsg for this transaction.
 
 Returns a `MsgProtoGovUpgrade`: The unsigned upgrade message
 
-| Param    | Type       | Description                                                                                                        |
-|----------|------------|--------------------------------------------------------------------------------------------------------------------|
-| height     | `int`    | height to upgrade the protocol's version     |
-| version    | `string` | the new protocol's version                   |
-| features | `string[]` | array features to deactivate / activate with the notation: `[ {featureName1}:{height1}, {featureName2}:{height2}]` | |
+| Param    | Type       | Description                                                                                                            |
+|----------|------------|------------------------------------------------------------------------------------------------------------------------|
+| height     | `int`    | height to upgrade the protocol's version                                                                               |
+| version    | `string` | the new protocol's version                                                                                             |
+| features | `string[]` | array of features to deactivate / activate with the notation: `[ {featureName1}:{height1}, {featureName2}:{height2} ]` | |

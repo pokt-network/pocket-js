@@ -9,7 +9,7 @@ importers:
       typescript: ^4.5.5
     devDependencies:
       prettier: 2.5.1
-      turbo: 1.6.1
+      turbo: 1.9.3
       typescript: 4.5.5
 
   packages/abstract-provider:
@@ -105,6 +105,7 @@ importers:
       '@pokt-foundation/pocketjs-abstract-provider': workspace:*
       '@pokt-foundation/pocketjs-types': workspace:*
       '@types/jest': ^27.4.0
+      '@types/node': ^18.16.1
       '@typescript-eslint/eslint-plugin': ^5.10.2
       '@typescript-eslint/parser': ^5.10.2
       abort-controller: ^3.0.0
@@ -125,6 +126,7 @@ importers:
     devDependencies:
       '@pokt-foundation/pocketjs-types': link:../types
       '@types/jest': 27.4.0
+      '@types/node': 18.16.1
       '@typescript-eslint/eslint-plugin': 5.10.2_3e19df30e549eb9672c3b79dc40c1d5f
       '@typescript-eslint/parser': 5.10.2_eslint@7.32.0+typescript@4.5.5
       eslint: 7.32.0
@@ -142,6 +144,7 @@ importers:
       '@pokt-foundation/pocketjs-signer': workspace:*
       '@pokt-foundation/pocketjs-types': workspace:*
       '@types/jest': ^27.4.0
+      '@types/node': ^18.16.1
       '@typescript-eslint/eslint-plugin': ^5.10.2
       '@typescript-eslint/parser': ^5.10.2
       debug: ^4.3.3
@@ -165,6 +168,7 @@ importers:
     devDependencies:
       '@pokt-foundation/pocketjs-types': link:../types
       '@types/jest': 27.4.0
+      '@types/node': 18.16.1
       '@typescript-eslint/eslint-plugin': 5.10.2_3e19df30e549eb9672c3b79dc40c1d5f
       '@typescript-eslint/parser': 5.10.2_eslint@7.32.0+typescript@4.5.5
       eslint: 7.32.0
@@ -227,6 +231,7 @@ importers:
       '@pokt-network/amino-js': ^0.7.5-alpha.1
       '@tendermint/belt': ^0.3.0
       '@types/jest': ^27.4.0
+      '@types/node': ^18.16.1
       '@typescript-eslint/eslint-plugin': ^5.10.2
       '@typescript-eslint/parser': ^5.10.2
       buffer: ^6.0.3
@@ -255,6 +260,7 @@ importers:
     devDependencies:
       '@pokt-foundation/pocketjs-provider': link:../provider
       '@types/jest': 27.4.0
+      '@types/node': 18.16.1
       '@typescript-eslint/eslint-plugin': 5.10.2_3e19df30e549eb9672c3b79dc40c1d5f
       '@typescript-eslint/parser': 5.10.2_eslint@7.32.0+typescript@4.5.5
       eslint: 7.32.0
@@ -290,6 +296,7 @@ importers:
     specifiers:
       '@noble/hashes': ^1.0.0
       '@types/jest': ^27.4.0
+      '@types/node': ^18.16.1
       '@typescript-eslint/eslint-plugin': ^5.10.2
       '@typescript-eslint/parser': ^5.10.2
       eslint: 7.32.0
@@ -306,6 +313,7 @@ importers:
       isomorphic-webcrypto: 2.3.8
     devDependencies:
       '@types/jest': 27.4.0
+      '@types/node': 18.16.1
       '@typescript-eslint/eslint-plugin': 5.10.2_3e19df30e549eb9672c3b79dc40c1d5f
       '@typescript-eslint/parser': 5.10.2_eslint@7.32.0+typescript@4.5.5
       eslint: 7.32.0
@@ -2173,6 +2181,10 @@ packages:
 
   /@types/node/17.0.14:
     resolution: {integrity: sha512-SbjLmERksKOGzWzPNuW7fJM7fk3YXVTFiZWB/Hs99gwhk+/dnrQRPBQjPW9aO+fi1tAffi9PrwFvsmOKmDTyng==}
+    dev: true
+
+  /@types/node/18.16.1:
+    resolution: {integrity: sha512-DZxSZWXxFfOlx7k7Rv4LAyiMroaxa3Ly/7OOzZO8cBNho0YzAi4qlbrx8W27JGqG57IgR/6J7r+nOJWw6kcvZA==}
 
   /@types/object-hash/1.3.4:
     resolution: {integrity: sha512-xFdpkAkikBgqBdG9vIlsqffDV8GpvnPEzs0IUtr1v3BEB97ijsFQ4RXVbUZwjFThhB4MDSTUfvmxUD5PGx0wXA==}
@@ -5272,6 +5284,7 @@ packages:
       typescript: 4.5.5
     transitivePeerDependencies:
       - '@types/babel__core'
+      - acorn
       - supports-color
       - ts-node
     dev: true
@@ -6102,7 +6115,7 @@ packages:
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
       '@types/long': 4.0.1
-      '@types/node': 17.0.14
+      '@types/node': 18.16.1
       long: 4.0.0
     dev: false
 
@@ -6362,6 +6375,8 @@ packages:
       rollup: 2.67.0
       serialize-javascript: 4.0.0
       terser: 5.10.0
+    transitivePeerDependencies:
+      - acorn
     dev: true
 
   /rollup-plugin-typescript2/0.29.0_rollup@2.67.0+typescript@4.5.5:
@@ -6726,6 +6741,8 @@ packages:
     resolution: {integrity: sha512-AMmF99DMfEDiRJfxfY5jj5wNH/bYO09cniSqhfoyxc8sFoYIgkJy86G04UoZU5VjlpnplVu0K6Tx6E9b5+DlHA==}
     engines: {node: '>=10'}
     hasBin: true
+    peerDependencies:
+      acorn: ^8.5.0
     peerDependenciesMeta:
       acorn:
         optional: true
@@ -6890,65 +6907,65 @@ packages:
       typescript: 4.5.5
     dev: true
 
-  /turbo-darwin-64/1.6.1:
-    resolution: {integrity: sha512-xsItJ/hmnd6R8V60cCe0RAZQjO+En/LVXVkZhiw0Fyfxoo+iKcAA4sVeWkaL+cg5sQd5UWlWfD1EOKbHDjVb9Q==}
+  /turbo-darwin-64/1.9.3:
+    resolution: {integrity: sha512-0dFc2cWXl82kRE4Z+QqPHhbEFEpUZho1msHXHWbz5+PqLxn8FY0lEVOHkq5tgKNNEd5KnGyj33gC/bHhpZOk5g==}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-darwin-arm64/1.6.1:
-    resolution: {integrity: sha512-wRfAJWCLYB29IGTx6sF6QvexK/89AbAgnfYA5yVcuUJT+xz2/zLeGcOODQBCnP4rB+vX5ipXLY0XjkLGl+z6fA==}
+  /turbo-darwin-arm64/1.9.3:
+    resolution: {integrity: sha512-1cYbjqLBA2zYE1nbf/qVnEkrHa4PkJJbLo7hnuMuGM0bPzh4+AnTNe98gELhqI1mkTWBu/XAEeF5u6dgz0jLNA==}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-64/1.6.1:
-    resolution: {integrity: sha512-NZ88muC3hHbWW/cBgl9DFFbyzDcFVvZHQBXKTwVA8l2yLOOvesX+aQ2Knr4Pxu9Kb0F3t6ABsOSf8SbI7CpJsg==}
+  /turbo-linux-64/1.9.3:
+    resolution: {integrity: sha512-UuBPFefawEwpuxh5pM9Jqq3q4C8M0vYxVYlB3qea/nHQ80pxYq7ZcaLGEpb10SGnr3oMUUs1zZvkXWDNKCJb8Q==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-linux-arm64/1.6.1:
-    resolution: {integrity: sha512-HDgx+0ozqMpoDBOSzWz43nYMDp/+giEz8+vmLOB6mTQU/9IlZQVwachzwkqLRsJyBUhYALBlWGcuRWO3KqXMmg==}
+  /turbo-linux-arm64/1.9.3:
+    resolution: {integrity: sha512-vUrNGa3hyDtRh9W0MkO+l1dzP8Co2gKnOVmlJQW0hdpOlWlIh22nHNGGlICg+xFa2f9j4PbQlWTsc22c019s8Q==}
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-64/1.6.1:
-    resolution: {integrity: sha512-jnR0V0YBlFJKEoAeq0GQFLmZ1UNl6vh+RHTHX546+o5jKcE6nfp9oTOEwtR0PLutiuxxDDm6roAc+9mSfycffw==}
+  /turbo-windows-64/1.9.3:
+    resolution: {integrity: sha512-0BZ7YaHs6r+K4ksqWus1GKK3W45DuDqlmfjm/yuUbTEVc8szmMCs12vugU2Zi5GdrdJSYfoKfEJ/PeegSLIQGQ==}
     cpu: [x64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo-windows-arm64/1.6.1:
-    resolution: {integrity: sha512-vOqw/iPgLjkwpni2vNFK9YO19lN9QZ8JG8v1unvL09/rnXyKpHygrYECj+efJptEVJKBG2xLIauJYmZ/2LV1Uw==}
+  /turbo-windows-arm64/1.9.3:
+    resolution: {integrity: sha512-QJUYLSsxdXOsR1TquiOmLdAgtYcQ/RuSRpScGvnZb1hY0oLc7JWU0llkYB81wVtWs469y8H9O0cxbKwCZGR4RQ==}
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
     dev: true
     optional: true
 
-  /turbo/1.6.1:
-    resolution: {integrity: sha512-CkcJo17cbwfTzmxtxJo2AbbeVqaz1yQotBUqVwZDdcrVSNKci2nvw+JHJ3sy/z9YY9xOJmoRaZifbkja3UXUWA==}
+  /turbo/1.9.3:
+    resolution: {integrity: sha512-ID7mxmaLUPKG/hVkp+h0VuucB1U99RPCJD9cEuSEOdIPoSIuomcIClEJtKamUsdPLhLCud+BvapBNnhgh58Nzw==}
     hasBin: true
     requiresBuild: true
     optionalDependencies:
-      turbo-darwin-64: 1.6.1
-      turbo-darwin-arm64: 1.6.1
-      turbo-linux-64: 1.6.1
-      turbo-linux-arm64: 1.6.1
-      turbo-windows-64: 1.6.1
-      turbo-windows-arm64: 1.6.1
+      turbo-darwin-64: 1.9.3
+      turbo-darwin-arm64: 1.9.3
+      turbo-linux-64: 1.9.3
+      turbo-linux-arm64: 1.9.3
+      turbo-windows-64: 1.9.3
+      turbo-windows-arm64: 1.9.3
     dev: true
 
   /type-check/0.3.2:

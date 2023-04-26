@@ -179,3 +179,63 @@ Returns a `MsgProtoNodeUnstake`: The unsigned node unjail message.
 | Param   | Type     | Description             |
 | ------- | -------- | ----------------------- |
 | address | `string` | Address of the account. |
+
+#### govDAOTransfer({ toAddress, amount, action }): MsgProtoGovUpgrade
+
+Adds a MsgProtoGovDAOTransferTxMsg for this transaction.
+
+Returns a `MsgProtoGovDAOTransfer`: The unsigned upgrade message
+
+| Param     | Type        | Description                                                                               |
+|-----------|-------------|-------------------------------------------------------------------------------------------|
+| action    | `DAOAction` | the action the dao transfer represent (i.e `transfer` or `burn`)                          |
+| amount    | `string`    | the Amount of uPOKT to perform with specified action                                      |
+| toAddress | `string`    | the recipient of the dao action once executed for transfers and not required for burning. |
+
+#### govChangeParam({ paramKey, paramValue }): MsgProtoGovUpgrade
+
+Adds a MsgProtoGovChangeParamTxMsg for this transaction.
+
+Returns a `MsgProtoGovChangeParam`: The unsigned upgrade message
+
+| Param      | Type     | Description                                                      |
+|------------|----------|------------------------------------------------------------------|
+| paramKey   | `string` | the governance parameter key                                     |
+| paramValue | `string` | the new governance parameter value in ASCII (plain text) format. |
+
+#### govUpgradeHeight({ height, version }): MsgProtoGovUpgrade
+
+Adds a MsgProtoGovUpgradeTxMsg for this transaction.
+
+An opinionated way of creating an upgrade transaction for updating the protocol's height
+
+Returns a `MsgProtoGovUpgrade`: The unsigned upgrade message
+
+| Param      | Type     | Description                                  |
+|------------|----------|----------------------------------------------|
+| height     | `int`    | height to upgrade the protocol's version     |
+| version    | `string` | the new protocol's version                   |
+
+#### govUpgradeFeatures({ features }): MsgProtoGovUpgrade
+
+Adds a MsgProtoGovUpgradeTxMsg for this transaction.
+
+An opinionated way of creating an upgrade transaction for updating the protocol's features
+
+Returns a `MsgProtoGovUpgrade`: The unsigned upgrade message
+
+| Param    | Type       | Description                                                                                                        |
+|----------|------------|--------------------------------------------------------------------------------------------------------------------|
+| features | `string[]` | array features to deactivate / activate with the notation: `[ {featureName1}:{height1}, {featureName2}:{height2}]` | |
+
+#### govUpgrade({ features, height, version }): MsgProtoGovUpgrade
+
+Adds a MsgProtoGovUpgradeTxMsg for this transaction.
+
+Returns a `MsgProtoGovUpgrade`: The unsigned upgrade message
+
+| Param    | Type       | Description                                                                                                        |
+|----------|------------|--------------------------------------------------------------------------------------------------------------------|
+| height     | `int`    | height to upgrade the protocol's version     |
+| version    | `string` | the new protocol's version                   |
+| features | `string[]` | array features to deactivate / activate with the notation: `[ {featureName1}:{height1}, {featureName2}:{height2}]` | |

@@ -17,7 +17,7 @@ export class MsgProtoGovChangeParam extends TxMsg {
    * Constructor this message
    * @param {string} fromAddress - Origin address
    * @param {string} paramKey - the acl key for governance parameter
-   * @param {string} paramValue - the value the governance parameter will represent
+   * @param {string} paramValue - the plain text (ASCII) value the governance parameter will represent
    */
   public constructor(fromAddress: string, paramKey: string, paramValue: string) {
     super()
@@ -58,7 +58,7 @@ export class MsgProtoGovChangeParam extends TxMsg {
     const data = {
       FromAddress: Buffer.from(this.fromAddress, 'hex'),
       paramKey:  this.paramKey,
-      paramVal:  Buffer.from(this.paramValue, 'utf8'),
+      paramVal:  Buffer.from(btoa(this.paramValue), 'base64')
     }
 
     const result = Any.fromJSON({

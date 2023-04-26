@@ -268,10 +268,9 @@ describe('TransactionBuilder Tests', () => {
   describe('TransactionBuilder:Messages:UnhappyPaths:MsgProtoGovUpgrade', () => {
     test('Invalid case: from address empty', () => {
       expect(() =>
-          transactionBuilder.govUpgrade({
+          transactionBuilder.govUpgradeRaw({
             fromAddress: '',
             upgrade: {
-
               features: ["NCUST:74620"],
             }
           })

@@ -285,7 +285,7 @@ export class TransactionBuilder implements AbstractBuilder {
         action
       }: {
       fromAddress?: string
-      toAddress: string
+      toAddress?: string
       amount: string
       action: DAOAction
   }): MsgProtoGovDAOTransfer {
@@ -316,7 +316,29 @@ export class TransactionBuilder implements AbstractBuilder {
    * @param {string} fromAddress - Address of the signer
    * @param {Upgrade} upgrade - the upgrade object such as the new upgrade height and new values.
    */
-  public govUpgrade(
+  public govUpgradeHeight(
+      {
+        fromAddress = this.signer.getAddress(),
+        upgrade,
+      }: {
+        fromAddress?: string
+        upgrade: Upgrade,
+      }): MsgProtoGovUpgrade {
+    return new MsgProtoGovUpgrade(fromAddress, upgrade)
+  }
+
+  public govUpgradeFeatures(
+      {
+        fromAddress = this.signer.getAddress(),
+        upgrade,
+      }: {
+        fromAddress?: string
+        upgrade: Upgrade,
+      }): MsgProtoGovUpgrade {
+    return new MsgProtoGovUpgrade(fromAddress, upgrade)
+  }
+
+  public govUpgradeRaw(
       {
         fromAddress = this.signer.getAddress(),
         upgrade,

@@ -1,15 +1,16 @@
-import { KeyManager } from '@pokt-foundation/pocketjs-signer'
-import { JsonRpcProvider } from '@pokt-foundation/pocketjs-provider'
-import { ChainID, TransactionBuilder } from '../src/tx-builder'
+import {KeyManager} from '@pokt-foundation/pocketjs-signer'
+import {JsonRpcProvider} from '@pokt-foundation/pocketjs-provider'
+import {ChainID, TransactionBuilder} from '../src/tx-builder'
 import {
+  DAOAction,
   MsgProtoAppStake,
   MsgProtoAppUnstake,
-  MsgProtoNodeUnstake,
   MsgProtoNodeStakeTx,
-  MsgProtoSend,
   MsgProtoNodeUnjail,
+  MsgProtoNodeUnstake,
+  MsgProtoSend,
 } from '../src/models'
-import { RawTxRequest } from '@pokt-foundation/pocketjs-types'
+import {RawTxRequest} from '@pokt-foundation/pocketjs-types'
 
 const PRIVATE_KEY =
   '1f8cbde30ef5a9db0a5a9d5eb40536fc9defc318b8581d543808b7504e0902bcb243b27bc9fbe5580457a46370ae5f03a6f6753633e51efdaf2cf534fdc26cc3'
@@ -187,6 +188,138 @@ describe('TransactionBuilder Tests', () => {
       ).toThrow(/Amount is not a valid number/)
     })
   })
+
+
+  describe('TransactionBuilder:Messages:UnhappyPaths:MsgProtoGovChangeParam', () => {
+    test('Invalid case: paramKey empty', () => {
+      expect(() =>
+          transactionBuilder.govChangeParam({
+            fromAddress: 'fcf719ca739dccbc281b12bc0d671aaa7a015848',
+            paramKey: "",
+            paramValue: "v1wen",
+          })
+      ).toThrow(/paramKey cannot be empty/)
+    })
+    test('Invalid case: paramValue empty', () => {
+      expect(() =>
+          transactionBuilder.govChangeParam({
+            fromAddress: 'fcf719ca739dccbc281b12bc0d671aaa7a015848',
+            paramKey: "v2wen",
+            paramValue: "",
+          })
+      ).toThrow(/paramValue cannot be empty/)
+    })
+  })
+
+  describe('TransactionBuilder:Messages:UnhappyPaths:MsgProtoGovDAOTransfer', () => {
+    test('Invalid case: from address empty', () => {
+      expect(() =>
+          transactionBuilder.govDAOTransfer({
+            fromAddress: '',
+            toAddress: "fcf719ca739dccbc281b12bc0d671aaa7a015848",
+            action: DAOAction.Burn,
+            amount: "1"
+          })
+      ).toThrow(/fromAddress cannot be empty/)
+    })
+    test('Invalid case: from and to the same', () => {
+      expect(() =>
+          transactionBuilder.govDAOTransfer({
+            fromAddress: 'fcf719ca739dccbc281b12bc0d671aaa7a015848',
+            toAddress: "fcf719ca739dccbc281b12bc0d671aaa7a015848",
+            action: DAOAction.Burn,
+            amount: "1"
+          })
+      ).toThrow(/fromAddress cannot be equal to toAddress/)
+    })
+    test('Invalid case: amount < 0', () => {
+      expect(() =>
+          transactionBuilder.govDAOTransfer({
+            fromAddress: 'fcf719ca739dccbc281b12bc0d671aaa7a015842',
+            toAddress: "fcf719ca739dccbc281b12bc0d671aaa7a015848",
+            action: DAOAction.Burn,
+            amount: "-1"
+          })
+      ).toThrow(/Amount < 0/)
+    })
+    test('Invalid case: amount not number', () => {
+      expect(() =>
+          transactionBuilder.govDAOTransfer({
+            fromAddress: 'fcf719ca739dccbc281b12bc0d671aaa7a015842',
+            toAddress: "fcf719ca739dccbc281b12bc0d671aaa7a015848",
+            action: DAOAction.Burn,
+            amount: "wee"
+          })
+      ).toThrow(/Amount is not a valid number/)
+    })
+    test('Invalid case: invalid action', () => {
+      expect(() =>
+          transactionBuilder.govDAOTransfer({
+            fromAddress: 'fcf719ca739dccbc281b12bc0d671aaa7a015842',
+            toAddress: "fcf719ca739dccbc281b12bc0d671aaa7a015848",
+            // @ts-ignore
+            action: "i bypassed type safety!",
+            amount: "1"
+          })
+      ).toThrow(/Invalid DAOAction/)
+    })
+  })
+
+  describe('TransactionBuilder:Messages:UnhappyPaths:MsgProtoGovUpgrade', () => {
+    test('Invalid case: from address empty', () => {
+      expect(() =>
+          transactionBuilder.govUpgrade({
+            fromAddress: '',
+            upgrade: {
+
+              features: ["NCUST:74620"],
+            }
+          })
+      ).toThrow(/fromAddress cannot be empty/)
+    })
+    test('Invalid case: from and to the same', () => {
+      expect(() =>
+          transactionBuilder.govDAOTransfer({
+            fromAddress: 'fcf719ca739dccbc281b12bc0d671aaa7a015848',
+            toAddress: "fcf719ca739dccbc281b12bc0d671aaa7a015848",
+            action: DAOAction.Burn,
+            amount: "1"
+          })
+      ).toThrow(/fromAddress cannot be equal to toAddress/)
+    })
+    test('Invalid case: amount < 0', () => {
+      expect(() =>
+          transactionBuilder.govDAOTransfer({
+            fromAddress: 'fcf719ca739dccbc281b12bc0d671aaa7a015842',
+            toAddress: "fcf719ca739dccbc281b12bc0d671aaa7a015848",
+            action: DAOAction.Burn,
+            amount: "-1"
+          })
+      ).toThrow(/Amount < 0/)
+    })
+    test('Invalid case: amount not number', () => {
+      expect(() =>
+          transactionBuilder.govDAOTransfer({
+            fromAddress: 'fcf719ca739dccbc281b12bc0d671aaa7a015842',
+            toAddress: "fcf719ca739dccbc281b12bc0d671aaa7a015848",
+            action: DAOAction.Burn,
+            amount: "wee"
+          })
+      ).toThrow(/Amount is not a valid number/)
+    })
+    test('Invalid case: invalid action', () => {
+      expect(() =>
+          transactionBuilder.govDAOTransfer({
+            fromAddress: 'fcf719ca739dccbc281b12bc0d671aaa7a015842',
+            toAddress: "fcf719ca739dccbc281b12bc0d671aaa7a015848",
+            // @ts-ignore
+            action: "i bypassed type safety!",
+            amount: "1"
+          })
+      ).toThrow(/Invalid DAOAction/)
+    })
+  })
+
 
   describe('TransactionBuilder:createTransaction:HappyPath', () => {
     test('Creates a RawTxRequest for MsgProtoSend', async () => {

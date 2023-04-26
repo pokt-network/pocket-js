@@ -23,19 +23,15 @@ export class MsgProtoGovDAOTransfer extends TxMsg {
    * @param {CoinDenom | undefined} amountDenom  - Amount value denomination
    * @param {DAOAction} action  - dao action to perform for transfers
    */
-  public constructor(fromAddress: string, toAddress: string, amount: string, action: DAOAction) {
+  public constructor(fromAddress: string, toAddress: string | undefined, amount: string, action: DAOAction) {
     super()
     this.fromAddress = fromAddress
-    this.toAddress = toAddress
+    this.toAddress = toAddress || ""
     this.amount = amount
     this.action = action;
 
     if(fromAddress.length == 0) {
-      throw new Error('from address cannot be empty')
-    }
-
-    if(toAddress.length == 0) {
-      throw new Error('to address cannot be empty')
+      throw new Error('fromAddress cannot be empty')
     }
 
     if (fromAddress === toAddress) {
@@ -51,8 +47,7 @@ export class MsgProtoGovDAOTransfer extends TxMsg {
     }
 
     // Whitelisting valid actions just in case someone ignores types.
-    const validActions = [DAOAction.Transfer, DAOAction.Burn]
-    if(validActions.indexOf(action) == -1) {
+    if(!Object.values(DAOAction).includes(action)) {
       throw new Error('Invalid DAOAction: ' + action)
     }
   }

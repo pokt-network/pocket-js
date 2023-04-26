@@ -186,11 +186,11 @@ Adds a MsgProtoGovDAOTransferTxMsg for this transaction.
 
 Returns a `MsgProtoGovDAOTransfer`: The unsigned upgrade message
 
-| Param     | Type        | Description                                                                               |
-|-----------|-------------|-------------------------------------------------------------------------------------------|
-| action    | `DAOAction` | the action the dao transfer represent (i.e `transfer` or `burn`)                          |
-| amount    | `string`    | the Amount of uPOKT to perform with specified action                                      |
-| toAddress | `string`    | the recipient of the dao action once executed for transfers and not required for burning. |
+| Param     | Type        | Description                                                                            |
+|-----------|-------------|----------------------------------------------------------------------------------------|
+| action    | `DAOAction` | the action the dao transfer represent (i.e `transfer` or `burn`)                       |
+| amount    | `string`    | the Amount of uPOKT to perform with specified action                                   |
+| toAddress | `string`    | the recipient of the dao action once executed for transfers. Not required for burning. |
 
 #### govChangeParam({ paramKey, paramValue }): MsgProtoGovUpgrade
 

@@ -1,8 +1,8 @@
-import {Buffer} from 'buffer'
-import {MsgDAOTransfer} from './../proto/generated/tx-signer'
-import {Any} from '../proto/generated/google/protobuf/any'
-import {TxMsg} from './tx-msg'
-import {DAOAction} from "../dao-action";
+import { Buffer } from 'buffer'
+import { MsgDAOTransfer } from './../proto/generated/tx-signer'
+import { Any } from '../proto/generated/google/protobuf/any'
+import { TxMsg } from './tx-msg'
+import { DAOAction } from '../dao-action'
 
 /**
  * Model representing a MsgGovDAOTransfer to send POKT from the DAO Module Account to another account
@@ -17,20 +17,25 @@ export class MsgProtoGovDAOTransfer extends TxMsg {
 
   /**
    * Constructor this message
-   * @param {string} fromAddress - Origin address
+   * @param {string} fromAddress - DAOOwner Address
    * @param {string} toAddress - Destination address
    * @param {string} amount - Amount to be sent, needs to be a valid number greater than 0
    * @param {CoinDenom | undefined} amountDenom  - Amount value denomination
    * @param {DAOAction} action  - dao action to perform for transfers
    */
-  public constructor(fromAddress: string, toAddress: string | undefined, amount: string, action: DAOAction) {
+  public constructor(
+    fromAddress: string,
+    toAddress: string,
+    amount: string,
+    action: DAOAction
+  ) {
     super()
     this.fromAddress = fromAddress
-    this.toAddress = toAddress || ""
+    this.toAddress = toAddress || ''
     this.amount = amount
-    this.action = action;
+    this.action = action
 
-    if(fromAddress.length == 0) {
+    if (fromAddress.length == 0) {
       throw new Error('fromAddress cannot be empty')
     }
 
@@ -47,8 +52,12 @@ export class MsgProtoGovDAOTransfer extends TxMsg {
     }
 
     // Whitelisting valid actions just in case someone ignores types.
-    if(!Object.values(DAOAction).includes(action)) {
+    if (!Object.values(DAOAction).includes(action)) {
       throw new Error('Invalid DAOAction: ' + action)
+    }
+
+    if (action == DAOAction.Transfer && toAddress.length == 0) {
+      throw new Error('toAddress cannot be empty if action is transfer')
     }
   }
   /**
@@ -78,12 +87,14 @@ export class MsgProtoGovDAOTransfer extends TxMsg {
       FromAddress: Buffer.from(this.fromAddress, 'hex'),
       ToAddress: Buffer.from(this.toAddress, 'hex'),
       amount: this.amount,
-      action: this.action
+      action: this.action,
     }
 
     const result = Any.fromJSON({
       typeUrl: this.KEY,
-      value: Buffer.from(MsgDAOTransfer.encode(data).finish()).toString('base64'),
+      value: Buffer.from(MsgDAOTransfer.encode(data).finish()).toString(
+        'base64'
+      ),
     })
 
     return result

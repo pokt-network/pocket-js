@@ -14,13 +14,21 @@ import {
   TransactionResponse,
 } from '@pokt-foundation/pocketjs-types'
 import { TxEncoderFactory } from './factory/tx-encoder-factory'
-import {CoinDenom, DAOAction, TxMsg, TxSignature} from './models/'
+import {
+  CoinDenom,
+  DAOAction,
+  FEATURE_UPGRADE_KEY,
+  FEATURE_UPGRADE_ONLY_HEIGHT,
+  OLD_UPGRADE_HEIGHT_EMPTY_VALUE,
+  TxMsg,
+  TxSignature,
+} from './models/'
 import { InvalidChainIDError, NoProviderError, NoSignerError } from './errors'
 import { AbstractBuilder } from './abstract-tx-builder'
-import {MsgProtoGovDAOTransfer} from "./models/msgs/msg-proto-gov-dao-transfer";
-import {MsgProtoGovChangeParam} from "./models/msgs/msg-proto-gov-change-param";
-import {Upgrade} from "./models/proto/generated/tx-signer";
-import {MsgProtoGovUpgrade} from "./models/msgs/msg-proto-gov-upgrade";
+import { MsgProtoGovDAOTransfer } from './models/msgs/msg-proto-gov-dao-transfer'
+import { MsgProtoGovChangeParam } from './models/msgs/msg-proto-gov-change-param'
+import { Upgrade } from './models/proto/generated/tx-signer'
+import { MsgProtoGovUpgrade } from './models/msgs/msg-proto-gov-upgrade'
 
 export type ChainID = 'mainnet' | 'testnet' | 'localnet'
 
@@ -277,17 +285,16 @@ export class TransactionBuilder implements AbstractBuilder {
    * @param {string} - Amount to be used, needs to be a valid number greater than 1 uPOKT.
    * @param {DAOAction} - the action to perform using the specified amount (i.e burn or transfer)
    */
-  public govDAOTransfer(
-      {
-        fromAddress = this.signer.getAddress(),
-        toAddress,
-        amount,
-        action
-      }: {
-      fromAddress?: string
-      toAddress?: string
-      amount: string
-      action: DAOAction
+  public govDAOTransfer({
+    fromAddress = this.signer.getAddress(),
+    toAddress = '',
+    amount,
+    action,
+  }: {
+    fromAddress?: string
+    toAddress: string
+    amount: string
+    action: DAOAction
   }): MsgProtoGovDAOTransfer {
     return new MsgProtoGovDAOTransfer(fromAddress, toAddress, amount, action)
   }
@@ -298,16 +305,15 @@ export class TransactionBuilder implements AbstractBuilder {
    * @param {string} paramKey - the governance parameter key
    * @param {string} paramValue - the governance parameter's new value in human-readable format (utf8).
    */
-  public govChangeParam(
-      {
-        fromAddress = this.signer.getAddress(),
-        paramKey,
-        paramValue,
-      }: {
-        fromAddress?: string
-        paramKey: string
-        paramValue: string
-      }): MsgProtoGovChangeParam {
+  public govChangeParam({
+    fromAddress = this.signer.getAddress(),
+    paramKey,
+    paramValue,
+  }: {
+    fromAddress?: string
+    paramKey: string
+    paramValue: string
+  }): MsgProtoGovChangeParam {
     return new MsgProtoGovChangeParam(fromAddress, paramKey, paramValue)
   }
 
@@ -316,39 +322,57 @@ export class TransactionBuilder implements AbstractBuilder {
    * @param {string} fromAddress - Address of the signer
    * @param {Upgrade} upgrade - the upgrade object such as the new upgrade height and new values.
    */
-  public govUpgradeHeight(
-      {
-        fromAddress = this.signer.getAddress(),
-        upgrade,
-      }: {
-        fromAddress?: string
-        upgrade: Upgrade,
-      }): MsgProtoGovUpgrade {
-    return new MsgProtoGovUpgrade(fromAddress, upgrade)
+  public govUpgradeVersion({
+    fromAddress = this.signer.getAddress(),
+    upgrade,
+  }: {
+    fromAddress?: string
+    upgrade: {
+      height: number
+      version: string
+    }
+  }): MsgProtoGovUpgrade {
+    return new MsgProtoGovUpgrade(fromAddress, {
+      height: upgrade.height,
+      version: upgrade.version,
+      oldUpgradeHeight: OLD_UPGRADE_HEIGHT_EMPTY_VALUE,
+      features: [],
+    })
   }
 
-  public govUpgradeFeatures(
-      {
-        fromAddress = this.signer.getAddress(),
-        upgrade,
-      }: {
-        fromAddress?: string
-        upgrade: Upgrade,
-      }): MsgProtoGovUpgrade {
-    return new MsgProtoGovUpgrade(fromAddress, upgrade)
+  public govUpgradeFeatures({
+    fromAddress = this.signer.getAddress(),
+    upgrade,
+  }: {
+    fromAddress?: string
+    upgrade: {
+      features: string[]
+    }
+  }): MsgProtoGovUpgrade {
+    return new MsgProtoGovUpgrade(fromAddress, {
+      height: FEATURE_UPGRADE_ONLY_HEIGHT,
+      features: upgrade.features,
+      version: FEATURE_UPGRADE_KEY,
+      oldUpgradeHeight: OLD_UPGRADE_HEIGHT_EMPTY_VALUE,
+    })
   }
 
-  public govUpgradeRaw(
-      {
-        fromAddress = this.signer.getAddress(),
-        upgrade,
-      }: {
-        fromAddress?: string
-        upgrade: Upgrade,
-      }): MsgProtoGovUpgrade {
-    return new MsgProtoGovUpgrade(fromAddress, upgrade)
+  public govUpgrade({
+    fromAddress = this.signer.getAddress(),
+    upgrade,
+  }: {
+    fromAddress?: string
+    upgrade: {
+      height: number
+      features: string[]
+      version: string
+    }
+  }): MsgProtoGovUpgrade {
+    return new MsgProtoGovUpgrade(fromAddress, {
+      height: upgrade.height,
+      features: upgrade.features,
+      version: upgrade.version,
+      oldUpgradeHeight: OLD_UPGRADE_HEIGHT_EMPTY_VALUE,
+    })
   }
-
 }
-
-

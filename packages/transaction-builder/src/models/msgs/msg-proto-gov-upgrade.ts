@@ -1,7 +1,7 @@
-import {Buffer} from 'buffer'
-import {MsgUpgrade, Upgrade} from './../proto/generated/tx-signer'
-import {Any} from '../proto/generated/google/protobuf/any'
-import {TxMsg} from './tx-msg'
+import { Buffer } from 'buffer'
+import { MsgUpgrade, Upgrade } from './../proto/generated/tx-signer'
+import { Any } from '../proto/generated/google/protobuf/any'
+import { TxMsg } from './tx-msg'
 
 /**
  * Model representing a MsgGovUpgrade to indicate an upgrade height for protocol updates, i.e consensus breaking changes
@@ -21,7 +21,17 @@ export class MsgProtoGovUpgrade extends TxMsg {
   public constructor(fromAddress: string, upgrade: Upgrade) {
     super()
     this.fromAddress = fromAddress
-    this.upgrade = upgrade;
+    this.upgrade = upgrade
+
+    if (fromAddress.length == 0) {
+      throw new Error('fromAddress cannot be empty')
+    }
+
+    if (upgrade.height == 1 && upgrade.version == 'FEATURE') {
+      // just updating features
+    } else {
+      // updating height and potentially features
+    }
   }
   /**
    * Converts an Msg Object to StdSignDoc
@@ -46,7 +56,7 @@ export class MsgProtoGovUpgrade extends TxMsg {
   public toStdTxMsgObj(): any {
     const data = {
       address: Buffer.from(this.fromAddress, 'hex'),
-      upgrade:  this.upgrade,
+      upgrade: this.upgrade,
     }
 
     const result = Any.fromJSON({

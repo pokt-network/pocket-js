@@ -1,7 +1,7 @@
-import {Buffer} from 'buffer'
-import {MsgChangeParam} from './../proto/generated/tx-signer'
-import {Any} from '../proto/generated/google/protobuf/any'
-import {TxMsg} from './tx-msg'
+import { Buffer } from 'buffer'
+import { MsgChangeParam } from './../proto/generated/tx-signer'
+import { Any } from '../proto/generated/google/protobuf/any'
+import { TxMsg } from './tx-msg'
 
 /**
  * Model representing a MsgGovChangeParam to change an existing governance parameter
@@ -19,7 +19,11 @@ export class MsgProtoGovChangeParam extends TxMsg {
    * @param {string} paramKey - the acl key for governance parameter
    * @param {string} paramValue - the plain text (ASCII) value the governance parameter will represent
    */
-  public constructor(fromAddress: string, paramKey: string, paramValue: string) {
+  public constructor(
+    fromAddress: string,
+    paramKey: string,
+    paramValue: string
+  ) {
     super()
     this.fromAddress = fromAddress
     this.paramKey = paramKey
@@ -57,13 +61,15 @@ export class MsgProtoGovChangeParam extends TxMsg {
   public toStdTxMsgObj(): any {
     const data = {
       FromAddress: Buffer.from(this.fromAddress, 'hex'),
-      paramKey:  this.paramKey,
-      paramVal:  Buffer.from(btoa(this.paramValue), 'base64')
+      paramKey: this.paramKey,
+      paramVal: Buffer.from(btoa(this.paramValue), 'base64'),
     }
 
     const result = Any.fromJSON({
       typeUrl: this.KEY,
-      value: Buffer.from(MsgChangeParam.encode(data).finish()).toString('base64'),
+      value: Buffer.from(MsgChangeParam.encode(data).finish()).toString(
+        'base64'
+      ),
     })
 
     return result

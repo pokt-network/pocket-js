@@ -41,3 +41,8 @@ export enum GovParameter {
   POS_StakeMinimum = 'pos/StakeMinimum',
   POS_UnstakingTime = 'pos/UnstakingTime',
 }
+
+export enum DAOAction {
+  Transfer = 'dao_transfer',
+  Burn = 'dao_burn',
+}

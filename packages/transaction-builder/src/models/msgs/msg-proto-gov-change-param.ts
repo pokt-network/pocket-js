@@ -2,7 +2,7 @@ import { Buffer } from 'buffer'
 import { MsgChangeParam } from './../proto/generated/tx-signer'
 import { Any } from '../proto/generated/google/protobuf/any'
 import { TxMsg } from './tx-msg'
-import { GovParameter } from '../gov/gov-consts'
+import { GovParameter } from '../gov'
 
 /**
  * Model representing a MsgGovChangeParam to change an existing governance parameter

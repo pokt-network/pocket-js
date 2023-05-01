@@ -28,10 +28,33 @@ export class MsgProtoGovUpgrade extends TxMsg {
     }
 
     if (upgrade.height == 1 && upgrade.version == 'FEATURE') {
+      const zeroFeatures = upgrade.features.length == 0
+      if (zeroFeatures) {
+        throw new Error(
+          'Zero features was provided to upgrade, despite being a feature upgrade.'
+        )
+      }
       // just updating features
     } else {
       // updating height and potentially features
     }
+
+    upgrade.features.forEach((f) => {
+      const featureKeyHeightTuple = f.split(':')
+
+      if (featureKeyHeightTuple.length != 2) {
+        throw new Error(
+          `${f} is malformed for feature upgrade, format should be: KEY:HEIGHT`
+        )
+      }
+
+      const featureHeight = featureKeyHeightTuple[1]
+      if (isNaN(parseInt(featureHeight))) {
+        throw new Error(
+          `${featureHeight} is malformed for feature upgrade, feature height should be an integer.`
+        )
+      }
+    })
   }
   /**
    * Converts an Msg Object to StdSignDoc

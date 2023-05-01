@@ -393,6 +393,39 @@ describe('TransactionBuilder Tests', () => {
         })
       ).toThrow(/fromAddress cannot be empty/)
     })
+    test('Invalid case: upgrade feature with empty features', () => {
+      expect(() =>
+        transactionBuilder.govUpgradeFeatures({
+          upgrade: {
+            features: [],
+          },
+        })
+      ).toThrow(
+        /Zero features was provided to upgrade, despite being a feature upgrade./
+      )
+    })
+    test('Invalid case: upgrade feature with malformed feature tuple', () => {
+      expect(() =>
+        transactionBuilder.govUpgradeFeatures({
+          upgrade: {
+            features: ['REDUP,badHeight'],
+          },
+        })
+      ).toThrow(
+        /is malformed for feature upgrade, format should be: KEY:HEIGHT/
+      )
+    })
+    test('Invalid case: upgrade feature with malformed height', () => {
+      expect(() =>
+        transactionBuilder.govUpgradeFeatures({
+          upgrade: {
+            features: ['REDUP:badHeight'],
+          },
+        })
+      ).toThrow(
+        /is malformed for feature upgrade, feature height should be an integer./
+      )
+    })
   })
 
   describe('TransactionBuilder:createTransaction:HappyPath', () => {

@@ -192,22 +192,24 @@ Returns a `MsgProtoGovDAOTransfer`: The unsigned upgrade message
 | amount    | `string`    | the Amount of uPOKT to perform with specified action                                   |
 | toAddress | `string`    | the recipient of the dao action once executed for transfers. Not required for burning. |
 
-#### govChangeParam({ paramKey, paramValue }): MsgProtoGovUpgrade
+#### govChangeParam({ paramKey, paramValue, overrideGovParamsWhitelistValidation }): MsgProtoGovUpgrade
 
 Adds a MsgProtoGovChangeParamTxMsg for this transaction.
 
 Returns a `MsgProtoGovChangeParam`: The unsigned upgrade message
 
-| Param      | Type     | Description                                                      |
-| ---------- | -------- | ---------------------------------------------------------------- |
-| paramKey   | `string` | the governance parameter key                                     |
-| paramValue | `string` | the new governance parameter value in ASCII (plain text) format. |
+| Param                                | Type                     | Description                                                                                     |
+| ------------------------------------ | ------------------------ | ----------------------------------------------------------------------------------------------- |
+| paramKey                             | `GovParameter`, `string` | the governance parameter key                                                                    |
+| paramValue                           | `string`                 | the new governance parameter value in ASCII (plain text) format.                                |
+| paramValue                           | `string`                 | the new governance parameter value in ASCII (plain text) format.                                |
+| overrideGovParamsWhitelistValidation | `boolean (optional)`     | used to override the validation check for a governance parameter not found in GovParameter enum |
 
 #### govUpgradeHeight({ height, version }): MsgProtoGovUpgrade
 
 Adds a MsgProtoGovUpgradeTxMsg for this transaction.
 
-An opinionated way of creating an upgrade transaction for updating the protocol's height
+The GovUpgrade tx msg is multi-purpose, so this function acts as an opinionated way of applying the protocol's upgrade height
 
 Returns a `MsgProtoGovUpgrade`: The unsigned upgrade message
 
@@ -220,7 +222,7 @@ Returns a `MsgProtoGovUpgrade`: The unsigned upgrade message
 
 Adds a MsgProtoGovUpgradeTxMsg for this transaction.
 
-An opinionated way of creating an upgrade transaction for updating the protocol's features
+The GovUpgrade tx msg is multi-purpose, so this function acts as an opinionated way of applying the protocol's upgrade features.
 
 Returns a `MsgProtoGovUpgrade`: The unsigned upgrade message
 
@@ -230,7 +232,7 @@ Returns a `MsgProtoGovUpgrade`: The unsigned upgrade message
 
 #### govUpgrade({ features, height, version }): MsgProtoGovUpgrade
 
-Adds a MsgProtoGovUpgradeTxMsg for this transaction.
+The GovUpgrade tx msg is multi-purpose, use this only if you are familiar with the tx msg, otherwise rely on `govUpgradeHeight` and `govUpgradeFeatures`
 
 Returns a `MsgProtoGovUpgrade`: The unsigned upgrade message
 

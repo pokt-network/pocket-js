@@ -5,6 +5,7 @@ import {
   DAOAction,
   FEATURE_UPGRADE_KEY,
   FEATURE_UPGRADE_ONLY_HEIGHT,
+  GovParameter,
   MsgProtoAppStake,
   MsgProtoAppUnstake,
   MsgProtoNodeStakeTx,
@@ -15,6 +16,8 @@ import {
 } from '../src/models'
 import { RawTxRequest } from '@pokt-foundation/pocketjs-types'
 import { MsgProtoGovUpgrade } from '../src/models/msgs/msg-proto-gov-upgrade'
+import { MsgProtoGovChangeParam } from '../src/models/msgs/msg-proto-gov-change-param'
+import { MsgProtoGovDAOTransfer } from '../src/models/msgs/msg-proto-gov-dao-transfer'
 
 const PRIVATE_KEY =
   '1f8cbde30ef5a9db0a5a9d5eb40536fc9defc318b8581d543808b7504e0902bcb243b27bc9fbe5580457a46370ae5f03a6f6753633e51efdaf2cf534fdc26cc3'
@@ -97,6 +100,36 @@ describe('TransactionBuilder Tests', () => {
 
       const nodeUnjailMsg = transactionBuilder.nodeUnjail({})
       expect(nodeUnjailMsg instanceof MsgProtoNodeUnjail).toBe(true)
+
+      // Governance TX Msg
+      const govDaoTransferMsg = transactionBuilder.govDAOTransfer({
+        action: DAOAction.Transfer,
+        amount: '1',
+        toAddress: '123',
+      })
+      expect(govDaoTransferMsg instanceof MsgProtoGovDAOTransfer).toBe(true)
+
+      const govDaoBurnMsg = transactionBuilder.govDAOTransfer({
+        toAddress: '',
+        action: DAOAction.Burn,
+        amount: '1',
+      })
+      expect(govDaoBurnMsg instanceof MsgProtoGovDAOTransfer).toBe(true)
+
+      const govChangeParamMsg = transactionBuilder.govChangeParam({
+        paramKey: GovParameter.GOV_Acl,
+        paramValue: '123',
+      })
+      expect(govChangeParamMsg instanceof MsgProtoGovChangeParam).toBe(true)
+
+      const govChangeParamMsgWithOverride = transactionBuilder.govChangeParam({
+        paramKey: 'NewParamKey',
+        paramValue: '123',
+        overrideGovParamsWhitelistValidation: true,
+      })
+      expect(
+        govChangeParamMsgWithOverride instanceof MsgProtoGovChangeParam
+      ).toBe(true)
 
       const TEST_UPGRADE_HEIGHT = 20
       const TEST_UPGRADE_VERSION = '0.9.1.3'
@@ -266,10 +299,20 @@ describe('TransactionBuilder Tests', () => {
       expect(() =>
         transactionBuilder.govChangeParam({
           fromAddress: 'fcf719ca739dccbc281b12bc0d671aaa7a015848',
-          paramKey: 'v2wen',
+          paramKey: GovParameter.GOV_DaoOwner,
           paramValue: '',
         })
       ).toThrow(/paramValue cannot be empty/)
+    })
+
+    test('Invalid case: invalid governance param without override', () => {
+      expect(() =>
+        transactionBuilder.govChangeParam({
+          fromAddress: 'fcf719ca739dccbc281b12bc0d671aaa7a015848',
+          paramKey: 'newParamKey',
+          paramValue: 'paramValue',
+        })
+      ).toThrow(/is not a valid gov parameter/)
     })
   })
 
@@ -408,6 +451,30 @@ describe('TransactionBuilder Tests', () => {
     })
     test('Creates a RawTxRequest for MsgProtoNodeUnjail', async () => {
       const txMsg = transactionBuilder.nodeUnjail({})
+
+      const rawTxRequest = await transactionBuilder.createTransaction({ txMsg })
+
+      expect(rawTxRequest instanceof RawTxRequest).toBe(true)
+      expect(rawTxRequest.address).toBe(signer.getAddress())
+    })
+
+    test('Creates a RawTxRequest for MsgProtoGovChangeParam', async () => {
+      const txMsg = transactionBuilder.govChangeParam({
+        paramKey: GovParameter.GOV_Acl,
+        paramValue: '123',
+      })
+
+      const rawTxRequest = await transactionBuilder.createTransaction({ txMsg })
+
+      expect(rawTxRequest instanceof RawTxRequest).toBe(true)
+      expect(rawTxRequest.address).toBe(signer.getAddress())
+    })
+
+    test('Creates a RawTxRequest for MsgProtoGovDAOTransfer', async () => {
+      const txMsg = transactionBuilder.govDAOTransfer({
+        action: DAOAction.Burn,
+        amount: '1',
+      })
 
       const rawTxRequest = await transactionBuilder.createTransaction({ txMsg })
 

@@ -19,6 +19,7 @@ import {
   DAOAction,
   FEATURE_UPGRADE_KEY,
   FEATURE_UPGRADE_ONLY_HEIGHT,
+  GovParameter,
   OLD_UPGRADE_HEIGHT_EMPTY_VALUE,
   TxMsg,
   TxSignature,
@@ -292,7 +293,7 @@ export class TransactionBuilder implements AbstractBuilder {
     action,
   }: {
     fromAddress?: string
-    toAddress: string
+    toAddress?: string
     amount: string
     action: DAOAction
   }): MsgProtoGovDAOTransfer {
@@ -309,12 +310,19 @@ export class TransactionBuilder implements AbstractBuilder {
     fromAddress = this.signer.getAddress(),
     paramKey,
     paramValue,
+    overrideGovParamsWhitelistValidation,
   }: {
     fromAddress?: string
-    paramKey: string
+    paramKey: GovParameter | string
     paramValue: string
+    overrideGovParamsWhitelistValidation?: boolean
   }): MsgProtoGovChangeParam {
-    return new MsgProtoGovChangeParam(fromAddress, paramKey, paramValue)
+    return new MsgProtoGovChangeParam(
+      fromAddress,
+      paramKey,
+      paramValue,
+      overrideGovParamsWhitelistValidation
+    )
   }
 
   /**

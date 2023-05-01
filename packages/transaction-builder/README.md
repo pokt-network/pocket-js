@@ -209,7 +209,7 @@ Returns a `MsgProtoGovChangeParam`: The unsigned upgrade message
 
 Adds a MsgProtoGovUpgradeTxMsg for this transaction.
 
-The GovUpgrade tx msg is multi-purpose, so this function acts as an opinionated way of applying the protocol's upgrade height
+The GovUpgradeTxMsg is multipurpose. This function acts as an opinionated way of applying the protocol's upgrade height
 
 Returns a `MsgProtoGovUpgrade`: The unsigned upgrade message
 
@@ -222,22 +222,22 @@ Returns a `MsgProtoGovUpgrade`: The unsigned upgrade message
 
 Adds a MsgProtoGovUpgradeTxMsg for this transaction.
 
-The GovUpgrade tx msg is multi-purpose, so this function acts as an opinionated way of applying the protocol's upgrade features.
+The GovUpgradeTxMsg is multipurpose. This function acts as an opinionated way of applying the protocol's upgrade features.
 
 Returns a `MsgProtoGovUpgrade`: The unsigned upgrade message
 
-| Param    | Type       | Description                                                                                                            |
-| -------- | ---------- | ---------------------------------------------------------------------------------------------------------------------- | --- |
-| features | `string[]` | array of features to deactivate / activate with the notation: `[ {featureName1}:{height1}, {featureName2}:{height2} ]` |     |
+| Param    | Type       | Description                                                                |
+| -------- | ---------- | -------------------------------------------------------------------------- |
+| features | `string[]` | array of features `[ {featureName1}:{height1}, {featureName2}:{height2} ]` |
 
 #### govUpgrade({ features, height, version }): MsgProtoGovUpgrade
 
-The GovUpgrade tx msg is multi-purpose, use this only if you are familiar with the tx msg, otherwise rely on `govUpgradeHeight` and `govUpgradeFeatures`
+The GovUpgradeTxMsg is multipurpose, use this only if you are familiar with the tx msg, otherwise rely on `govUpgradeHeight` and `govUpgradeFeatures`
 
 Returns a `MsgProtoGovUpgrade`: The unsigned upgrade message
 
 | Param    | Type       | Description                                                                                                            |
-| -------- | ---------- | ---------------------------------------------------------------------------------------------------------------------- | --- |
+| -------- | ---------- | ---------------------------------------------------------------------------------------------------------------------- |
 | height   | `int`      | height to upgrade the protocol's version                                                                               |
 | version  | `string`   | the new protocol's version                                                                                             |
-| features | `string[]` | array of features to deactivate / activate with the notation: `[ {featureName1}:{height1}, {featureName2}:{height2} ]` |     |
+| features | `string[]` | array of features to deactivate / activate with the notation: `[ {featureName1}:{height1}, {featureName2}:{height2} ]` |

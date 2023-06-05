@@ -225,9 +225,9 @@ The GovUpgradeTxMsg is multipurpose. This function acts as an opinionated way of
 
 Returns a `MsgProtoGovUpgrade`: The unsigned upgrade message
 
-| Param    | Type       | Description                                                                |
-| -------- | ---------- | -------------------------------------------------------------------------- |
-| features | `string[]` | array of features `[ {featureName1}:{height1}, {featureName2}:{height2} ]` |
+| Param    | Type       | Description                                                       |
+|----------|------------|-------------------------------------------------------------------|
+| features | `string[]` | array of features `[ "RSCAL:30000", "{featureName2}:{height2}" ]` |
 
 #### govUpgrade({ features, height, version }): MsgProtoGovUpgrade
 
@@ -235,8 +235,8 @@ The GovUpgradeTxMsg is multipurpose, use this only if you are familiar with the 
 
 Returns a `MsgProtoGovUpgrade`: The unsigned upgrade message
 
-| Param    | Type       | Description                                                                                                            |
-| -------- | ---------- | ---------------------------------------------------------------------------------------------------------------------- |
-| height   | `int`      | height to upgrade the protocol's version                                                                               |
-| version  | `string`   | the new protocol's version                                                                                             |
-| features | `string[]` | array of features to deactivate / activate with the notation: `[ {featureName1}:{height1}, {featureName2}:{height2} ]` |
+| Param    | Type       | Description                                                                                                   |
+|----------|------------|---------------------------------------------------------------------------------------------------------------|
+| height   | `int`      | height to upgrade the protocol's version                                                                      |
+| version  | `string`   | the new protocol's version                                                                                    |
+| features | `string[]` | array of features to deactivate / activate with the notation: `[ "RSCAL:30000", "{featureName2}:{height2}" ]` |

@@ -27,8 +27,8 @@ export class MsgProtoGovUpgrade extends TxMsg {
       throw new Error('fromAddress cannot be empty')
     }
 
-    if (upgrade.height == 1 && upgrade.version == 'FEATURE') {
-      const zeroFeatures = upgrade.features.length == 0
+    if (upgrade.Height == "1" && upgrade.Version == 'FEATURE') {
+      const zeroFeatures = upgrade.Features.length == 0
       if (zeroFeatures) {
         throw new Error(
           'Zero features was provided to upgrade, despite being a feature upgrade.'
@@ -39,7 +39,7 @@ export class MsgProtoGovUpgrade extends TxMsg {
       // updating height and potentially features
     }
 
-    upgrade.features.forEach((f) => {
+    upgrade.Features.forEach((f) => {
       const featureKeyHeightTuple = f.split(':')
 
       if (featureKeyHeightTuple.length != 2) {
@@ -78,7 +78,7 @@ export class MsgProtoGovUpgrade extends TxMsg {
    */
   public toStdTxMsgObj(): any {
     const data = {
-      address: Buffer.from(this.fromAddress, 'hex'),
+      address: Buffer.from(this.fromAddress.toLowerCase(), 'hex'),
       upgrade: this.upgrade,
     }
 

@@ -341,10 +341,10 @@ export class TransactionBuilder implements AbstractBuilder {
     }
   }): MsgProtoGovUpgrade {
     return new MsgProtoGovUpgrade(fromAddress, {
-      height: upgrade.height,
-      version: upgrade.version,
-      oldUpgradeHeight: OLD_UPGRADE_HEIGHT_EMPTY_VALUE,
-      features: [],
+      Height: `${upgrade.height}`,
+      Version: upgrade.version,
+      OldUpgradeHeight: OLD_UPGRADE_HEIGHT_EMPTY_VALUE,
+      Features: [],
     })
   }
 
@@ -358,10 +358,10 @@ export class TransactionBuilder implements AbstractBuilder {
     }
   }): MsgProtoGovUpgrade {
     return new MsgProtoGovUpgrade(fromAddress, {
-      height: FEATURE_UPGRADE_ONLY_HEIGHT,
-      features: upgrade.features,
-      version: FEATURE_UPGRADE_KEY,
-      oldUpgradeHeight: OLD_UPGRADE_HEIGHT_EMPTY_VALUE,
+      Height: FEATURE_UPGRADE_ONLY_HEIGHT,
+      Features: upgrade.features,
+      Version: FEATURE_UPGRADE_KEY,
+      OldUpgradeHeight: OLD_UPGRADE_HEIGHT_EMPTY_VALUE
     })
   }
 
@@ -377,10 +377,10 @@ export class TransactionBuilder implements AbstractBuilder {
     }
   }): MsgProtoGovUpgrade {
     return new MsgProtoGovUpgrade(fromAddress, {
-      height: upgrade.height,
-      features: upgrade.features,
-      version: upgrade.version,
-      oldUpgradeHeight: OLD_UPGRADE_HEIGHT_EMPTY_VALUE,
+      Height: `${upgrade.height}`,
+      Features: upgrade.features,
+      Version: upgrade.version,
+      OldUpgradeHeight: OLD_UPGRADE_HEIGHT_EMPTY_VALUE,
     })
   }
 }

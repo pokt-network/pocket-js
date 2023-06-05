@@ -142,12 +142,12 @@ describe('TransactionBuilder Tests', () => {
       })
       expect(govUpgradeAtHeightMsg instanceof MsgProtoGovUpgrade).toBe(true)
       expect(govUpgradeAtHeightMsg.fromAddress).toBe(signer.getAddress())
-      expect(govUpgradeAtHeightMsg.upgrade.height).toBe(TEST_UPGRADE_HEIGHT)
-      expect(govUpgradeAtHeightMsg.upgrade.features.length).toBe(0)
-      expect(govUpgradeAtHeightMsg.upgrade.oldUpgradeHeight).toBe(
+      expect(govUpgradeAtHeightMsg.upgrade.Height).toBe(`${TEST_UPGRADE_HEIGHT}`)
+      expect(govUpgradeAtHeightMsg.upgrade.Features.length).toBe(0)
+      expect(govUpgradeAtHeightMsg.upgrade.OldUpgradeHeight).toBe(
         OLD_UPGRADE_HEIGHT_EMPTY_VALUE
       )
-      expect(govUpgradeAtHeightMsg.upgrade.version).toBe(TEST_UPGRADE_VERSION)
+      expect(govUpgradeAtHeightMsg.upgrade.Version).toBe(TEST_UPGRADE_VERSION)
 
       const govUpgradeFeaturesAtHeightMsg =
         transactionBuilder.govUpgradeFeatures({
@@ -161,16 +161,16 @@ describe('TransactionBuilder Tests', () => {
       expect(govUpgradeFeaturesAtHeightMsg.fromAddress).toBe(
         signer.getAddress()
       )
-      expect(govUpgradeFeaturesAtHeightMsg.upgrade.height).toBe(
+      expect(govUpgradeFeaturesAtHeightMsg.upgrade.Height).toBe(
         FEATURE_UPGRADE_ONLY_HEIGHT
       )
-      expect(govUpgradeFeaturesAtHeightMsg.upgrade.features).toEqual(
+      expect(govUpgradeFeaturesAtHeightMsg.upgrade.Features).toEqual(
         TEST_UPGRADE_FEATURES
       )
-      expect(govUpgradeFeaturesAtHeightMsg.upgrade.oldUpgradeHeight).toBe(
+      expect(govUpgradeFeaturesAtHeightMsg.upgrade.OldUpgradeHeight).toBe(
         OLD_UPGRADE_HEIGHT_EMPTY_VALUE
       )
-      expect(govUpgradeFeaturesAtHeightMsg.upgrade.version).toBe(
+      expect(govUpgradeFeaturesAtHeightMsg.upgrade.Version).toBe(
         FEATURE_UPGRADE_KEY
       )
 
@@ -183,12 +183,12 @@ describe('TransactionBuilder Tests', () => {
       })
       expect(govUpgradeMsg instanceof MsgProtoGovUpgrade).toBe(true)
       expect(govUpgradeMsg.fromAddress).toBe(signer.getAddress())
-      expect(govUpgradeMsg.upgrade.height).toBe(TEST_UPGRADE_HEIGHT)
-      expect(govUpgradeMsg.upgrade.features.length).toBeGreaterThanOrEqual(1)
-      expect(govUpgradeMsg.upgrade.oldUpgradeHeight).toBe(
+      expect(govUpgradeMsg.upgrade.Height).toBe(`${TEST_UPGRADE_HEIGHT}`)
+      expect(govUpgradeMsg.upgrade.Features.length).toBeGreaterThanOrEqual(1)
+      expect(govUpgradeMsg.upgrade.OldUpgradeHeight).toBe(
         OLD_UPGRADE_HEIGHT_EMPTY_VALUE
       )
-      expect(govUpgradeMsg.upgrade.version).toBe(TEST_UPGRADE_VERSION)
+      expect(govUpgradeMsg.upgrade.Version).toBe(TEST_UPGRADE_VERSION)
     })
   })
 

@@ -1,6 +1,6 @@
 /* eslint-disable */
 import Long from 'long'
-import _m0 from 'protobufjs/minimal'
+import * as _m0 from 'protobufjs/minimal'
 import { Any } from './google/protobuf/any'
 
 export const protobufPackage = 'pocketjs'
@@ -92,10 +92,10 @@ export interface MsgDAOTransfer {
 }
 
 export interface Upgrade {
-  height: number
-  version: string
-  oldUpgradeHeight: number
-  features: string[]
+  Height: string
+  Version: string
+  OldUpgradeHeight: string
+  Features: string[]
 }
 
 export interface MsgUpgrade {
@@ -1224,7 +1224,7 @@ export const MsgDAOTransfer = {
 }
 
 function createBaseUpgrade(): Upgrade {
-  return { height: 0, version: '', oldUpgradeHeight: 0, features: [] }
+  return { Height: '', Version: '', OldUpgradeHeight: '', Features: [] }
 }
 
 export const Upgrade = {
@@ -1232,16 +1232,16 @@ export const Upgrade = {
     message: Upgrade,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.height !== 0) {
-      writer.uint32(8).int64(message.height)
+    if (message.Height !== '') {
+      writer.uint32(10).string(message.Height)
     }
-    if (message.version !== '') {
-      writer.uint32(18).string(message.version)
+    if (message.Version !== '') {
+      writer.uint32(18).string(message.Version)
     }
-    if (message.oldUpgradeHeight !== 0) {
-      writer.uint32(24).int64(message.oldUpgradeHeight)
+    if (message.OldUpgradeHeight !== '') {
+      writer.uint32(26).string(message.OldUpgradeHeight)
     }
-    for (const v of message.features) {
+    for (const v of message.Features) {
       writer.uint32(34).string(v!)
     }
     return writer
@@ -1255,16 +1255,16 @@ export const Upgrade = {
       const tag = reader.uint32()
       switch (tag >>> 3) {
         case 1:
-          message.height = longToNumber(reader.int64() as Long)
+          message.Height = reader.string()
           break
         case 2:
-          message.version = reader.string()
+          message.Version = reader.string()
           break
         case 3:
-          message.oldUpgradeHeight = longToNumber(reader.int64() as Long)
+          message.OldUpgradeHeight = reader.string()
           break
         case 4:
-          message.features.push(reader.string())
+          message.Features.push(reader.string())
           break
         default:
           reader.skipType(tag & 7)
@@ -1276,37 +1276,37 @@ export const Upgrade = {
 
   fromJSON(object: any): Upgrade {
     return {
-      height: isSet(object.height) ? Number(object.height) : 0,
-      version: isSet(object.version) ? String(object.version) : '',
-      oldUpgradeHeight: isSet(object.oldUpgradeHeight)
-        ? Number(object.oldUpgradeHeight)
-        : 0,
-      features: Array.isArray(object?.features)
-        ? object.features.map((e: any) => String(e))
+      Height: isSet(object.Height) ? String(object.Height) : '',
+      Version: isSet(object.Version) ? String(object.Version) : '',
+      OldUpgradeHeight: isSet(object.OldUpgradeHeight)
+        ? String(object.OldUpgradeHeight)
+        : '',
+      Features: Array.isArray(object?.Features)
+        ? object.Features.map((e: any) => String(e))
         : [],
     }
   },
 
   toJSON(message: Upgrade): unknown {
     const obj: any = {}
-    message.height !== undefined && (obj.height = Math.round(message.height))
-    message.version !== undefined && (obj.version = message.version)
-    message.oldUpgradeHeight !== undefined &&
-      (obj.oldUpgradeHeight = Math.round(message.oldUpgradeHeight))
-    if (message.features) {
-      obj.features = message.features.map((e) => e)
+    message.Height !== undefined && (obj.Height = message.Height)
+    message.Version !== undefined && (obj.Version = message.Version)
+    message.OldUpgradeHeight !== undefined &&
+      (obj.OldUpgradeHeight = message.OldUpgradeHeight)
+    if (message.Features) {
+      obj.Features = message.Features.map((e) => e)
     } else {
-      obj.features = []
+      obj.Features = []
     }
     return obj
   },
 
   fromPartial<I extends Exact<DeepPartial<Upgrade>, I>>(object: I): Upgrade {
     const message = createBaseUpgrade()
-    message.height = object.height ?? 0
-    message.version = object.version ?? ''
-    message.oldUpgradeHeight = object.oldUpgradeHeight ?? 0
-    message.features = object.features?.map((e) => e) || []
+    message.Height = object.Height ?? ''
+    message.Version = object.Version ?? ''
+    message.OldUpgradeHeight = object.OldUpgradeHeight ?? ''
+    message.Features = object.Features?.map((e) => e) || []
     return message
   },
 }

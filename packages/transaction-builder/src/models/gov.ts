@@ -40,7 +40,7 @@ export enum GovParameter {
   POS_StakeDenom = 'pos/StakeDenom',
   POS_StakeMinimum = 'pos/StakeMinimum',
   POS_UnstakingTime = 'pos/UnstakingTime',
-  POS_ServicerStakeWeightMultiplier = 'pos/ServicerStakeWeightMultiplier'
+  POS_ServicerStakeWeightMultiplier = 'pos/ServicerStakeWeightMultiplier',
 }
 
 export enum DAOAction {

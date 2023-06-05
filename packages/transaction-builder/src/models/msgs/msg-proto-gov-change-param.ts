@@ -60,7 +60,9 @@ export class MsgProtoGovChangeParam extends TxMsg {
       value: {
         address: this.fromAddress.toLowerCase(),
         param_key: this.paramKey,
-        param_value: Buffer.from(JSON.stringify(this.paramValue)).toString('base64')
+        param_value: Buffer.from(JSON.stringify(this.paramValue)).toString(
+          'base64'
+        ),
       },
     }
   }
@@ -76,7 +78,7 @@ export class MsgProtoGovChangeParam extends TxMsg {
       paramKey: this.paramKey,
       paramVal: Buffer.from(
         Buffer.from(JSON.stringify(this.paramValue)).toString('base64'),
-          'base64'
+        'base64'
       ),
     }
 

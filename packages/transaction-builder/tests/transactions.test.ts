@@ -199,10 +199,14 @@ describe('TransactionBuilder Tests', () => {
       })
       expect(govUpgradeFeaturesRaw instanceof MsgProtoGovUpgrade).toBe(true)
       expect(govUpgradeFeaturesRaw.fromAddress).toBe(signer.getAddress())
-      expect(govUpgradeFeaturesRaw.upgrade.Height).toBe(FEATURE_UPGRADE_ONLY_HEIGHT)
-      expect(govUpgradeFeaturesRaw.upgrade.Features.length).toBeGreaterThanOrEqual(1)
+      expect(govUpgradeFeaturesRaw.upgrade.Height).toBe(
+        FEATURE_UPGRADE_ONLY_HEIGHT
+      )
+      expect(
+        govUpgradeFeaturesRaw.upgrade.Features.length
+      ).toBeGreaterThanOrEqual(1)
       expect(govUpgradeFeaturesRaw.upgrade.OldUpgradeHeight).toBe(
-          OLD_UPGRADE_HEIGHT_EMPTY_VALUE
+        OLD_UPGRADE_HEIGHT_EMPTY_VALUE
       )
       expect(govUpgradeFeaturesRaw.upgrade.Version).toBe(FEATURE_UPGRADE_KEY)
     })
@@ -412,73 +416,65 @@ describe('TransactionBuilder Tests', () => {
 
     test('Invalid case: height is zero for gov upgrade raw', () => {
       expect(() =>
-          transactionBuilder.govUpgrade({
-            upgrade: {
-              height: 0,
-              features: [],
-              version: "0.9.1.3"
-            },
-          })
-      ).toThrow(
-          /upgrade height cannot be zero/
-      )
+        transactionBuilder.govUpgrade({
+          upgrade: {
+            height: 0,
+            features: [],
+            version: '0.9.1.3',
+          },
+        })
+      ).toThrow(/upgrade height cannot be zero/)
     })
 
     test('Invalid case: version is empty for gov upgrade raw', () => {
       expect(() =>
-          transactionBuilder.govUpgrade({
-            upgrade: {
-              height: 100,
-              features: [],
-              version: ""
-            },
-          })
+        transactionBuilder.govUpgrade({
+          upgrade: {
+            height: 100,
+            features: [],
+            version: '',
+          },
+        })
       ).toThrow(
-          /version cannot be empty, it should be a semantic version or FEATURE/
+        /version cannot be empty, it should be a semantic version or FEATURE/
       )
     })
 
-
     test('Invalid case: height is not 1 for feature gov upgrade raw', () => {
       expect(() =>
-          transactionBuilder.govUpgrade({
-            upgrade: {
-              height: 5,
-              features: ['REDUP:62000'],
-              version: FEATURE_UPGRADE_KEY,
-            },
-          })
-      ).toThrow(
-          /Features cannot be added unless height is 1/
-      )
+        transactionBuilder.govUpgrade({
+          upgrade: {
+            height: 5,
+            features: ['REDUP:62000'],
+            version: FEATURE_UPGRADE_KEY,
+          },
+        })
+      ).toThrow(/Features cannot be added unless height is 1/)
     })
 
     test('Invalid case: features was provided for version gov upgrade raw', () => {
       expect(() =>
-          transactionBuilder.govUpgrade({
-            upgrade: {
-              height: 100,
-              features: ['REDUP:62000'],
-              version: "0.9.1.3"
-            },
-          })
-      ).toThrow(
-          /Features cannot be added unless version is FEATURE/
-      )
+        transactionBuilder.govUpgrade({
+          upgrade: {
+            height: 100,
+            features: ['REDUP:62000'],
+            version: '0.9.1.3',
+          },
+        })
+      ).toThrow(/Features cannot be added unless version is FEATURE/)
     })
-
 
     test('Invalid case: features is empty for feature gov upgrade raw', () => {
       expect(() =>
-          transactionBuilder.govUpgrade({
-            upgrade: {
-              height: 1,
-              features: [],
-              version: FEATURE_UPGRADE_KEY,
-            },
-          })
+        transactionBuilder.govUpgrade({
+          upgrade: {
+            height: 1,
+            features: [],
+            version: FEATURE_UPGRADE_KEY,
+          },
+        })
       ).toThrow(
-          /Zero features was provided to upgrade, despite being a feature upgrade./
+        /Zero features was provided to upgrade, despite being a feature upgrade./
       )
     })
 

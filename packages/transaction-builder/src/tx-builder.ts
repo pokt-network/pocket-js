@@ -326,9 +326,9 @@ export class TransactionBuilder implements AbstractBuilder {
   }
 
   public govUpgrade({
-                      fromAddress = this.signer.getAddress(),
-                      upgrade,
-                    }: {
+    fromAddress = this.signer.getAddress(),
+    upgrade,
+  }: {
     fromAddress?: string
     upgrade: {
       height: number
@@ -365,7 +365,7 @@ export class TransactionBuilder implements AbstractBuilder {
         features: [],
         height: upgrade.height,
         version: upgrade.version,
-      }
+      },
     })
   }
 
@@ -384,9 +384,7 @@ export class TransactionBuilder implements AbstractBuilder {
         features: upgrade.features,
         height: FEATURE_UPGRADE_ONLY_HEIGHT,
         version: FEATURE_UPGRADE_KEY,
-      }
+      },
     })
   }
-
-
 }

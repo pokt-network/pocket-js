@@ -88,9 +88,9 @@ message MsgDAOTransfer {
 }
 
 message Upgrade {
-    string Height = 1;
+    int64 Height = 1;
     string Version = 2;
-    string OldUpgradeHeight = 3;
+    int64 OldUpgradeHeight = 3;
     repeated string Features = 4;
 }
 

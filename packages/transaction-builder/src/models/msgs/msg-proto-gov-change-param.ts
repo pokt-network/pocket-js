@@ -58,9 +58,9 @@ export class MsgProtoGovChangeParam extends TxMsg {
     return {
       type: this.AMINO_KEY,
       value: {
-        from_address: this.fromAddress.toLowerCase(),
+        address: this.fromAddress.toLowerCase(),
         param_key: this.paramKey,
-        param_val: this.paramValue,
+        param_value: Buffer.from(JSON.stringify(this.paramValue)).toString('base64')
       },
     }
   }
@@ -72,11 +72,11 @@ export class MsgProtoGovChangeParam extends TxMsg {
    */
   public toStdTxMsgObj(): any {
     const data = {
-      FromAddress: Buffer.from(this.fromAddress, 'hex'),
+      FromAddress: Buffer.from(this.fromAddress.toLowerCase(), 'hex'),
       paramKey: this.paramKey,
       paramVal: Buffer.from(
-        Buffer.from(this.paramValue).toString('base64'),
-        'base64'
+        Buffer.from(JSON.stringify(this.paramValue)).toString('base64'),
+          'base64'
       ),
     }
 

@@ -142,7 +142,7 @@ describe('TransactionBuilder Tests', () => {
       })
       expect(govUpgradeAtHeightMsg instanceof MsgProtoGovUpgrade).toBe(true)
       expect(govUpgradeAtHeightMsg.fromAddress).toBe(signer.getAddress())
-      expect(govUpgradeAtHeightMsg.upgrade.Height).toBe(`${TEST_UPGRADE_HEIGHT}`)
+      expect(govUpgradeAtHeightMsg.upgrade.Height).toBe(TEST_UPGRADE_HEIGHT)
       expect(govUpgradeAtHeightMsg.upgrade.Features.length).toBe(0)
       expect(govUpgradeAtHeightMsg.upgrade.OldUpgradeHeight).toBe(
         OLD_UPGRADE_HEIGHT_EMPTY_VALUE
@@ -174,21 +174,37 @@ describe('TransactionBuilder Tests', () => {
         FEATURE_UPGRADE_KEY
       )
 
-      const govUpgradeMsg = transactionBuilder.govUpgrade({
+      const govUpgradeVersionRaw = transactionBuilder.govUpgrade({
         upgrade: {
           height: TEST_UPGRADE_HEIGHT,
           version: TEST_UPGRADE_VERSION,
+          features: [],
+        },
+      })
+      expect(govUpgradeVersionRaw instanceof MsgProtoGovUpgrade).toBe(true)
+      expect(govUpgradeVersionRaw.fromAddress).toBe(signer.getAddress())
+      expect(govUpgradeVersionRaw.upgrade.Height).toBe(TEST_UPGRADE_HEIGHT)
+      expect(govUpgradeVersionRaw.upgrade.Features.length).toBe(0)
+      expect(govUpgradeVersionRaw.upgrade.OldUpgradeHeight).toBe(
+        OLD_UPGRADE_HEIGHT_EMPTY_VALUE
+      )
+      expect(govUpgradeVersionRaw.upgrade.Version).toBe(TEST_UPGRADE_VERSION)
+
+      const govUpgradeFeaturesRaw = transactionBuilder.govUpgrade({
+        upgrade: {
+          height: FEATURE_UPGRADE_ONLY_HEIGHT,
+          version: FEATURE_UPGRADE_KEY,
           features: TEST_UPGRADE_FEATURES,
         },
       })
-      expect(govUpgradeMsg instanceof MsgProtoGovUpgrade).toBe(true)
-      expect(govUpgradeMsg.fromAddress).toBe(signer.getAddress())
-      expect(govUpgradeMsg.upgrade.Height).toBe(`${TEST_UPGRADE_HEIGHT}`)
-      expect(govUpgradeMsg.upgrade.Features.length).toBeGreaterThanOrEqual(1)
-      expect(govUpgradeMsg.upgrade.OldUpgradeHeight).toBe(
-        OLD_UPGRADE_HEIGHT_EMPTY_VALUE
+      expect(govUpgradeFeaturesRaw instanceof MsgProtoGovUpgrade).toBe(true)
+      expect(govUpgradeFeaturesRaw.fromAddress).toBe(signer.getAddress())
+      expect(govUpgradeFeaturesRaw.upgrade.Height).toBe(FEATURE_UPGRADE_ONLY_HEIGHT)
+      expect(govUpgradeFeaturesRaw.upgrade.Features.length).toBeGreaterThanOrEqual(1)
+      expect(govUpgradeFeaturesRaw.upgrade.OldUpgradeHeight).toBe(
+          OLD_UPGRADE_HEIGHT_EMPTY_VALUE
       )
-      expect(govUpgradeMsg.upgrade.Version).toBe(TEST_UPGRADE_VERSION)
+      expect(govUpgradeFeaturesRaw.upgrade.Version).toBe(FEATURE_UPGRADE_KEY)
     })
   })
 
@@ -393,17 +409,79 @@ describe('TransactionBuilder Tests', () => {
         })
       ).toThrow(/fromAddress cannot be empty/)
     })
-    test('Invalid case: upgrade feature with empty features', () => {
+
+    test('Invalid case: height is zero for gov upgrade raw', () => {
       expect(() =>
-        transactionBuilder.govUpgradeFeatures({
-          upgrade: {
-            features: [],
-          },
-        })
+          transactionBuilder.govUpgrade({
+            upgrade: {
+              height: 0,
+              features: [],
+              version: "0.9.1.3"
+            },
+          })
       ).toThrow(
-        /Zero features was provided to upgrade, despite being a feature upgrade./
+          /upgrade height cannot be zero/
       )
     })
+
+    test('Invalid case: version is empty for gov upgrade raw', () => {
+      expect(() =>
+          transactionBuilder.govUpgrade({
+            upgrade: {
+              height: 100,
+              features: [],
+              version: ""
+            },
+          })
+      ).toThrow(
+          /version cannot be empty, it should be a semantic version or FEATURE/
+      )
+    })
+
+
+    test('Invalid case: height is not 1 for feature gov upgrade raw', () => {
+      expect(() =>
+          transactionBuilder.govUpgrade({
+            upgrade: {
+              height: 5,
+              features: ['REDUP:62000'],
+              version: FEATURE_UPGRADE_KEY,
+            },
+          })
+      ).toThrow(
+          /Features cannot be added unless height is 1/
+      )
+    })
+
+    test('Invalid case: features was provided for version gov upgrade raw', () => {
+      expect(() =>
+          transactionBuilder.govUpgrade({
+            upgrade: {
+              height: 100,
+              features: ['REDUP:62000'],
+              version: "0.9.1.3"
+            },
+          })
+      ).toThrow(
+          /Features cannot be added unless version is FEATURE/
+      )
+    })
+
+
+    test('Invalid case: features is empty for feature gov upgrade raw', () => {
+      expect(() =>
+          transactionBuilder.govUpgrade({
+            upgrade: {
+              height: 1,
+              features: [],
+              version: FEATURE_UPGRADE_KEY,
+            },
+          })
+      ).toThrow(
+          /Zero features was provided to upgrade, despite being a feature upgrade./
+      )
+    })
+
     test('Invalid case: upgrade feature with malformed feature tuple', () => {
       expect(() =>
         transactionBuilder.govUpgradeFeatures({
@@ -531,15 +609,23 @@ describe('TransactionBuilder Tests', () => {
             features: TEST_UPGRADE_FEATURES,
           },
         })
-      const govUpgradeMsg = transactionBuilder.govUpgrade({
+      const govUpgradeRawFeature = transactionBuilder.govUpgrade({
         upgrade: {
-          height: TEST_UPGRADE_HEIGHT,
-          version: TEST_UPGRADE_VERSION,
+          height: FEATURE_UPGRADE_ONLY_HEIGHT,
+          version: FEATURE_UPGRADE_KEY,
           features: TEST_UPGRADE_FEATURES,
         },
       })
+      const govUpgradeRawVersion = transactionBuilder.govUpgrade({
+        upgrade: {
+          height: TEST_UPGRADE_HEIGHT,
+          version: TEST_UPGRADE_VERSION,
+          features: [],
+        },
+      })
       for (const txMsg of [
-        govUpgradeMsg,
+        govUpgradeRawVersion,
+        govUpgradeRawFeature,
         govUpgradeAtHeightMsg,
         govUpgradeFeaturesAtHeightMsg,
       ]) {

@@ -325,6 +325,25 @@ export class TransactionBuilder implements AbstractBuilder {
     )
   }
 
+  public govUpgrade({
+                      fromAddress = this.signer.getAddress(),
+                      upgrade,
+                    }: {
+    fromAddress?: string
+    upgrade: {
+      height: number
+      features: string[]
+      version: string
+    }
+  }): MsgProtoGovUpgrade {
+    return new MsgProtoGovUpgrade(fromAddress, {
+      Height: upgrade.height,
+      Features: upgrade.features,
+      Version: upgrade.version,
+      OldUpgradeHeight: OLD_UPGRADE_HEIGHT_EMPTY_VALUE,
+    })
+  }
+
   /**
    * Adds a MsgUpgrade TxMsg for this transaction
    * @param {string} fromAddress - Address of the signer
@@ -340,11 +359,13 @@ export class TransactionBuilder implements AbstractBuilder {
       version: string
     }
   }): MsgProtoGovUpgrade {
-    return new MsgProtoGovUpgrade(fromAddress, {
-      Height: `${upgrade.height}`,
-      Version: upgrade.version,
-      OldUpgradeHeight: OLD_UPGRADE_HEIGHT_EMPTY_VALUE,
-      Features: [],
+    return this.govUpgrade({
+      fromAddress,
+      upgrade: {
+        features: [],
+        height: upgrade.height,
+        version: upgrade.version,
+      }
     })
   }
 
@@ -357,30 +378,15 @@ export class TransactionBuilder implements AbstractBuilder {
       features: string[]
     }
   }): MsgProtoGovUpgrade {
-    return new MsgProtoGovUpgrade(fromAddress, {
-      Height: FEATURE_UPGRADE_ONLY_HEIGHT,
-      Features: upgrade.features,
-      Version: FEATURE_UPGRADE_KEY,
-      OldUpgradeHeight: OLD_UPGRADE_HEIGHT_EMPTY_VALUE
+    return this.govUpgrade({
+      fromAddress,
+      upgrade: {
+        features: upgrade.features,
+        height: FEATURE_UPGRADE_ONLY_HEIGHT,
+        version: FEATURE_UPGRADE_KEY,
+      }
     })
   }
 
-  public govUpgrade({
-    fromAddress = this.signer.getAddress(),
-    upgrade,
-  }: {
-    fromAddress?: string
-    upgrade: {
-      height: number
-      features: string[]
-      version: string
-    }
-  }): MsgProtoGovUpgrade {
-    return new MsgProtoGovUpgrade(fromAddress, {
-      Height: `${upgrade.height}`,
-      Features: upgrade.features,
-      Version: upgrade.version,
-      OldUpgradeHeight: OLD_UPGRADE_HEIGHT_EMPTY_VALUE,
-    })
-  }
+
 }

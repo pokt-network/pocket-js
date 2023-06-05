@@ -1,6 +1,6 @@
 /* eslint-disable */
 import Long from 'long'
-import * as _m0 from 'protobufjs/minimal'
+import _m0 from 'protobufjs/minimal'
 import { Any } from './google/protobuf/any'
 
 export const protobufPackage = 'pocketjs'
@@ -92,9 +92,9 @@ export interface MsgDAOTransfer {
 }
 
 export interface Upgrade {
-  Height: string
+  Height: number
   Version: string
-  OldUpgradeHeight: string
+  OldUpgradeHeight: number
   Features: string[]
 }
 
@@ -1224,7 +1224,7 @@ export const MsgDAOTransfer = {
 }
 
 function createBaseUpgrade(): Upgrade {
-  return { Height: '', Version: '', OldUpgradeHeight: '', Features: [] }
+  return { Height: 0, Version: '', OldUpgradeHeight: 0, Features: [] }
 }
 
 export const Upgrade = {
@@ -1232,14 +1232,14 @@ export const Upgrade = {
     message: Upgrade,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.Height !== '') {
-      writer.uint32(10).string(message.Height)
+    if (message.Height !== 0) {
+      writer.uint32(8).int64(message.Height)
     }
     if (message.Version !== '') {
       writer.uint32(18).string(message.Version)
     }
-    if (message.OldUpgradeHeight !== '') {
-      writer.uint32(26).string(message.OldUpgradeHeight)
+    if (message.OldUpgradeHeight !== 0) {
+      writer.uint32(24).int64(message.OldUpgradeHeight)
     }
     for (const v of message.Features) {
       writer.uint32(34).string(v!)
@@ -1255,13 +1255,13 @@ export const Upgrade = {
       const tag = reader.uint32()
       switch (tag >>> 3) {
         case 1:
-          message.Height = reader.string()
+          message.Height = longToNumber(reader.int64() as Long)
           break
         case 2:
           message.Version = reader.string()
           break
         case 3:
-          message.OldUpgradeHeight = reader.string()
+          message.OldUpgradeHeight = longToNumber(reader.int64() as Long)
           break
         case 4:
           message.Features.push(reader.string())
@@ -1276,11 +1276,11 @@ export const Upgrade = {
 
   fromJSON(object: any): Upgrade {
     return {
-      Height: isSet(object.Height) ? String(object.Height) : '',
+      Height: isSet(object.Height) ? Number(object.Height) : 0,
       Version: isSet(object.Version) ? String(object.Version) : '',
       OldUpgradeHeight: isSet(object.OldUpgradeHeight)
-        ? String(object.OldUpgradeHeight)
-        : '',
+        ? Number(object.OldUpgradeHeight)
+        : 0,
       Features: Array.isArray(object?.Features)
         ? object.Features.map((e: any) => String(e))
         : [],
@@ -1289,10 +1289,10 @@ export const Upgrade = {
 
   toJSON(message: Upgrade): unknown {
     const obj: any = {}
-    message.Height !== undefined && (obj.Height = message.Height)
+    message.Height !== undefined && (obj.Height = Math.round(message.Height))
     message.Version !== undefined && (obj.Version = message.Version)
     message.OldUpgradeHeight !== undefined &&
-      (obj.OldUpgradeHeight = message.OldUpgradeHeight)
+      (obj.OldUpgradeHeight = Math.round(message.OldUpgradeHeight))
     if (message.Features) {
       obj.Features = message.Features.map((e) => e)
     } else {
@@ -1303,9 +1303,9 @@ export const Upgrade = {
 
   fromPartial<I extends Exact<DeepPartial<Upgrade>, I>>(object: I): Upgrade {
     const message = createBaseUpgrade()
-    message.Height = object.Height ?? ''
+    message.Height = object.Height ?? 0
     message.Version = object.Version ?? ''
-    message.OldUpgradeHeight = object.OldUpgradeHeight ?? ''
+    message.OldUpgradeHeight = object.OldUpgradeHeight ?? 0
     message.Features = object.Features?.map((e) => e) || []
     return message
   },

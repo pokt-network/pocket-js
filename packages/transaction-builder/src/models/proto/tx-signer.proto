@@ -81,17 +81,17 @@ message MsgSend {
 }
 
 message MsgDAOTransfer {
-    bytes FromAddress = 1;
-    bytes ToAddress = 2;
+    bytes fromAddress = 1;
+    bytes toAddress = 2;
     string amount = 3;
     string action = 4;
 }
 
 message Upgrade {
-    int64 Height = 1;
-    string Version = 2;
-    int64 OldUpgradeHeight = 3;
-    repeated string Features = 4;
+    int64 height = 1;
+    string version = 2;
+    int64 oldUpgradeHeight = 3;
+    repeated string features = 4;
 }
 
 message MsgUpgrade {

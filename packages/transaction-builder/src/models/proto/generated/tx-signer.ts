@@ -85,17 +85,17 @@ export interface MsgSend {
 }
 
 export interface MsgDAOTransfer {
-  FromAddress: Uint8Array
-  ToAddress: Uint8Array
+  fromAddress: Uint8Array
+  toAddress: Uint8Array
   amount: string
   action: string
 }
 
 export interface Upgrade {
-  Height: number
-  Version: string
-  OldUpgradeHeight: number
-  Features: string[]
+  height: number
+  version: string
+  oldUpgradeHeight: number
+  features: string[]
 }
 
 export interface MsgUpgrade {
@@ -1127,8 +1127,8 @@ export const MsgSend = {
 
 function createBaseMsgDAOTransfer(): MsgDAOTransfer {
   return {
-    FromAddress: new Uint8Array(),
-    ToAddress: new Uint8Array(),
+    fromAddress: new Uint8Array(),
+    toAddress: new Uint8Array(),
     amount: '',
     action: '',
   }
@@ -1139,11 +1139,11 @@ export const MsgDAOTransfer = {
     message: MsgDAOTransfer,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.FromAddress.length !== 0) {
-      writer.uint32(10).bytes(message.FromAddress)
+    if (message.fromAddress.length !== 0) {
+      writer.uint32(10).bytes(message.fromAddress)
     }
-    if (message.ToAddress.length !== 0) {
-      writer.uint32(18).bytes(message.ToAddress)
+    if (message.toAddress.length !== 0) {
+      writer.uint32(18).bytes(message.toAddress)
     }
     if (message.amount !== '') {
       writer.uint32(26).string(message.amount)
@@ -1162,10 +1162,10 @@ export const MsgDAOTransfer = {
       const tag = reader.uint32()
       switch (tag >>> 3) {
         case 1:
-          message.FromAddress = reader.bytes()
+          message.fromAddress = reader.bytes()
           break
         case 2:
-          message.ToAddress = reader.bytes()
+          message.toAddress = reader.bytes()
           break
         case 3:
           message.amount = reader.string()
@@ -1183,11 +1183,11 @@ export const MsgDAOTransfer = {
 
   fromJSON(object: any): MsgDAOTransfer {
     return {
-      FromAddress: isSet(object.FromAddress)
-        ? bytesFromBase64(object.FromAddress)
+      fromAddress: isSet(object.fromAddress)
+        ? bytesFromBase64(object.fromAddress)
         : new Uint8Array(),
-      ToAddress: isSet(object.ToAddress)
-        ? bytesFromBase64(object.ToAddress)
+      toAddress: isSet(object.toAddress)
+        ? bytesFromBase64(object.toAddress)
         : new Uint8Array(),
       amount: isSet(object.amount) ? String(object.amount) : '',
       action: isSet(object.action) ? String(object.action) : '',
@@ -1196,15 +1196,15 @@ export const MsgDAOTransfer = {
 
   toJSON(message: MsgDAOTransfer): unknown {
     const obj: any = {}
-    message.FromAddress !== undefined &&
-      (obj.FromAddress = base64FromBytes(
-        message.FromAddress !== undefined
-          ? message.FromAddress
+    message.fromAddress !== undefined &&
+      (obj.fromAddress = base64FromBytes(
+        message.fromAddress !== undefined
+          ? message.fromAddress
           : new Uint8Array()
       ))
-    message.ToAddress !== undefined &&
-      (obj.ToAddress = base64FromBytes(
-        message.ToAddress !== undefined ? message.ToAddress : new Uint8Array()
+    message.toAddress !== undefined &&
+      (obj.toAddress = base64FromBytes(
+        message.toAddress !== undefined ? message.toAddress : new Uint8Array()
       ))
     message.amount !== undefined && (obj.amount = message.amount)
     message.action !== undefined && (obj.action = message.action)
@@ -1215,8 +1215,8 @@ export const MsgDAOTransfer = {
     object: I
   ): MsgDAOTransfer {
     const message = createBaseMsgDAOTransfer()
-    message.FromAddress = object.FromAddress ?? new Uint8Array()
-    message.ToAddress = object.ToAddress ?? new Uint8Array()
+    message.fromAddress = object.fromAddress ?? new Uint8Array()
+    message.toAddress = object.toAddress ?? new Uint8Array()
     message.amount = object.amount ?? ''
     message.action = object.action ?? ''
     return message
@@ -1224,7 +1224,7 @@ export const MsgDAOTransfer = {
 }
 
 function createBaseUpgrade(): Upgrade {
-  return { Height: 0, Version: '', OldUpgradeHeight: 0, Features: [] }
+  return { height: 0, version: '', oldUpgradeHeight: 0, features: [] }
 }
 
 export const Upgrade = {
@@ -1232,16 +1232,16 @@ export const Upgrade = {
     message: Upgrade,
     writer: _m0.Writer = _m0.Writer.create()
   ): _m0.Writer {
-    if (message.Height !== 0) {
-      writer.uint32(8).int64(message.Height)
+    if (message.height !== 0) {
+      writer.uint32(8).int64(message.height)
     }
-    if (message.Version !== '') {
-      writer.uint32(18).string(message.Version)
+    if (message.version !== '') {
+      writer.uint32(18).string(message.version)
     }
-    if (message.OldUpgradeHeight !== 0) {
-      writer.uint32(24).int64(message.OldUpgradeHeight)
+    if (message.oldUpgradeHeight !== 0) {
+      writer.uint32(24).int64(message.oldUpgradeHeight)
     }
-    for (const v of message.Features) {
+    for (const v of message.features) {
       writer.uint32(34).string(v!)
     }
     return writer
@@ -1255,16 +1255,16 @@ export const Upgrade = {
       const tag = reader.uint32()
       switch (tag >>> 3) {
         case 1:
-          message.Height = longToNumber(reader.int64() as Long)
+          message.height = longToNumber(reader.int64() as Long)
           break
         case 2:
-          message.Version = reader.string()
+          message.version = reader.string()
           break
         case 3:
-          message.OldUpgradeHeight = longToNumber(reader.int64() as Long)
+          message.oldUpgradeHeight = longToNumber(reader.int64() as Long)
           break
         case 4:
-          message.Features.push(reader.string())
+          message.features.push(reader.string())
           break
         default:
           reader.skipType(tag & 7)
@@ -1276,37 +1276,37 @@ export const Upgrade = {
 
   fromJSON(object: any): Upgrade {
     return {
-      Height: isSet(object.Height) ? Number(object.Height) : 0,
-      Version: isSet(object.Version) ? String(object.Version) : '',
-      OldUpgradeHeight: isSet(object.OldUpgradeHeight)
-        ? Number(object.OldUpgradeHeight)
+      height: isSet(object.height) ? Number(object.height) : 0,
+      version: isSet(object.version) ? String(object.version) : '',
+      oldUpgradeHeight: isSet(object.oldUpgradeHeight)
+        ? Number(object.oldUpgradeHeight)
         : 0,
-      Features: Array.isArray(object?.Features)
-        ? object.Features.map((e: any) => String(e))
+      features: Array.isArray(object?.features)
+        ? object.features.map((e: any) => String(e))
         : [],
     }
   },
 
   toJSON(message: Upgrade): unknown {
     const obj: any = {}
-    message.Height !== undefined && (obj.Height = Math.round(message.Height))
-    message.Version !== undefined && (obj.Version = message.Version)
-    message.OldUpgradeHeight !== undefined &&
-      (obj.OldUpgradeHeight = Math.round(message.OldUpgradeHeight))
-    if (message.Features) {
-      obj.Features = message.Features.map((e) => e)
+    message.height !== undefined && (obj.height = Math.round(message.height))
+    message.version !== undefined && (obj.version = message.version)
+    message.oldUpgradeHeight !== undefined &&
+      (obj.oldUpgradeHeight = Math.round(message.oldUpgradeHeight))
+    if (message.features) {
+      obj.features = message.features.map((e) => e)
     } else {
-      obj.Features = []
+      obj.features = []
     }
     return obj
   },
 
   fromPartial<I extends Exact<DeepPartial<Upgrade>, I>>(object: I): Upgrade {
     const message = createBaseUpgrade()
-    message.Height = object.Height ?? 0
-    message.Version = object.Version ?? ''
-    message.OldUpgradeHeight = object.OldUpgradeHeight ?? 0
-    message.Features = object.Features?.map((e) => e) || []
+    message.height = object.height ?? 0
+    message.version = object.version ?? ''
+    message.oldUpgradeHeight = object.oldUpgradeHeight ?? 0
+    message.features = object.features?.map((e) => e) || []
     return message
   },
 }

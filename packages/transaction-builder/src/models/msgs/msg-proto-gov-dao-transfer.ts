@@ -84,8 +84,8 @@ export class MsgProtoGovDAOTransfer extends TxMsg {
    */
   public toStdTxMsgObj(): any {
     const data = {
-      FromAddress: Buffer.from(this.fromAddress.toLowerCase(), 'hex'),
-      ToAddress: Buffer.from(this.toAddress.toLowerCase(), 'hex'),
+      fromAddress: Buffer.from(this.fromAddress.toLowerCase(), 'hex'),
+      toAddress: Buffer.from(this.toAddress.toLowerCase(), 'hex'),
       amount: this.amount,
       action: this.action.toString(),
     }

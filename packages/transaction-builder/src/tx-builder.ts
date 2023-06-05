@@ -337,10 +337,10 @@ export class TransactionBuilder implements AbstractBuilder {
     }
   }): MsgProtoGovUpgrade {
     return new MsgProtoGovUpgrade(fromAddress, {
-      Height: upgrade.height,
-      Features: upgrade.features,
-      Version: upgrade.version,
-      OldUpgradeHeight: OLD_UPGRADE_HEIGHT_EMPTY_VALUE,
+      height: upgrade.height,
+      features: upgrade.features,
+      version: upgrade.version,
+      oldUpgradeHeight: OLD_UPGRADE_HEIGHT_EMPTY_VALUE,
     })
   }
 

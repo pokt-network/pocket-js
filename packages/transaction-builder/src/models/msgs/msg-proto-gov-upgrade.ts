@@ -27,30 +27,30 @@ export class MsgProtoGovUpgrade extends TxMsg {
       throw new Error('fromAddress cannot be empty')
     }
 
-    if (upgrade.Height == 0) {
+    if (upgrade.height == 0) {
       throw new Error('upgrade height cannot be zero')
     }
 
-    if (upgrade.Version.length == 0) {
+    if (upgrade.version.length == 0) {
       throw new Error(
         'version cannot be empty, it should be a semantic version or FEATURE'
       )
     }
 
     // Validate that features are provided
-    if (upgrade.Version == 'FEATURE') {
-      if (upgrade.Height != 1) {
+    if (upgrade.version == 'FEATURE') {
+      if (upgrade.height != 1) {
         throw new Error('Features cannot be added unless height is 1')
       }
 
-      const zeroFeatures = upgrade.Features.length == 0
+      const zeroFeatures = upgrade.features.length == 0
       if (zeroFeatures) {
         throw new Error(
           'Zero features was provided to upgrade, despite being a feature upgrade.'
         )
       }
 
-      upgrade.Features.forEach((f) => {
+      upgrade.features.forEach((f) => {
         const featureKeyHeightTuple = f.split(':')
 
         if (featureKeyHeightTuple.length != 2) {
@@ -68,7 +68,7 @@ export class MsgProtoGovUpgrade extends TxMsg {
       })
     } else {
       // Version upgrade but features were added
-      if (upgrade.Features.length > 0) {
+      if (upgrade.features.length > 0) {
         throw new Error('Features cannot be added unless version is FEATURE')
       }
     }
@@ -85,11 +85,11 @@ export class MsgProtoGovUpgrade extends TxMsg {
       Height: string
       Version: string
     } = {
-      ...(this.upgrade.Features.length > 0 && {
-        Features: this.upgrade.Features,
+      ...(this.upgrade.features.length > 0 && {
+        Features: this.upgrade.features,
       }),
-      Height: `${this.upgrade.Height}`,
-      Version: this.upgrade.Version,
+      Height: `${this.upgrade.height}`,
+      Version: this.upgrade.version,
     }
 
     return {

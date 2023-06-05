@@ -202,7 +202,6 @@ Returns a `MsgProtoGovChangeParam`: The unsigned upgrade message
 | ------------------------------------ | ------------------------ | ----------------------------------------------------------------------------------------------- |
 | paramKey                             | `GovParameter`, `string` | the governance parameter key                                                                    |
 | paramValue                           | `string`                 | the new governance parameter value in ASCII (plain text) format.                                |
-| paramValue                           | `string`                 | the new governance parameter value in ASCII (plain text) format.                                |
 | overrideGovParamsWhitelistValidation | `boolean (optional)`     | used to override the validation check for a governance parameter not found in GovParameter enum |
 
 #### govUpgradeHeight({ height, version }): MsgProtoGovUpgrade

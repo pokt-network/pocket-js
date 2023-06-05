@@ -69,10 +69,10 @@ export class MsgProtoGovDAOTransfer extends TxMsg {
     return {
       type: this.AMINO_KEY,
       value: {
+        action: this.action.toString(),
+        amount: this.amount,
         from_address: this.fromAddress.toLowerCase(),
         to_address: this.toAddress.toLowerCase(),
-        amount: this.amount,
-        action: this.action,
       },
     }
   }
@@ -84,10 +84,10 @@ export class MsgProtoGovDAOTransfer extends TxMsg {
    */
   public toStdTxMsgObj(): any {
     const data = {
-      FromAddress: Buffer.from(this.fromAddress, 'hex'),
-      ToAddress: Buffer.from(this.toAddress, 'hex'),
+      FromAddress: Buffer.from(this.fromAddress.toLowerCase(), 'hex'),
+      ToAddress: Buffer.from(this.toAddress.toLowerCase(), 'hex'),
       amount: this.amount,
-      action: this.action,
+      action: this.action.toString(),
     }
 
     const result = Any.fromJSON({

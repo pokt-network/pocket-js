@@ -1,6 +1,6 @@
 {
   "name": "@pokt-foundation/pocketjs-relayer",
-  "version": "2.1.0",
+  "version": "2.1.2",
   "description": "Slim relayer client for the Pocket Network v0 Protocol",
   "type": "module",
   "source": "src/index.ts",

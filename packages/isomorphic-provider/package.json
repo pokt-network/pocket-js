@@ -1,6 +1,6 @@
 {
   "name": "@pokt-foundation/pocketjs-isomorphic-provider",
-  "version": "2.1.0",
+  "version": "2.1.2",
   "description": "",
   "type": "module",
   "source": "src/index.ts",

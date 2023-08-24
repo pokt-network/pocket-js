@@ -27,6 +27,10 @@ import {
 } from "./config.js";
 
 // Instantiate a provider for querying information on the chain!
+//
+// MAINNET_RPC_URL and an element of DISPATCHERS is a string representing an
+// endpoint URL to the Pocket Network which may or may not contains basic
+// authentication credentials e.g. "https://scott:tiger@pokt-node.example.com".
 export const provider = new JsonRpcProvider({
   rpcUrl: MAINNET_RPC_URL,
   // If you'll Instantiate a relayer, you need to add dispatchers as well

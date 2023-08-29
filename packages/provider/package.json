@@ -36,6 +36,6 @@
     "@pokt-foundation/pocketjs-abstract-provider": "workspace:*",
     "abort-controller": "^3.0.0",
     "debug": "^4.3.3",
-    "undici": "^5.0.0"
+    "undici": "^5.19.1"
   }
 }

@@ -7,7 +7,8 @@
     "allowJs": true,
     "composite": true,
     "declaration": true,
-    "declarationDir": "dist"
+    "declarationDir": "dist",
+    "esModuleInterop": true
   },
   "references": [
     { "path": "../abstract-provider" },
@@ -16,6 +17,6 @@
     { "path": "../types" },
     { "path": "../utils" }
   ],
-  "include": ["src"],
+  "include": ["src", "tests"],
   "exclude": ["node_modules", "dist", "jest.config.js"]
 }

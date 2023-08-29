@@ -1,6 +1,6 @@
 {
   "name": "@pokt-foundation/pocketjs-transaction-builder",
-  "version": "2.1.3",
+  "version": "2.2.0",
   "description": "Transaction manager and utilties for the Pocket Network protocol",
   "type": "module",
   "source": "src/index.ts",

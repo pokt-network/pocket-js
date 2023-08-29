@@ -1,6 +1,6 @@
 {
   "name": "@pokt-foundation/pocketjs-monorepo",
-  "version": "0.0.3",
+  "version": "2.1.2",
   "scripts": {
     "build": "turbo run build",
     "release": "RELEASE_MODE=true pnpm publish",

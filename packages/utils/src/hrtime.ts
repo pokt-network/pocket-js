@@ -23,7 +23,7 @@ const _perfomancePolyfill = () => {
 }
 
 const _hrtime = (previousTimestamp?: [number, number]): [number, number] => {
-  // _perfomancePolyfill()
+  _perfomancePolyfill()
 
   if (
     (typeof process === 'undefined' || typeof process.hrtime === 'undefined') &&

@@ -2,7 +2,11 @@ name: Publish to NPM
 on:
   push:
     branches:
+<<<<<<< HEAD
       - main
+=======
+      - master
+>>>>>>> main
 jobs:
   publish:
     runs-on: ubuntu-latest

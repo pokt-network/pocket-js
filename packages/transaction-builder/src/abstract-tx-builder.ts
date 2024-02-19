@@ -114,6 +114,7 @@ export abstract class AbstractBuilder {
    * @param {string[]} chains - Network identifier list to be serviced by this node
    * @param {string} amount - the amount to stake, must be greater than or equal to 1 POKT
    * @param {URL} serviceURL - Node service url
+   * @param { [key: string]: number } rewardDelegators - Reward delegators
    * @returns {MsgProtoNodeStakeTx} - The unsigned Node Stake message.
    */
   abstract nodeStake({
@@ -122,12 +123,14 @@ export abstract class AbstractBuilder {
     chains,
     amount,
     serviceURL,
+    rewardDelegators,
   }: {
     nodePubKey: string
     outputAddress: string
     chains: string[]
     amount: string
     serviceURL: URL
+    rewardDelegators: { [key: string]: number } | undefined
   }): MsgProtoNodeStakeTx
 
   /**

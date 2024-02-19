@@ -98,6 +98,7 @@ describe('TransactionBuilder Tests', () => {
         chains: ['0040'],
         amount: '69420000000',
         serviceURL: new URL('https://mofongonodes.co:8081'),
+        rewardDelegators: {'6efd6a4118fc75035959c270d7a81117ec5e45c0': 1},
       })
       expect(nodeStakeMsg instanceof MsgProtoNodeStakeTx).toBe(true)
 

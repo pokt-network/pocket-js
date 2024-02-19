@@ -7,6 +7,7 @@ import {
   ProtoStdSignature,
   ProtoStdTx,
 } from '../models/proto/generated/tx-signer'
+import { stringifyObjectWithSort } from '@pokt-foundation/pocketjs-utils'
 
 export class ProtoTxEncoder extends BaseTxEncoder {
   public getFeeObj() {
@@ -31,7 +32,8 @@ export class ProtoTxEncoder extends BaseTxEncoder {
       msg: this.msg.toStdSignDocMsgObj(),
     }
 
-    return Buffer.from(JSON.stringify(stdSignDoc), 'utf-8')
+    // Use stringifyObject instead JSON.stringify to get a deterministic result.
+    return Buffer.from(stringifyObjectWithSort(stdSignDoc), 'utf-8')
   }
 
   // Returns the encoded transaction

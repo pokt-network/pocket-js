@@ -62,6 +62,12 @@ export interface MsgProtoNodeStake8 {
   value: string;
   ServiceUrl: string;
   OutAddress: Uint8Array;
+  RewardDelegators: { [key: string]: number };
+}
+
+export interface MsgProtoNodeStake8_RewardDelegatorsEntry {
+  key: string;
+  value: number;
 }
 
 export interface MsgBeginNodeUnstake8 {
@@ -775,7 +781,14 @@ export const MsgUnjail = {
 };
 
 function createBaseMsgProtoNodeStake8(): MsgProtoNodeStake8 {
-  return { Publickey: new Uint8Array(0), Chains: [], value: "", ServiceUrl: "", OutAddress: new Uint8Array(0) };
+  return {
+    Publickey: new Uint8Array(0),
+    Chains: [],
+    value: "",
+    ServiceUrl: "",
+    OutAddress: new Uint8Array(0),
+    RewardDelegators: {},
+  };
 }
 
 export const MsgProtoNodeStake8 = {
@@ -795,6 +808,9 @@ export const MsgProtoNodeStake8 = {
     if (message.OutAddress.length !== 0) {
       writer.uint32(42).bytes(message.OutAddress);
     }
+    Object.entries(message.RewardDelegators).forEach(([key, value]) => {
+      MsgProtoNodeStake8_RewardDelegatorsEntry.encode({ key: key as any, value }, writer.uint32(50).fork()).ldelim();
+    });
     return writer;
   },
 
@@ -840,6 +856,16 @@ export const MsgProtoNodeStake8 = {
 
           message.OutAddress = reader.bytes();
           continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          const entry6 = MsgProtoNodeStake8_RewardDelegatorsEntry.decode(reader, reader.uint32());
+          if (entry6.value !== undefined) {
+            message.RewardDelegators[entry6.key] = entry6.value;
+          }
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -856,6 +882,12 @@ export const MsgProtoNodeStake8 = {
       value: isSet(object.value) ? globalThis.String(object.value) : "",
       ServiceUrl: isSet(object.ServiceUrl) ? globalThis.String(object.ServiceUrl) : "",
       OutAddress: isSet(object.OutAddress) ? bytesFromBase64(object.OutAddress) : new Uint8Array(0),
+      RewardDelegators: isObject(object.RewardDelegators)
+        ? Object.entries(object.RewardDelegators).reduce<{ [key: string]: number }>((acc, [key, value]) => {
+          acc[key] = Number(value);
+          return acc;
+        }, {})
+        : {},
     };
   },
 
@@ -876,6 +908,15 @@ export const MsgProtoNodeStake8 = {
     if (message.OutAddress.length !== 0) {
       obj.OutAddress = base64FromBytes(message.OutAddress);
     }
+    if (message.RewardDelegators) {
+      const entries = Object.entries(message.RewardDelegators);
+      if (entries.length > 0) {
+        obj.RewardDelegators = {};
+        entries.forEach(([k, v]) => {
+          obj.RewardDelegators[k] = Math.round(v);
+        });
+      }
+    }
     return obj;
   },
 
@@ -889,6 +930,93 @@ export const MsgProtoNodeStake8 = {
     message.value = object.value ?? "";
     message.ServiceUrl = object.ServiceUrl ?? "";
     message.OutAddress = object.OutAddress ?? new Uint8Array(0);
+    message.RewardDelegators = Object.entries(object.RewardDelegators ?? {}).reduce<{ [key: string]: number }>(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = globalThis.Number(value);
+        }
+        return acc;
+      },
+      {},
+    );
+    return message;
+  },
+};
+
+function createBaseMsgProtoNodeStake8_RewardDelegatorsEntry(): MsgProtoNodeStake8_RewardDelegatorsEntry {
+  return { key: "", value: 0 };
+}
+
+export const MsgProtoNodeStake8_RewardDelegatorsEntry = {
+  encode(message: MsgProtoNodeStake8_RewardDelegatorsEntry, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+    if (message.key !== "") {
+      writer.uint32(10).string(message.key);
+    }
+    if (message.value !== 0) {
+      writer.uint32(16).uint32(message.value);
+    }
+    return writer;
+  },
+
+  decode(input: _m0.Reader | Uint8Array, length?: number): MsgProtoNodeStake8_RewardDelegatorsEntry {
+    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseMsgProtoNodeStake8_RewardDelegatorsEntry();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          if (tag !== 10) {
+            break;
+          }
+
+          message.key = reader.string();
+          continue;
+        case 2:
+          if (tag !== 16) {
+            break;
+          }
+
+          message.value = reader.uint32();
+          continue;
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skipType(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): MsgProtoNodeStake8_RewardDelegatorsEntry {
+    return {
+      key: isSet(object.key) ? globalThis.String(object.key) : "",
+      value: isSet(object.value) ? globalThis.Number(object.value) : 0,
+    };
+  },
+
+  toJSON(message: MsgProtoNodeStake8_RewardDelegatorsEntry): unknown {
+    const obj: any = {};
+    if (message.key !== "") {
+      obj.key = message.key;
+    }
+    if (message.value !== 0) {
+      obj.value = Math.round(message.value);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<MsgProtoNodeStake8_RewardDelegatorsEntry>, I>>(
+    base?: I,
+  ): MsgProtoNodeStake8_RewardDelegatorsEntry {
+    return MsgProtoNodeStake8_RewardDelegatorsEntry.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<MsgProtoNodeStake8_RewardDelegatorsEntry>, I>>(
+    object: I,
+  ): MsgProtoNodeStake8_RewardDelegatorsEntry {
+    const message = createBaseMsgProtoNodeStake8_RewardDelegatorsEntry();
+    message.key = object.key ?? "";
+    message.value = object.value ?? 0;
     return message;
   },
 };
@@ -1607,6 +1735,10 @@ function longToNumber(long: Long): number {
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;
   _m0.configure();
+}
+
+function isObject(value: any): boolean {
+  return typeof value === "object" && value !== null;
 }
 
 function isSet(value: any): boolean {

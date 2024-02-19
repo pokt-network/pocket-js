@@ -137,6 +137,17 @@ Returns a `MsgProtoAppStake`: The unsigned App Stake message.
 | chains    | `string[]` | Chains that the apps wants access to by staking POKT. Throughput will be equally divided through all chains. |
 | amount    | `string`   | Amount of uPOKT to stake.                                                                                    |
 
+#### appTransfer({ appPubKey }): MsgProtoAppStake
+
+Builds a transaction message to transfer the slot of a staked app.
+Signer must be an existing staked app to transfer the slot from.
+
+Returns a `MsgProtoAppTransfer`: The unsigned AppTransfer message
+
+|Param|Type|Description|
+|--|--|--|
+|appPubKey|`string`|Application public key to be transferred to|
+
 #### appUnstake(address): MsgProtoAppUnstake
 
 Adds a MsgProtoAppUnstake TxMsg for this transaction.

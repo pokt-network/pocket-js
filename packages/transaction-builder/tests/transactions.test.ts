@@ -18,6 +18,7 @@ import { RawTxRequest } from '@pokt-foundation/pocketjs-types'
 import { MsgProtoGovUpgrade } from '../src/models/msgs/msg-proto-gov-upgrade'
 import { MsgProtoGovChangeParam } from '../src/models/msgs/msg-proto-gov-change-param'
 import { MsgProtoGovDAOTransfer } from '../src/models/msgs/msg-proto-gov-dao-transfer'
+import { MsgProtoAppTransfer } from '../src/models/msgs/msg-proto-app-transfer'
 
 const PRIVATE_KEY =
   '1f8cbde30ef5a9db0a5a9d5eb40536fc9defc318b8581d543808b7504e0902bcb243b27bc9fbe5580457a46370ae5f03a6f6753633e51efdaf2cf534fdc26cc3'
@@ -83,6 +84,11 @@ describe('TransactionBuilder Tests', () => {
         amount: '69420000000',
       })
       expect(appStakeMsg instanceof MsgProtoAppStake).toBe(true)
+
+      const appTransferMsg = transactionBuilder.appTransfer({
+        appPubKey: (await KeyManager.createRandom()).getPublicKey(),
+      })
+      expect(appTransferMsg instanceof MsgProtoAppTransfer).toBe(true)
 
       const appUnstakeMsg = transactionBuilder.appUnstake(ADDRESS)
       expect(appUnstakeMsg instanceof MsgProtoAppUnstake).toBe(true)

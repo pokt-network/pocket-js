@@ -1,4 +1,5 @@
 export * from './msg-proto-app-stake'
+export * from './msg-proto-app-transfer'
 export * from './msg-proto-app-unstake'
 export * from './msg-proto-node-stake'
 export * from './msg-proto-node-unjail'

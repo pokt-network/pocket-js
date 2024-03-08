@@ -1,6 +1,7 @@
 import { Buffer } from 'buffer'
 import {
   MsgProtoAppStake,
+  MsgProtoAppTransfer,
   MsgProtoAppUnstake,
   MsgProtoNodeStakeTx,
   MsgProtoNodeUnjail,
@@ -28,7 +29,6 @@ import { InvalidChainIDError, NoProviderError, NoSignerError } from './errors'
 import { AbstractBuilder } from './abstract-tx-builder'
 import { MsgProtoGovDAOTransfer } from './models/msgs/msg-proto-gov-dao-transfer'
 import { MsgProtoGovChangeParam } from './models/msgs/msg-proto-gov-change-param'
-import { Upgrade } from './models/proto/generated/tx-signer'
 import { MsgProtoGovUpgrade } from './models/msgs/msg-proto-gov-upgrade'
 
 export type ChainID = 'mainnet' | 'testnet' | 'localnet'
@@ -205,6 +205,20 @@ export class TransactionBuilder implements AbstractBuilder {
     amount: string
   }): MsgProtoAppStake {
     return new MsgProtoAppStake(appPubKey, chains, amount)
+  }
+
+  /**
+   * Builds a transaction message to transfer the slot of a staked app.
+   * Signer must be an existing staked app to transfer the slot from.
+   * @param {string} appPubKey - Application public key to be transferred to
+   * @returns {MsgProtoAppTransfer} - The unsigned AppTransfer message
+   */
+  public appTransfer({
+    appPubKey,
+  }: {
+    appPubKey: string
+  }): MsgProtoAppTransfer {
+    return new MsgProtoAppTransfer(appPubKey)
   }
 
   /**

@@ -37,6 +37,6 @@
     "abort-controller": "^3.0.0",
     "buffer": "^6.0.3",
     "debug": "^4.3.3",
-    "undici": "^5.0.0"
+    "undici": "^5.26.2"
   }
 }

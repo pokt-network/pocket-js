@@ -1,5 +1,6 @@
 import AbortController from 'abort-controller'
 import debug from 'debug'
+import { Buffer } from 'buffer'
 import { fetch, Response } from 'undici'
 import {
   Account,
@@ -93,14 +94,25 @@ export class JsonRpcProvider implements AbstractProvider {
         ]
       : this.rpcUrl
 
-    const routedRpcUrl = `${finalRpcUrl}${route}`
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+
+    const url = new URL(route, finalRpcUrl);
+    if (url.username || url.password) {
+      const credential =
+        Buffer.from(`${url.username}:${url.password}`).toString('base64');
+      headers['Authorization'] = `Basic ${credential}`;
+      url.username = '';
+      url.password = '';
+    }
+
+    const routedRpcUrl = url.toString();
 
     const rpcResponse = await fetch(routedRpcUrl, {
       method: 'POST',
       signal: controller.signal as AbortSignal,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: headers,
       body: JSON.stringify(body),
     }).catch((error) => {
       debug(`${routedRpcUrl} attempt ${retriesPerformed + 1} failure`)

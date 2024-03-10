@@ -41,8 +41,8 @@
     "@tendermint/belt": "^0.3.0",
     "buffer": "^6.0.3",
     "long": "^5.2.0",
-    "protobufjs": "6.8.8",
-    "ts-proto": "^1.110.4",
+    "protobufjs": "6.11.4",
+    "ts-proto": "^1.167.8",
     "varint": "^6.0.0"
   }
 }

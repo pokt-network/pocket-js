@@ -36,10 +36,10 @@ import {
 const DEFAULT_TIMEOUT = 10000
 
 /**
- * ExtractBasicAuth extracts basic authentication credentials from the given
+ * extractBasicAuth extracts basic authentication credentials from the given
  * url into a separate base64-encoded string so that we can pass it to Fetch API.
  **/
-export function ExtractBasicAuth(urlStr: string) {
+export function extractBasicAuth(urlStr: string) {
   const url = new URL(urlStr);
   if (!url.username && !url.password) {
     return {
@@ -120,7 +120,7 @@ export class JsonRpcProvider implements AbstractProvider {
       'Content-Type': 'application/json',
     };
 
-    const {urlStr, basicAuth} = ExtractBasicAuth(finalRpcUrl);
+    const {urlStr, basicAuth} = extractBasicAuth(finalRpcUrl);
     if (basicAuth) {
       headers['Authorization'] = basicAuth;
     }

@@ -1,6 +1,6 @@
 import { MockAgent, setGlobalDispatcher } from 'undici'
 import { DEFAULT_URL } from './test-utils'
-import { JsonRpcProvider, ExtractBasicAuth } from '../src/json-rpc-provider'
+import { JsonRpcProvider, extractBasicAuth } from '../src/json-rpc-provider'
 import { V1RpcRoutes } from '@pokt-foundation/pocketjs-abstract-provider'
 import { responseSamples } from './response-samples'
 import { RawTxRequest } from '@pokt-foundation/pocketjs-types'
@@ -161,21 +161,21 @@ describe('JsonRpcProvider tests', () => {
     expect(ans).toBe(59133)
   })
 
-  it('ExtractBasicAuth test', () => {
+  it('extractBasicAuth test', () => {
     let {urlStr, basicAuth} =
-    ExtractBasicAuth('https://localhost:8082');
+    extractBasicAuth('https://localhost:8082');
     expect(urlStr).toBe('https://localhost:8082');
     expect(basicAuth).toBeUndefined();
 
     // Url with a path
     ({urlStr, basicAuth} =
-      ExtractBasicAuth('https://mainnet.rpc.grove.city/v1/12345678'));
+      extractBasicAuth('https://mainnet.rpc.grove.city/v1/12345678'));
     expect(urlStr).toBe('https://mainnet.rpc.grove.city/v1/12345678');
     expect(basicAuth).toBeUndefined();
 
     // Url with a path and a credential
     ({urlStr, basicAuth} =
-      ExtractBasicAuth('https://scott:tiger@mainnet.rpc.grove.city/v1/12345678'));
+      extractBasicAuth('https://scott:tiger@mainnet.rpc.grove.city/v1/12345678'));
     expect(urlStr).toBe('https://mainnet.rpc.grove.city/v1/12345678');
     expect(basicAuth).toBe('Basic c2NvdHQ6dGlnZXI=');
   })

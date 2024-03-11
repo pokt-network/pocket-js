@@ -18,19 +18,22 @@ export class MsgProtoNodeStakeTx extends TxMsg {
   public readonly chains: string[]
   public readonly amount: string
   public readonly serviceURL: URL
+  public readonly rewardDelegators: { [key: string]: number } | undefined
 
   /**
    * @param {string} pubKey - Public key
    * @param {string[]} chains - String array containing a list of blockchain hashes
    * @param {string} amount - Amount to be sent, has to be a valid number and cannot be lesser than 0
    * @param {URL} serviceURL - Service node URL, needs to be https://
+   * @param {Object.<string, number>} rewardDelegators - Reward delegators
    */
   constructor(
     pubKey: string,
     outputAddress: string,
     chains: string[],
     amount: string,
-    serviceURL: URL
+    serviceURL: URL,
+    rewardDelegators: { [key: string]: number } | undefined,
   ) {
     super()
     this.pubKey = Buffer.from(pubKey, 'hex')
@@ -38,6 +41,7 @@ export class MsgProtoNodeStakeTx extends TxMsg {
     this.chains = chains
     this.amount = amount
     this.serviceURL = serviceURL
+    this.rewardDelegators = rewardDelegators
 
     if (!this.serviceURL.port) {
       this.serviceURL.port = '443'
@@ -77,18 +81,22 @@ export class MsgProtoNodeStakeTx extends TxMsg {
    * @memberof MsgNodeStake
    */
   public toStdSignDocMsgObj(): object {
+    const msg = {
+      chains: this.chains,
+      output_address: this.outputAddress.toString('hex'),
+      public_key: {
+        type: 'crypto/ed25519_public_key',
+        value: this.pubKey.toString('hex'),
+      },
+      service_url: this.getParsedServiceURL(),
+      value: this.amount,
+    };
+    if (this.rewardDelegators) {
+      msg['reward_delegators'] = this.rewardDelegators;
+    }
     return {
       type: this.AMINO_KEY,
-      value: {
-        chains: this.chains,
-        output_address: this.outputAddress.toString('hex'),
-        public_key: {
-          type: 'crypto/ed25519_public_key',
-          value: this.pubKey.toString('hex'),
-        },
-        service_url: this.getParsedServiceURL(),
-        value: this.amount,
-      },
+      value: msg,
     }
   }
 
@@ -104,6 +112,7 @@ export class MsgProtoNodeStakeTx extends TxMsg {
       value: this.amount,
       ServiceUrl: this.getParsedServiceURL(),
       OutAddress: this.outputAddress,
+      RewardDelegators: this.rewardDelegators || {},
     }
 
     return Any.fromJSON({

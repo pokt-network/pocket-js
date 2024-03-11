@@ -58,6 +58,7 @@ message MsgProtoNodeStake8 {
     string value = 3;
     string ServiceUrl = 4;
     bytes OutAddress = 5;
+    map<string, uint32> RewardDelegators = 6;
 }
 
 message MsgBeginNodeUnstake8 {

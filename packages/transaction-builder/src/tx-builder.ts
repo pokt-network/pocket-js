@@ -232,11 +232,15 @@ export class TransactionBuilder implements AbstractBuilder {
 
   /**
    * Adds a NodeStake TxMsg for this transaction
-   * @param {string} nodePubKey - Node Public key
-   * @param {string} outputAddress - The address that the coins will be sent to when the node is unstaked
-   * @param {string[]} chains - Network identifier list to be serviced by this node
-   * @param {string} amount - the amount to stake, must be greater than or equal to 1 POKT
-   * @param {URL} serviceURL - Node service url
+   * @param {Object} params
+   * @param {string} params.nodePubKey - Node Public key
+   * @param {string} params.outputAddress - The address that the coins will be sent to when the node is unstaked
+   * @param {string[]} params.chains - Network identifier list to be serviced by this node
+   * @param {string} params.amount - the amount to stake, must be greater than or equal to 1 POKT
+   * @param {URL} params.serviceURL - Node service url
+   * @param {Object.<string, number>} params.rewardDelegators - Reward delegators.
+   *    If undefined or another falsey value is specified, the msg removes the
+   *    current delegators.
    * @returns {MsgProtoNodeStakeTx} - The unsigned Node Stake message.
    */
   public nodeStake({
@@ -245,19 +249,22 @@ export class TransactionBuilder implements AbstractBuilder {
     chains,
     amount,
     serviceURL,
+    rewardDelegators,
   }: {
     nodePubKey?: string
     outputAddress?: string
     chains: string[]
     amount: string
     serviceURL: URL
+    rewardDelegators?: { [key: string]: number }
   }): MsgProtoNodeStakeTx {
     return new MsgProtoNodeStakeTx(
       nodePubKey,
       outputAddress,
       chains,
       amount,
-      serviceURL
+      serviceURL,
+      rewardDelegators,
     )
   }
 

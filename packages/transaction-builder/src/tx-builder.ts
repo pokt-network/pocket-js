@@ -238,7 +238,9 @@ export class TransactionBuilder implements AbstractBuilder {
    * @param {string[]} params.chains - Network identifier list to be serviced by this node
    * @param {string} params.amount - the amount to stake, must be greater than or equal to 1 POKT
    * @param {URL} params.serviceURL - Node service url
-   * @param {{Object.<string, number>} params.rewardDelegators - Reward delegators
+   * @param {Object.<string, number>} params.rewardDelegators - Reward delegators.
+   *    If undefined or another falsey value is specified, the msg removes the
+   *    current delegators.
    * @returns {MsgProtoNodeStakeTx} - The unsigned Node Stake message.
    */
   public nodeStake({

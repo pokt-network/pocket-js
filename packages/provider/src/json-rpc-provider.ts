@@ -36,6 +36,28 @@ import {
 const DEFAULT_TIMEOUT = 10000
 
 /**
+ * ExtractBasicAuth extracts basic authentication credentials from the given
+ * url into a separate base64-encoded string so that we can pass it to Fetch API.
+ **/
+export function ExtractBasicAuth(urlStr: string) {
+  const url = new URL(urlStr);
+  if (!url.username && !url.password) {
+    return {
+      urlStr,
+    };
+  }
+
+  const credential =
+    Buffer.from(`${url.username}:${url.password}`).toString('base64');
+  url.username = '';
+  url.password = '';
+  return {
+    urlStr: url.toString(),
+    basicAuth: `Basic ${credential}`,
+  };
+}
+
+/**
  * A JSONRPCProvider lets you query data from the chain and send relays to the network.
  * NodeJS only, not Isomorphic or Browser compatible.
  *  **/
@@ -98,16 +120,12 @@ export class JsonRpcProvider implements AbstractProvider {
       'Content-Type': 'application/json',
     };
 
-    const url = new URL(route, finalRpcUrl);
-    if (url.username || url.password) {
-      const credential =
-        Buffer.from(`${url.username}:${url.password}`).toString('base64');
-      headers['Authorization'] = `Basic ${credential}`;
-      url.username = '';
-      url.password = '';
+    const {urlStr, basicAuth} = ExtractBasicAuth(finalRpcUrl);
+    if (basicAuth) {
+      headers['Authorization'] = basicAuth;
     }
 
-    const routedRpcUrl = url.toString();
+    const routedRpcUrl = urlStr + route;
 
     const rpcResponse = await fetch(routedRpcUrl, {
       method: 'POST',

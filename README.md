@@ -23,7 +23,6 @@ import {
   MAINNET_RPC_URL,
   DISPATCHERS,
   RELAY_DATA,
-  POCKET_AAT,
 } from "./config.js";
 
 // Instantiate a provider for querying information on the chain!
@@ -57,7 +56,7 @@ export const transactionBuilder = new TransactionBuilder({
 
 // Create a new `Send` Message which is used to send funds over the network.
 const sendMsg = transactionBuilder.send(
-  signer.getAddress(), 
+  signer.getAddress(),
   "07a6fca4dea9f01e4c19f301df0d0afac128561b",
   // Amount in uPOKT (1 POKT = 1*10^6 uPOKT)
   "1000000"
@@ -80,10 +79,14 @@ const session = await relayer.getNewSession({
   applicationPubKey: process.env.APP_PUBLIC_KEY,
 });
 
+const appSigner = await KeyManager.fromPrivateKey(process.env.APP_PRIVATE_KEY);
+const clientSigner = await KeyManager.createRandom();
+const aat = await Relayer.GenerateAAT(appSigner, clientSigner.publicKey);
+
 const relay = await relayer.relay({
   data: process.env.RELAY_DATA,
   blockchain: process.env.APP_CHAIN,
-  pocketAAT: POCKET_AAT,
+  pocketAAT: aat,
   session: session,
 });
 ```

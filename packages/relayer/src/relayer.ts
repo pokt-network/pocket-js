@@ -358,4 +358,19 @@ export class Relayer implements AbstractRelayer {
     max = Math.floor(max)
     return Math.floor(randomNumber * (max - min + 1)) + min
   }
+
+  static async GenerateAAT(
+    applicationPrivKey: KeyManager,
+    clientPubKey: string,
+  ): Promise<PocketAAT> {
+    const aat = {
+        version: "0.0.1",
+        applicationPublicKey: applicationPrivKey.getPublicKey(),
+        clientPublicKey: clientPubKey,
+        applicationSignature: "",
+    };
+    const hash = this.hashAAT(aat);
+    aat.applicationSignature = await applicationPrivKey.sign(hash);
+    return aat;
+  }
 }

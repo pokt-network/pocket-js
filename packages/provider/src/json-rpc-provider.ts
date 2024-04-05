@@ -343,6 +343,38 @@ export class JsonRpcProvider implements AbstractProvider {
   }
 
   /**
+   * Converts an object to Node
+   * @param {any} maybeNode - a Node object returned from API
+   * @returns {Node} - Node converted from maybeNode
+   * */
+  static asNode(maybeNode: any): Node {
+    const {
+      address,
+      chains,
+      jailed,
+      output_address,
+      public_key,
+      reward_delegators,
+      service_url,
+      status,
+      tokens,
+      unstaking_time,
+    } = maybeNode
+    return {
+      address,
+      chains,
+      jailed,
+      outputAddress: output_address,
+      publicKey: public_key,
+      rewardDelegators: reward_delegators,
+      serviceUrl: service_url,
+      status,
+      stakedTokens: tokens.toString(),
+      unstakingTime: unstaking_time,
+    } as Node
+  }
+
+  /**
    * Fetches nodes active from the network with the options provided.
    * @param {GetNodesOptions} getNodesOptions - the options to pass in to the query.
    * @returns {Node[]} - An array with the nodes requested and their information.
@@ -357,7 +389,7 @@ export class JsonRpcProvider implements AbstractProvider {
     const { blockHeight: height } = GetNodesOptions
 
     const res = await this.perform({
-      route: V1RpcRoutes.QueryApps,
+      route: V1RpcRoutes.QueryNodes,
       body: {
         height,
         opts: {
@@ -380,31 +412,10 @@ export class JsonRpcProvider implements AbstractProvider {
     const parsedRes = (await res.json()) as any
 
     if (!('result' in parsedRes)) {
-      throw new Error('Failed to get apps')
+      throw new Error('Failed to get nodes')
     }
 
-    const nodes = parsedRes.result.map((node) => {
-      const {
-        address,
-        chains,
-        jailed,
-        public_key,
-        staked_tokens,
-        status,
-        service_url,
-      } = node
-
-      return {
-        address,
-        chains,
-        publicKey: public_key,
-        jailed,
-        stakedTokens: staked_tokens ?? '0',
-        status,
-        serviceUrl: service_url,
-      } as Node
-    })
-
+    const nodes = parsedRes.result.map(JsonRpcProvider.asNode)
     return {
       data: nodes,
       page: GetNodesOptions.page,
@@ -439,26 +450,7 @@ export class JsonRpcProvider implements AbstractProvider {
       throw new Error('RPC Error')
     }
 
-    const {
-      chains,
-      jailed,
-      public_key,
-      service_url,
-      status,
-      tokens,
-      unstaking_time,
-    } = node
-
-    return {
-      address: await address,
-      chains,
-      publicKey: public_key,
-      jailed,
-      serviceUrl: service_url,
-      stakedTokens: tokens.toString(),
-      status,
-      unstakingTime: unstaking_time,
-    } as Node
+    return JsonRpcProvider.asNode(node)
   }
 
   /**

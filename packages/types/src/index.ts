@@ -178,7 +178,9 @@ export interface Node {
   address: string
   chains: string[]
   jailed: boolean
+  outputAddress: string
   publicKey: string
+  rewardDelegators: { [key: string]: number } | undefined
   serviceUrl: string
   stakedTokens: string
   status: StakingStatus

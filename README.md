@@ -22,8 +22,8 @@ yarn add @pokt-foundation/pocketjs-utils
 
 ### Send a read-only query
 
-This example queries the latest height and a wallet's balance in the network
-specified by `PoktEndpoint`.
+This example queries the latest height, a wallet's balance, and the list of
+jailed nodes in the network specified by `PoktEndpoint`.
 
 `PoktEndpoint` is a string representing an endpoint URL to any Pocket-based
 network, POKT Mainnet, Testnet or your own devnet.  It may or may not contain
@@ -36,6 +36,7 @@ Grove's endpoint is like `https://mainnet.rpc.grove.city/v1/<AccessKey>`.
 ```js
 import "dotenv/config";
 import { JsonRpcProvider } from "@pokt-foundation/pocketjs-provider";
+import { JailedStatus } from "@pokt-foundation/pocketjs-types";
 
 const PoktEndpoint = process.env.POKT_ENDPOINT;
 
@@ -53,6 +54,14 @@ async function main() {
     "85efd04b9bad9da612ee2f80db9b62bb413e32fb",
   );
   console.log(balance);
+
+  const nodes = await provider.getNodes({
+    blockHeight: 0,
+    page: 1,
+    perPage: 100,
+    jailedStatus: JailedStatus.Jailed,
+  })
+  console.log(nodes.data.map(n => n.address));
 }
 
 main()
@@ -66,8 +75,12 @@ main()
 Output:
 
 ```
-125085
-20009130876n
+127561
+24301704832n
+[
+  'b30d23caf048ac466e46fcd54c397631a377b522',
+  'b47e9f313fa12d91975b62aedf648dd21410efe9'
+]
 ```
 
 ### Send POKT

@@ -180,3 +180,76 @@ describe('JsonRpcProvider tests', () => {
     expect(basicAuth).toBe('Basic c2NvdHQ6dGlnZXI=');
   })
 })
+
+  describe('getTransaction error handling', () => {
+    it('should return transaction when found', async () => {
+      const txHash = '0xabc123'
+      const mockTx = { hash: txHash, nonce: 1, value: '100' }
+
+      jsonRpcMockClient
+        .intercept({
+          path: `${DEFAULT_URL}${V1RpcRoutes.QueryTX}`,
+          method: 'POST',
+        })
+        .reply(200, mockTx)
+
+      const result = await provider.getTransaction(txHash)
+      expect(result).toEqual(mockTx)
+    })
+
+    it('should throw TransactionNotFoundError when transaction not found', async () => {
+      const txHash = '0xnotfound'
+
+      jsonRpcMockClient
+        .intercept({
+          path: `${DEFAULT_URL}${V1RpcRoutes.QueryTX}`,
+          method: 'POST',
+        })
+        .reply(200, {
+          code: 32,
+          message: 'transaction not found',
+        })
+
+      await expect(provider.getTransaction(txHash)).rejects.toThrow(
+        'TransactionNotFoundError'
+      )
+    })
+
+    it('should include transaction hash in error message', async () => {
+      const txHash = '0xspecific'
+
+      jsonRpcMockClient
+        .intercept({
+          path: `${DEFAULT_URL}${V1RpcRoutes.QueryTX}`,
+          method: 'POST',
+        })
+        .reply(200, {
+          code: 32,
+          message: 'not found',
+        })
+
+      try {
+        await provider.getTransaction(txHash)
+        fail('Should have thrown an error')
+      } catch (error) {
+        expect(error.message).toContain(txHash)
+        expect(error.name).toBe('TransactionNotFoundError')
+      }
+    })
+
+    it('should handle unexpected response format', async () => {
+      const txHash = '0xbad'
+
+      jsonRpcMockClient
+        .intercept({
+          path: `${DEFAULT_URL}${V1RpcRoutes.QueryTX}`,
+          method: 'POST',
+        })
+        .reply(200, null)
+
+      await expect(provider.getTransaction(txHash)).rejects.toThrow(
+        'TransactionNotFoundError'
+      )
+    })
+  })
+})

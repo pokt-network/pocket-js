@@ -66,3 +66,40 @@ export function validateTransactionResponse(transactionResponse: any) {
       )
   }
 }
+
+/**
+ * Error thrown when a transaction cannot be found on the blockchain.
+ * This typically occurs when querying for a transaction hash that doesn't exist
+ * or hasn't been confirmed yet.
+ */
+export class TransactionNotFoundError extends Error {
+  public readonly transactionHash: string
+
+  constructor(transactionHash: string, details?: string) {
+    const message = details
+      ? `Transaction not found: ${transactionHash}. Details: ${details}`
+      : `Transaction not found: ${transactionHash}`
+    super(message)
+    this.name = 'TransactionNotFoundError'
+    this.transactionHash = transactionHash
+    Object.setPrototypeOf(this, TransactionNotFoundError.prototype)
+  }
+}
+
+/**
+ * Error thrown when attempting to access a transaction that is still pending.
+ * Reserved for future implementation when pending transaction detection is added.
+ */
+export class PendingTransactionError extends Error {
+  public readonly transactionHash: string
+
+  constructor(transactionHash: string, estimatedTimeMs?: number) {
+    const message = estimatedTimeMs
+      ? `Transaction is pending: ${transactionHash}. Estimated confirmation time: ${estimatedTimeMs}ms`
+      : `Transaction is pending: ${transactionHash}`
+    super(message)
+    this.name = 'PendingTransactionError'
+    this.transactionHash = transactionHash
+    Object.setPrototypeOf(this, PendingTransactionError.prototype)
+  }
+}

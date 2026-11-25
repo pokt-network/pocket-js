@@ -267,18 +267,47 @@ export class JsonRpcProvider implements AbstractProvider {
    * @returns {TransactionResponse} - The transaction requested.
    * */
   async getTransaction(transactionHash: string): Promise<Transaction> {
-    const res = await this.perform({
-      route: V1RpcRoutes.QueryTX,
-      body: { hash: transactionHash },
-    })
+    try {
+      const res = await this.perform({
+        route: V1RpcRoutes.QueryTX,
+        body: { hash: transactionHash },
+      })
 
-    const tx = (await res.json()) as Transaction
+      const response = (await res.json()) as any
 
-    if (!('hash' in tx)) {
-      throw new Error('RPC Error')
+      // Check if the response indicates an error
+      if (response && typeof response === 'object' && 'code' in response) {
+        // RPC error response
+        const errorCode = response.code
+        const errorMessage = response.message || 'Unknown error'
+        throw new TransactionNotFoundError(
+          transactionHash,
+          `RPC Error Code ${errorCode}: ${errorMessage}`
+        )
+      }
+
+      // Check if we have a valid transaction response
+      if (!response || typeof response !== 'object' || !('hash' in response)) {
+        throw new TransactionNotFoundError(
+          transactionHash,
+          `Unexpected response format: ${typeof response}`
+        )
+      }
+
+      return response as Transaction
+    } catch (error) {
+      // If it's already our custom error, re-throw it
+      if (error instanceof TransactionNotFoundError) {
+        throw error
+      }
+
+      // For any other error, wrap it with transaction context
+      if (error instanceof Error) {
+        throw new TransactionNotFoundError(transactionHash, error.message)
+      }
+
+      throw new TransactionNotFoundError(transactionHash, String(error))
     }
-
-    return tx
   }
 
   /**
